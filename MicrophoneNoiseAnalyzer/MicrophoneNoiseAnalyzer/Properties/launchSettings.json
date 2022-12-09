@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MicrophoneNoiseAnalyzer": {
+      "commandName": "Project",
+      "commandLineArgs": "calibration"
+    }
+  }
+}
