@@ -8,7 +8,7 @@ public class Microphone : IMicrophone
 
     private readonly MMDevice _mmDevice;
 
-    private readonly IList<float> _buffer = new List<float>();
+    private readonly List<float> _buffer = new();
 
     private readonly Timer _timer;
 
@@ -33,6 +33,8 @@ public class Microphone : IMicrophone
     }
 
     public float MasterPeakValue => _mmDevice.AudioMeterInformation.MasterPeakValue;
+    public IReadOnlyList<float> Buffer => _buffer;
+
     public void StartCapture()
     {
         _buffer.Clear();
@@ -41,10 +43,11 @@ public class Microphone : IMicrophone
 
     private void OnElapsed(object? state)
     {
+        _buffer.Add(MasterPeakValue);
     }
 
     public void StopCapture()
     {
-        throw new NotImplementedException();
+        _timer.Change(Timeout.InfiniteTimeSpan, Period);
     }
 }
