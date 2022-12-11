@@ -6,5 +6,7 @@ public interface ICalibrationView
 {
     void NotifyMicrophonesInformation(IMicrophones microphones);
     bool ConfirmInvoke();
-    void NotifyMasterPeakValue(IMicrophones microphones);
+    void StartNotifyMasterPeakValue(IMicrophones microphones);
+    void StopNotifyMasterPeakValue();
+    void NotifyCalibrated(IMicrophones microphones);
 }

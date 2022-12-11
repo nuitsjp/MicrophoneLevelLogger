@@ -4,9 +4,11 @@ namespace MicrophoneNoiseAnalyzer.Domain;
 
 public class Microphone : IMicrophone
 {
-    private static readonly TimeSpan Period = TimeSpan.FromMilliseconds(50);
+    private static readonly TimeSpan SamplingRate = TimeSpan.FromMilliseconds(50);
 
     private readonly MMDevice _mmDevice;
+
+    private readonly WasapiCapture _capture;
 
     private readonly List<float> _buffer = new();
 
@@ -15,13 +17,15 @@ public class Microphone : IMicrophone
     public Microphone(MMDevice mmDevice)
     {
         _mmDevice = mmDevice;
-        _timer = new Timer(OnElapsed, null, Timeout.InfiniteTimeSpan, Period);
+        _capture = new WasapiCapture(_mmDevice);
+        _timer = new Timer(OnElapsed, null, Timeout.InfiniteTimeSpan, SamplingRate);
     }
 
     public void Dispose()
     {
-        _mmDevice.Dispose();
-        _timer.Dispose();
+        _mmDevice.DisposeQuiet();
+        _capture.DisposeQuiet();
+        _timer.DisposeQuiet();
     }
 
     public string Name => _mmDevice.FriendlyName;
@@ -35,10 +39,11 @@ public class Microphone : IMicrophone
     public float MasterPeakValue => _mmDevice.AudioMeterInformation.MasterPeakValue;
     public IReadOnlyList<float> Buffer => _buffer;
 
-    public void StartCapture()
+    public void StartRecording()
     {
         _buffer.Clear();
-        _timer.Change(TimeSpan.Zero, Period);
+        _capture.StartRecording();
+        _timer.Change(TimeSpan.Zero, SamplingRate);
     }
 
     private void OnElapsed(object? state)
@@ -46,8 +51,10 @@ public class Microphone : IMicrophone
         _buffer.Add(MasterPeakValue);
     }
 
-    public void StopCapture()
+    public IMasterPeakValues StopRecording()
     {
-        _timer.Change(Timeout.InfiniteTimeSpan, Period);
+        _timer.Change(Timeout.InfiniteTimeSpan, SamplingRate);
+        _capture.StopRecording();
+        return new MasterPeakValues(this, _buffer.ToList());
     }
 }

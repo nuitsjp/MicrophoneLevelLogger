@@ -5,6 +5,6 @@ public interface IMicrophone : IDisposable
     string Name { get; }
     float MasterVolumeLevelScalar { get; set; }
     float MasterPeakValue { get; }
-    void StartCapture();
-    void StopCapture();
+    void StartRecording();
+    IMasterPeakValues StopRecording();
 }

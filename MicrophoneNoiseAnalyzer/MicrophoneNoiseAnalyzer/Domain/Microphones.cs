@@ -28,19 +28,19 @@ public class Microphones : IMicrophones
     }
 
     public IReadOnlyList<IMicrophone> Devices { get; }
-    public void StartCapture()
+    public void StartRecording()
     {
         foreach (var microphone in Devices)
         {
-            microphone.StartCapture();
+            microphone.StartRecording();
         }
     }
 
-    public void StopCapture()
+    public IEnumerable<IMasterPeakValues> StopRecording()
     {
         foreach (var microphone in Devices)
         {
-            microphone.StopCapture();
+            yield return microphone.StopRecording();
         }
     }
 }
