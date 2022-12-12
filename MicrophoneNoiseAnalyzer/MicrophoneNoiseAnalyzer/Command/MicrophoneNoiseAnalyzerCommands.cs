@@ -16,7 +16,7 @@ public class MicrophoneNoiseAnalyzerCommands : ConsoleAppBase
         _view = view;
     }
 
-    public void Calibration()
+    public void Calibrate()
     {
         // すべてのマイクを取得する。
         using IMicrophones microphones = _microphonesProvider.Resolve();

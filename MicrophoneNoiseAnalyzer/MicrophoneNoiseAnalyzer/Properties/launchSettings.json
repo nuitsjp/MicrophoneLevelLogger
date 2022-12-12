@@ -2,7 +2,7 @@
   "profiles": {
     "MicrophoneNoiseAnalyzer": {
       "commandName": "Project",
-      //"commandLineArgs": "calibration"
+      //"commandLineArgs": "calibrate"
       "commandLineArgs": "analyze"
     }
   }
