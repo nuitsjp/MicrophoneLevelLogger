@@ -57,3 +57,6 @@ C# TokyoのLT枠で実施
 - Windowsのマイクの入力値を一定間隔レコーディングして、平均値を求める
 
 
+# 参考文献
+
+- [C# Microphone Level Monitor](https://swharden.com/blog/2021-07-03-csharp-microphone/)
