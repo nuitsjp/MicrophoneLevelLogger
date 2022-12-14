@@ -1,7 +1,7 @@
-﻿using MicrophoneNoiseAnalyzer.Domain;
+﻿using MicrophoneLevelLogger.Domain;
 using Sharprompt;
 
-namespace MicrophoneNoiseAnalyzer.View;
+namespace MicrophoneLevelLogger.View;
 
 public class CalibrateView : MicrophoneView, ICalibrateView
 {

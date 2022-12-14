@@ -1,6 +1,6 @@
 ﻿using NAudio.CoreAudioApi;
 
-namespace MicrophoneNoiseAnalyzer.Domain;
+namespace MicrophoneLevelLogger.Domain;
 
 public class Microphones : IMicrophones
 {

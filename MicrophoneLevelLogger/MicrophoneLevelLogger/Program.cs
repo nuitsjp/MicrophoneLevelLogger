@@ -1,6 +1,6 @@
-﻿using MicrophoneNoiseAnalyzer.Command;
-using MicrophoneNoiseAnalyzer.Domain;
-using MicrophoneNoiseAnalyzer.View;
+﻿using MicrophoneLevelLogger.Command;
+using MicrophoneLevelLogger.Domain;
+using MicrophoneLevelLogger.View;
 using Microsoft.Extensions.DependencyInjection;
 
 

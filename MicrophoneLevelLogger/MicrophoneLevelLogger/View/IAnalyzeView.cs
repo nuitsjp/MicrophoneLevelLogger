@@ -1,4 +1,4 @@
-﻿namespace MicrophoneNoiseAnalyzer.View;
+﻿namespace MicrophoneLevelLogger.View;
 
 public interface IAnalyzeView : IMicrophoneView
 {

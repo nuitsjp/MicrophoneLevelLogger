@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "MicrophoneNoiseAnalyzer": {
+    "MicrophoneLevelLogger": {
       "commandName": "Project",
       //"commandLineArgs": "calibrate"
       "commandLineArgs": "analyze"

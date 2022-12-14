@@ -1,9 +1,9 @@
-﻿using MicrophoneNoiseAnalyzer.Domain;
-using MicrophoneNoiseAnalyzer.View;
+﻿using MicrophoneLevelLogger.Domain;
+using MicrophoneLevelLogger.View;
 using NAudio.CoreAudioApi;
 using System.Reflection.Emit;
 
-namespace MicrophoneNoiseAnalyzer.Command;
+namespace MicrophoneLevelLogger.Command;
 
 public class CalibrateCommand : ConsoleAppBase
 {

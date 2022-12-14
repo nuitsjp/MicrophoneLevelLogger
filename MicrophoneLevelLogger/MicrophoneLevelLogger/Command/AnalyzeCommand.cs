@@ -1,7 +1,7 @@
-﻿using MicrophoneNoiseAnalyzer.Domain;
-using MicrophoneNoiseAnalyzer.View;
+﻿using MicrophoneLevelLogger.Domain;
+using MicrophoneLevelLogger.View;
 
-namespace MicrophoneNoiseAnalyzer.Command;
+namespace MicrophoneLevelLogger.Command;
 
 public class AnalyzeCommand : ConsoleAppBase
 {

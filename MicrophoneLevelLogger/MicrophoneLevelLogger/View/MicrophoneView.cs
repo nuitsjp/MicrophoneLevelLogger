@@ -1,7 +1,7 @@
 ﻿using FluentTextTable;
-using MicrophoneNoiseAnalyzer.Domain;
+using MicrophoneLevelLogger.Domain;
 
-namespace MicrophoneNoiseAnalyzer.View;
+namespace MicrophoneLevelLogger.View;
 
 public abstract class MicrophoneView : IMicrophoneView
 {

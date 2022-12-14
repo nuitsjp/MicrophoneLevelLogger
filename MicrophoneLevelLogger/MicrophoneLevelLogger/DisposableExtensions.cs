@@ -1,4 +1,4 @@
-﻿namespace MicrophoneNoiseAnalyzer;
+﻿namespace MicrophoneLevelLogger;
 
 public static class DisposableExtensions
 {

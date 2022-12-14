@@ -1,4 +1,4 @@
-﻿namespace MicrophoneNoiseAnalyzer.Domain;
+﻿namespace MicrophoneLevelLogger.Domain;
 
 public class MicrophonesProvider : IMicrophonesProvider
 {
