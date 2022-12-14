@@ -1,9 +1,9 @@
-﻿using MicrophoneNoiseAnalyzer.Domain;
-using Sharprompt;
+﻿using FluentTextTable;
+using MicrophoneNoiseAnalyzer.Domain;
 
 namespace MicrophoneNoiseAnalyzer.View;
 
-public class CalibrationView : ICalibrationView
+public abstract class MicrophoneView : IMicrophoneView
 {
     /// <summary>
     /// 画面に入力レベルを表示する際のサンプリングレート。Microphone側にもあるがあちらは分析用のため別々に定義する。
@@ -14,20 +14,33 @@ public class CalibrationView : ICalibrationView
 
     public void NotifyMicrophonesInformation(IMicrophones microphones)
     {
-        for (int i = 0; i < microphones.Devices.Count; i++)
-        {
-            var microphone = microphones.Devices[i];
-            Console.WriteLine($"{i + 1} = {microphone.Name} 入力レベル：{microphone.MasterVolumeLevelScalar}");
-        }
-    }
+        var infos = microphones
+            .Devices
+            .Select((x, index) => new MicrophoneInfo(index + 1, x.Name, x.MasterVolumeLevelScalar))
+            .ToList();
+        Build
+            .TextTable<MicrophoneInfo>(builder =>
+            {
+                builder.Borders.InsideHorizontal.AsDisable();
+            })
+            .WriteLine(infos);
 
-    public bool ConfirmInvoke()
-    {
         Console.WriteLine();
-        Console.WriteLine("マイクのキャリブレーションを開始します。5秒間、一定の音量の発声をしてください。");
-        return Prompt.Confirm("開始してよろしいですか？");
     }
 
+    public class MicrophoneInfo
+    {
+        public MicrophoneInfo(int no, string name, float inputLevel)
+        {
+            No = no;
+            Name = name;
+            InputLevel = inputLevel;
+        }
+
+        public int No { get; }
+        public string Name { get; }
+        public float InputLevel { get; }
+    }
     public void StartNotifyMasterPeakValue(IMicrophones microphones)
     {
         _timer = new Timer(OnElapsed, microphones, TimeSpan.Zero, SamplingRate);
@@ -39,20 +52,6 @@ public class CalibrationView : ICalibrationView
         _timer?.Dispose();
         _timer = null;
     }
-
-    public void NotifyCalibrated(IMicrophones microphones)
-    {
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.WriteLine("マイクのキャリブレーションを完了しました。");
-
-        for (int i = 0; i < microphones.Devices.Count; i++)
-        {
-            var microphone = microphones.Devices[i];
-            Console.WriteLine($"{i + 1} = {microphone.Name} 入力レベル：{microphone.MasterVolumeLevelScalar}");
-        }
-    }
-
 
     private void OnElapsed(object? state)
     {

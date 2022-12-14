@@ -28,6 +28,7 @@ public class Microphone : IMicrophone
         _timer.DisposeQuiet();
     }
 
+
     public string Name => _mmDevice.FriendlyName;
 
     public float MasterVolumeLevelScalar
@@ -39,10 +40,14 @@ public class Microphone : IMicrophone
     public float MasterPeakValue => _mmDevice.AudioMeterInformation.MasterPeakValue;
     public IReadOnlyList<float> Buffer => _buffer;
 
+    public void Activate()
+    {
+        _capture.StartRecording();
+    }
+
     public void StartRecording()
     {
         _buffer.Clear();
-        _capture.StartRecording();
         _timer.Change(TimeSpan.Zero, SamplingRate);
     }
 
@@ -54,7 +59,11 @@ public class Microphone : IMicrophone
     public IMasterPeakValues StopRecording()
     {
         _timer.Change(Timeout.InfiniteTimeSpan, SamplingRate);
-        _capture.StopRecording();
         return new MasterPeakValues(this, _buffer.ToList());
+    }
+
+    public void Deactivate()
+    {
+        _capture.StopRecording();
     }
 }

@@ -8,10 +8,12 @@ var builder = ConsoleApp.CreateBuilder(args);
 builder.ConfigureServices((ctx, services) =>
 {
     services.AddTransient<IMicrophonesProvider, MicrophonesProvider>();
-    services.AddTransient<ICalibrationView, CalibrationView>();
+    services.AddTransient<ICalibrateView, CalibrateView>();
+    services.AddTransient<IAnalyzeView, AnalyzeView>();
 });
 
 
 var app = builder.Build();
-app.AddCommands<MicrophoneNoiseAnalyzerCommands>();
+app.AddCommands<CalibrateCommand>();
+app.AddCommands<AnalyzeCommand>();
 app.Run();
