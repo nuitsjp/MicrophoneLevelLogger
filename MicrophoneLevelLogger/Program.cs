@@ -9,11 +9,11 @@ builder.ConfigureServices((ctx, services) =>
 {
     services.AddTransient<IMicrophonesProvider, MicrophonesProvider>();
     services.AddTransient<ICalibrateView, CalibrateView>();
-    services.AddTransient<IAnalyzeView, AnalyzeView>();
+    services.AddTransient<IRecordView, RecordView>();
 });
 
 
 var app = builder.Build();
 app.AddCommands<CalibrateCommand>();
-app.AddCommands<AnalyzeCommand>();
+app.AddCommands<RecordCommand>();
 app.Run();

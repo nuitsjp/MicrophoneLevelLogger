@@ -3,18 +3,18 @@ using MicrophoneLevelLogger.View;
 
 namespace MicrophoneLevelLogger.Command;
 
-public class AnalyzeCommand : ConsoleAppBase
+public class RecordCommand : ConsoleAppBase
 {
     private readonly IMicrophonesProvider _microphonesProvider;
-    private readonly IAnalyzeView _view;
+    private readonly IRecordView _view;
 
-    public AnalyzeCommand(IMicrophonesProvider microphonesProvider, IAnalyzeView view)
+    public RecordCommand(IMicrophonesProvider microphonesProvider, IRecordView view)
     {
         _microphonesProvider = microphonesProvider;
         _view = view;
     }
 
-    public void Analyze()
+    public void Record()
     {
         // すべてのマイクを取得する。
         using IMicrophones microphones = _microphonesProvider.Resolve();

@@ -3,7 +3,7 @@
     "MicrophoneLevelLogger": {
       "commandName": "Project",
       //"commandLineArgs": "calibrate"
-      "commandLineArgs": "analyze"
+      "commandLineArgs": "record"
     }
   }
 }
