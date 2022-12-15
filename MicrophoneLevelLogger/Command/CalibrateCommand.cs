@@ -19,36 +19,80 @@ public class CalibrateCommand : ConsoleAppBase
     public void Calibrate()
     {
         // すべてのマイクを取得する。
-        using IMicrophones microphones = _microphonesProvider.Resolve();
+        using var microphones = _microphonesProvider.Resolve();
 
         // 起動時情報を通知する。
         _view.NotifyMicrophonesInformation(microphones);
-        if(_view.ConfirmInvoke() is false)
-        {
-            // 確認でNoが推されたら中断する。
-            return;
-        }
+
+        // リファレンスマイクを選択する
+        var reference = _view.SelectReference(microphones);
+
+        // マイクを有効化する
+        microphones.Activate();
 
         // 画面に入力レベルを通知する。
         _view.StartNotifyMasterPeakValue(microphones);
 
-        microphones.Calibrate();
+        // マイクレベルを順番にキャリブレーションする
+        foreach (var microphone in microphones.Devices.Where(x => x != reference))
+        {
+            Calibrate(reference, microphone);
+        }
 
         // 画面の入力レベル通知を停止する。
         _view.StopNotifyMasterPeakValue();
 
-        //// 平均値が最小のマイクの音量を基準値とする
-        //var referenceLevel = peakValuesList
-        //    .Select(x => x.PeakValues.Average())
-        //    .Min();
-
-        //foreach (var peakValues in peakValuesList)
-        //{
-        //    var microphone = peakValues.Microphone;
-        //    var value = peakValues.PeakValues.Average();
-        //    microphone.MasterVolumeLevelScalar = (float)(Math.Sqrt(referenceLevel) / Math.Sqrt(value));
-        //}
         _view.NotifyCalibrated(microphones);
+
+        // マイクを無効化する
+        microphones.Deactivate();
+    }
+
+    private static void Calibrate(IMicrophone reference, IMicrophone target)
+    {
+        // ボリューム調整していくステップ
+        const float step = 0.005f;
+
+        Console.WriteLine(target);
+
+        // ターゲットの入力レベルをMaxにする
+        target.MasterVolumeLevelScalar = 1f;
+
+        // ターゲット側の入力レベルを少しずつ下げていきながら
+        // リファレンスと同程度の音量になるように調整していく。
+        var high = 1f;
+        for (; 0 < target.MasterVolumeLevelScalar; target.MasterVolumeLevelScalar -= step)
+        {
+            // レコーディング開始
+            reference.StartRecording();
+            target.StartRecording();
+
+            Thread.Sleep(TimeSpan.FromMilliseconds(500));
+
+            // レコーディング停止
+            var referenceLevel = reference.StopRecording().PeakValues.Average();
+            var targetLevel = target.StopRecording().PeakValues.Average();
+
+            if (targetLevel <= referenceLevel)
+            {
+                // キャリブレーション対象のレベルがリファレンスより小さくなったら調整を終了する
+
+                // リファレンスより小さくなった際の値と、リファレンスより大きかった際の値を比較する
+                // 小さくなった際の方が誤差が小さかった場合、
+                if (!(referenceLevel - targetLevel < high - referenceLevel)) return;
+
+
+                // 大きかった時(high)の方が誤差が小さかった場合、入力レベルをステップ分戻す
+                if (target.MasterVolumeLevelScalar < 1f)
+                {
+                    target.MasterVolumeLevelScalar += step;
+                }
+
+                return;
+            }
+
+            high = targetLevel;
+        }
     }
 
 }

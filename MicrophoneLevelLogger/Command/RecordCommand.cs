@@ -37,10 +37,13 @@ public class RecordCommand : ConsoleAppBase
         _view.StopNotifyMasterPeakValue();
 
         // キャプチャーを停止する
-        var peakValuesList = microphones.StopRecording().ToList();
+        var peakValues = microphones.StopRecording();
 
         // マイクを無効化する
         microphones.Deactivate();
+
+        // 結果を通知する
+        _view.NotifyResult(peakValues);
     }
 
 }

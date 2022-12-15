@@ -5,6 +5,13 @@ namespace MicrophoneLevelLogger.View;
 
 public class CalibrateView : MicrophoneView, ICalibrateView
 {
+    public IMicrophone SelectReference(IMicrophones microphones)
+    {
+        return Prompt.Select(
+            "リファレンスマイクを選択してください。",
+            microphones.Devices);
+    }
+
     public bool ConfirmInvoke()
     {
         Console.WriteLine();
