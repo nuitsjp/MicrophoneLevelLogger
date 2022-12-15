@@ -6,7 +6,6 @@ public interface IMicrophones : IDisposable
     void Activate();
     void StartRecording();
     IEnumerable<IMasterPeakValues> StopRecording();
-    public void Calibrate();
     void Deactivate();
 
 }

@@ -40,9 +40,26 @@ public class Microphone : IMicrophone
     public float MasterPeakValue => _mmDevice.AudioMeterInformation.MasterPeakValue;
     public IReadOnlyList<float> Buffer => _buffer;
 
-    public void Activate()
+
+    public Task ActivateAsync()
     {
         _capture.StartRecording();
+        return Task.Run(async () =>
+        {
+            var limit = TimeSpan.FromSeconds(1);
+            var span = TimeSpan.FromMilliseconds(50);
+            var maxCount = (int)(limit / span);
+
+            for (var i = 0; i < maxCount; i++)
+            {
+                if (0 < MasterPeakValue)
+                {
+                    break;
+                }
+
+                await Task.Delay(span);
+            }
+        });
     }
 
     public void StartRecording()
@@ -66,4 +83,6 @@ public class Microphone : IMicrophone
     {
         _capture.StopRecording();
     }
+
+    public override string ToString() => Name;
 }

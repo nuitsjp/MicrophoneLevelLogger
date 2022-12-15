@@ -30,10 +30,9 @@ public class Microphones : IMicrophones
     public IReadOnlyList<IMicrophone> Devices { get; }
     public void Activate()
     {
-        foreach (var microphone in Devices)
-        {
-            microphone.Activate();
-        }
+        var tasks = Devices
+            .Select(x => x.ActivateAsync());
+        Task.WaitAll(tasks.ToArray());
     }
 
     public void StartRecording()
@@ -50,17 +49,6 @@ public class Microphones : IMicrophones
         {
             yield return microphone.StopRecording();
         }
-    }
-
-    public void Calibrate()
-    {
-        // キャリブレーション開始時に、すべてのマイクの入力レベルをMaxにする。
-        foreach (var microphone in Devices)
-        {
-            microphone.MasterVolumeLevelScalar = 1;
-        }
-
-        var reference = SelectReference();
     }
 
     public void Deactivate()
