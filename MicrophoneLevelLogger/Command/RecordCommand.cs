@@ -3,7 +3,7 @@ using MicrophoneLevelLogger.View;
 
 namespace MicrophoneLevelLogger.Command;
 
-public class RecordCommand : ConsoleAppBase
+public class RecordCommand : ICommand
 {
     private readonly IMicrophonesProvider _microphonesProvider;
     private readonly IRecordView _view;
@@ -14,7 +14,10 @@ public class RecordCommand : ConsoleAppBase
         _view = view;
     }
 
-    public void Record()
+    public string Name => "Record";
+
+
+    public Task ExecuteAsync()
     {
         // すべてのマイクを取得する。
         using IMicrophones microphones = _microphonesProvider.Resolve();
@@ -44,6 +47,7 @@ public class RecordCommand : ConsoleAppBase
 
         // 結果を通知する
         _view.NotifyResult(peakValues);
-    }
 
+        return Task.CompletedTask;
+    }
 }

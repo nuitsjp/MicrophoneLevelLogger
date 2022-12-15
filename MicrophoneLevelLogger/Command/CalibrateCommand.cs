@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 
 namespace MicrophoneLevelLogger.Command;
 
-public class CalibrateCommand : ConsoleAppBase
+public class CalibrateCommand : ICommand
 {
     private readonly IMicrophonesProvider _microphonesProvider;
     private readonly ICalibrateView _view;
@@ -16,7 +16,9 @@ public class CalibrateCommand : ConsoleAppBase
         _view = view;
     }
 
-    public void Calibrate()
+    public string Name => "Calibrate";
+
+    public Task ExecuteAsync()
     {
         // すべてのマイクを取得する。
         using var microphones = _microphonesProvider.Resolve();
@@ -46,6 +48,8 @@ public class CalibrateCommand : ConsoleAppBase
 
         // マイクを無効化する
         microphones.Deactivate();
+
+        return Task.CompletedTask;
     }
 
     private static void Calibrate(IMicrophone reference, IMicrophone target)
@@ -94,5 +98,4 @@ public class CalibrateCommand : ConsoleAppBase
             high = targetLevel;
         }
     }
-
 }
