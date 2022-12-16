@@ -30,7 +30,7 @@ public abstract class MicrophoneView : IMicrophoneView
 
     public class MicrophoneInfo
     {
-        public MicrophoneInfo(int no, string name, float inputLevel)
+        public MicrophoneInfo(int no, string name, MasterVolumeLevelScalar inputLevel)
         {
             No = no;
             Name = name;
@@ -39,7 +39,7 @@ public abstract class MicrophoneView : IMicrophoneView
 
         public int No { get; }
         public string Name { get; }
-        public float InputLevel { get; }
+        public MasterVolumeLevelScalar InputLevel { get; }
     }
     public void StartNotifyMasterPeakValue(IMicrophones microphones)
     {

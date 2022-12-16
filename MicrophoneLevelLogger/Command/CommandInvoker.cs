@@ -7,15 +7,18 @@ public class CommandInvoker : ICommandInvoker
     private readonly ICommandInvokerView _view;
     private readonly CalibrateCommand _calibrateCommand;
     private readonly RecordCommand _recordCommand;
+    private readonly SetMaxInputLevelCommand _setMaxInputLevelCommand;
 
     public CommandInvoker(
         ICommandInvokerView view, 
         CalibrateCommand calibrateCommand, 
-        RecordCommand recordCommand)
+        RecordCommand recordCommand, 
+        SetMaxInputLevelCommand setMaxInputLevelCommand)
     {
         _view = view;
         _calibrateCommand = calibrateCommand;
         _recordCommand = recordCommand;
+        _setMaxInputLevelCommand = setMaxInputLevelCommand;
     }
 
     public async Task InvokeAsync()
@@ -25,7 +28,8 @@ public class CommandInvoker : ICommandInvoker
             var commands = new ICommand[]
             {
                 _calibrateCommand,
-                _recordCommand
+                _recordCommand,
+                _setMaxInputLevelCommand
             };
             var selected = _view.SelectCommand(commands.Select(x => x.Name));
             var command = commands.Single(x => x.Name == selected);

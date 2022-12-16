@@ -55,17 +55,17 @@ public class CalibrateCommand : ICommand
     private static void Calibrate(IMicrophone reference, IMicrophone target)
     {
         // ボリューム調整していくステップ
-        const float step = 0.005f;
+        MasterVolumeLevelScalar step = new(0.005f);
 
         Console.WriteLine(target);
 
         // ターゲットの入力レベルをMaxにする
-        target.MasterVolumeLevelScalar = 1f;
+        target.MasterVolumeLevelScalar = MasterVolumeLevelScalar.Maximum;
 
         // ターゲット側の入力レベルを少しずつ下げていきながら
         // リファレンスと同程度の音量になるように調整していく。
         var high = 1f;
-        for (; 0 < target.MasterVolumeLevelScalar; target.MasterVolumeLevelScalar -= step)
+        for (; MasterVolumeLevelScalar.Minimum < target.MasterVolumeLevelScalar; target.MasterVolumeLevelScalar -= step)
         {
             // レコーディング開始
             reference.StartRecording();
@@ -87,7 +87,7 @@ public class CalibrateCommand : ICommand
 
 
                 // 大きかった時(high)の方が誤差が小さかった場合、入力レベルをステップ分戻す
-                if (target.MasterVolumeLevelScalar < 1f)
+                if (target.MasterVolumeLevelScalar < MasterVolumeLevelScalar.Maximum)
                 {
                     target.MasterVolumeLevelScalar += step;
                 }

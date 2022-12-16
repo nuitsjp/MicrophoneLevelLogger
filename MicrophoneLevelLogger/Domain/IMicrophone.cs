@@ -1,9 +1,11 @@
-﻿namespace MicrophoneLevelLogger.Domain;
+﻿using MicrophoneLevelLogger.Command;
+
+namespace MicrophoneLevelLogger.Domain;
 
 public interface IMicrophone : IDisposable
 {
     string Name { get; }
-    float MasterVolumeLevelScalar { get; set; }
+    MasterVolumeLevelScalar MasterVolumeLevelScalar { get; set; }
     float MasterPeakValue { get; }
     Task ActivateAsync();
     void StartRecording();

@@ -15,6 +15,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddTransient<ICommandInvoker, CommandInvoker>();
         services.AddTransient<CalibrateCommand>();
         services.AddTransient<RecordCommand>();
+        services.AddTransient<SetMaxInputLevelCommand>();
         services.AddTransient<ICommandInvokerView, CommandInvokerView>();
         services.AddTransient<ICalibrateView, CalibrateView>();
         services.AddTransient<IRecordView, RecordView>();
