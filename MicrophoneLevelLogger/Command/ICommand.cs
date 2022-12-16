@@ -1,4 +1,6 @@
-﻿namespace MicrophoneLevelLogger.Command;
+﻿using System.Xml;
+
+namespace MicrophoneLevelLogger.Command;
 
 public interface ICommand
 {

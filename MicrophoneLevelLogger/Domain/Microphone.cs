@@ -1,4 +1,5 @@
-﻿using NAudio.CoreAudioApi;
+﻿using MicrophoneLevelLogger.Command;
+using NAudio.CoreAudioApi;
 
 namespace MicrophoneLevelLogger.Domain;
 
@@ -31,10 +32,10 @@ public class Microphone : IMicrophone
 
     public string Name => _mmDevice.FriendlyName;
 
-    public float MasterVolumeLevelScalar
+    public MasterVolumeLevelScalar MasterVolumeLevelScalar
     {
-        get => _mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
-        set => _mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar = value;
+        get => (MasterVolumeLevelScalar)_mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
+        set => _mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar = (float)value;
     }
 
     public float MasterPeakValue => _mmDevice.AudioMeterInformation.MasterPeakValue;

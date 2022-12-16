@@ -12,10 +12,10 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
     <PackageReference Include="NAudio" Version="2.1.0" />
     <PackageReference Include="Sharprompt" Version="2.4.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Domain\" />
+    <PackageReference Include="UnitGenerator" Version="1.4.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
