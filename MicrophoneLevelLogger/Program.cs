@@ -12,13 +12,20 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddHostedService<Worker>();
 
         services.AddTransient<IMicrophonesProvider, MicrophonesProvider>();
+
         services.AddTransient<ICommandInvoker, CommandInvoker>();
-        services.AddTransient<CalibrateCommand>();
-        services.AddTransient<RecordCommand>();
-        services.AddTransient<SetMaxInputLevelCommand>();
         services.AddTransient<ICommandInvokerView, CommandInvokerView>();
+        
+        services.AddTransient<CalibrateCommand>();
         services.AddTransient<ICalibrateView, CalibrateView>();
+
+        services.AddTransient<RecordCommand>();
         services.AddTransient<IRecordView, RecordView>();
+
+        services.AddTransient<SetMaxInputLevelCommand>();
+
+        services.AddTransient<MonitorVolumeCommand>();
+        services.AddTransient<IMonitorVolumeView, MonitorVolumeView>();
     })
     .ConfigureLogging((context, builder) =>
     {
