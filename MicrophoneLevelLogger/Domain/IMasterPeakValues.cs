@@ -3,5 +3,5 @@
 public interface IMasterPeakValues
 {
     IMicrophone Microphone { get; }
-    IReadOnlyList<float> PeakValues { get; }
+    IReadOnlyList<double> PeakValues { get; }
 }

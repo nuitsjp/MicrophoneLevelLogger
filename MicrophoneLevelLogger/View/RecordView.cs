@@ -31,9 +31,9 @@ public class RecordView : MicrophoneView, IRecordView
         }
         public int No { get; }
         public string Name { get; }
-        public float Min { get; }
-        public float Avg { get; }
-        public float Max { get; }
+        public double Min { get; }
+        public double Avg { get; }
+        public double Max { get; }
     }
 
 }

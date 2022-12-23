@@ -18,7 +18,7 @@ public class MonitorVolumeCommand : ICommand
 
     public Task ExecuteAsync()
     {
-        var microphones = _microphonesProvider.Resolve();
+        using var microphones = _microphonesProvider.Resolve();
 
         microphones.Activate();
         try

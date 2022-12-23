@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrophoneLevelLogger", "MicrophoneLevelLogger\MicrophoneLevelLogger.csproj", "{234C689B-78E2-4073-A6BC-0A69BB177B1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrophoneLevelLogger", "MicrophoneLevelLogger\MicrophoneLevelLogger.csproj", "{234C689B-78E2-4073-A6BC-0A69BB177B1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

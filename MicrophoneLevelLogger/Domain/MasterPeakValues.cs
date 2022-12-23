@@ -2,12 +2,12 @@
 
 public class MasterPeakValues : IMasterPeakValues
 {
-    public MasterPeakValues(IMicrophone microphone, IReadOnlyList<float> peakValues)
+    public MasterPeakValues(IMicrophone microphone, IReadOnlyList<double> peakValues)
     {
         Microphone = microphone;
         PeakValues = peakValues;
     }
 
     public IMicrophone Microphone { get; }
-    public IReadOnlyList<float> PeakValues { get; }
+    public IReadOnlyList<double> PeakValues { get; }
 }
