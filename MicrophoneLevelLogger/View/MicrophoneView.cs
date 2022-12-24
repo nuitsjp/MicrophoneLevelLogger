@@ -58,9 +58,9 @@ public abstract class MicrophoneView : IMicrophoneView
         var microphones = (IMicrophones)state!;
         lock (this)
         {
-            for (int i = 0; i < microphones.Devices.Count; i++)
+            for (var i = 0; i < microphones.Devices.Count; i++)
             {
-                WaveInput? waveInput = microphones.Devices[i].LatestWaveInput!;
+                var waveInput = microphones.Devices[i].LatestWaveInput;
                 Console.WriteLine($"{i + 1} ={waveInput.MaximumDecibel:0.00} {GetBars(waveInput.MaximumDecibel)}");
             }
             Console.SetCursorPosition(0, Console.CursorTop - microphones.Devices.Count);

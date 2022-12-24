@@ -1,5 +1,4 @@
 ﻿using MicrophoneLevelLogger.Command;
-using MicrophoneLevelLogger.View;
 using Microsoft.Extensions.Hosting;
 
 namespace MicrophoneLevelLogger;

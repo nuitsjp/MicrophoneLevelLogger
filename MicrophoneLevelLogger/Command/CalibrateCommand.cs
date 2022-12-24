@@ -1,7 +1,5 @@
 ﻿using MicrophoneLevelLogger.Domain;
 using MicrophoneLevelLogger.View;
-using NAudio.CoreAudioApi;
-using System.Reflection.Emit;
 
 namespace MicrophoneLevelLogger.Command;
 

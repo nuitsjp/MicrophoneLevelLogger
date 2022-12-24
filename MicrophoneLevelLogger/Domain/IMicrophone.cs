@@ -1,6 +1,4 @@
-﻿using MicrophoneLevelLogger.Command;
-
-namespace MicrophoneLevelLogger.Domain;
+﻿namespace MicrophoneLevelLogger.Domain;
 
 public interface IMicrophone : IDisposable
 {

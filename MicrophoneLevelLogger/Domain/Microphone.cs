@@ -1,5 +1,4 @@
-﻿using MicrophoneLevelLogger.Command;
-using NAudio.CoreAudioApi;
+﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System.Buffers;
 
@@ -49,9 +48,9 @@ public class Microphone : IMicrophone
         var window = new FftSharp.Windows.Hanning();
         var windowed = window.Apply(_lastBuffer);
         var power = FftSharp.Transform.FFTpower(windowed);
-        double[] frequencies = FftSharp.Transform.FFTfreq(_waveInEvent.WaveFormat.SampleRate, power.Length);
+        var frequencies = FftSharp.Transform.FFTfreq(_waveInEvent.WaveFormat.SampleRate, power.Length);
         var decibelByFrequencies = new DecibelByFrequency[power.Length];
-        for (int i = 0; i < power.Length; i++)
+        for (var i = 0; i < power.Length; i++)
         {
             decibelByFrequencies[i] = new DecibelByFrequency(
                 frequencies[i],

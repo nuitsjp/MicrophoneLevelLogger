@@ -20,7 +20,7 @@ public class RecordCommand : ICommand
     public Task ExecuteAsync()
     {
         // すべてのマイクを取得する。
-        using IMicrophones microphones = _microphonesProvider.Resolve();
+        using var microphones = _microphonesProvider.Resolve();
 
         // 起動時情報を通知する。
         _view.NotifyMicrophonesInformation(microphones);

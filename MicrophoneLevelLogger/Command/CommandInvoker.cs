@@ -11,6 +11,7 @@ public class CommandInvoker : ICommandInvoker
     private readonly RecordCommand _recordCommand;
     private readonly MonitorVolumeCommand _monitorVolumeCommand;
     private readonly SetMaxInputLevelCommand _setMaxInputLevelCommand;
+    private readonly ExitCommand _exitCommand = new();
 
     public CommandInvoker(
         IMicrophonesProvider microphonesProvider,
@@ -40,11 +41,27 @@ public class CommandInvoker : ICommandInvoker
                 _monitorVolumeCommand,
                 _calibrateCommand,
                 _recordCommand,
-                _setMaxInputLevelCommand
+                _setMaxInputLevelCommand,
+                _exitCommand
             };
             var selected = _view.SelectCommand(commands.Select(x => x.Name));
+            if (selected == _exitCommand.Name)
+            {
+                break;
+            }
+
             var command = commands.Single(x => x.Name == selected);
             await command.ExecuteAsync();
+        }
+    }
+
+    private class ExitCommand : ICommand
+    {
+        public string Name => "Exit";
+
+        public Task ExecuteAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }
