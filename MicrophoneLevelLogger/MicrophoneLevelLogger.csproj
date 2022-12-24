@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -12,6 +12,7 @@
     <PackageReference Include="FluentTextTable" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
     <PackageReference Include="NAudio" Version="2.1.0" />
+    <PackageReference Include="NAudio.WinForms" Version="2.1.0" />
     <PackageReference Include="Sharprompt" Version="2.4.5" />
     <PackageReference Include="UnitGenerator" Version="1.4.10">
       <PrivateAssets>all</PrivateAssets>

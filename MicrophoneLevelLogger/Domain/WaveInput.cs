@@ -3,7 +3,7 @@
 public class WaveInput
 {
     public static readonly WaveInput Empty = 
-        new(new[] { new DecibelByFrequency(0, 0) });
+        new(new[] { new DecibelByFrequency(0, IMicrophone.MinDecibel) });
     public WaveInput(DecibelByFrequency[] decibelByFrequencies)
     {
         DecibelByFrequencies = decibelByFrequencies;

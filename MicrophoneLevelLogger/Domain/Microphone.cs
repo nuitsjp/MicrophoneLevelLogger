@@ -12,7 +12,6 @@ public class Microphone : IMicrophone
     private readonly MMDevice _mmDevice;
     private readonly WaveInEvent _waveInEvent;
     private double[]? _lastBuffer;
-    private readonly WasapiCapture _capture;
 
     private readonly List<double> _masterPeakBuffer = new();
 
@@ -28,7 +27,6 @@ public class Microphone : IMicrophone
             BufferMilliseconds = 125
         };
         _waveInEvent.DataAvailable += WaveInEventOnDataAvailable;
-        _capture = new WasapiCapture(_mmDevice);
         _timer = new Timer(OnElapsed, null, Timeout.InfiniteTimeSpan, SamplingRate);
     }
 
@@ -63,14 +61,23 @@ public class Microphone : IMicrophone
             );
         }
 
-        LatestWaveInput = new(decibelByFrequencies);
-        DataAvailable?.Invoke(this, LatestWaveInput);
+        try
+        {
+            var weighted = AWeighting.Instance.Filter(decibelByFrequencies);
+
+            LatestWaveInput = new(weighted);
+            DataAvailable?.Invoke(this, LatestWaveInput);
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception);
+            throw;
+        }
     }
 
     public void Dispose()
     {
         _mmDevice.DisposeQuiet();
-        _capture.DisposeQuiet();
         _timer.DisposeQuiet();
     }
 
@@ -88,7 +95,6 @@ public class Microphone : IMicrophone
 
     public Task ActivateAsync()
     {
-        _capture.StartRecording();
         _waveInEvent.StartRecording();
         return Task.CompletedTask;
     }
@@ -113,7 +119,6 @@ public class Microphone : IMicrophone
     public void Deactivate()
     {
         _waveInEvent.StopRecording();
-        _capture.StopRecording();
     }
 
     public override string ToString() => Name;
