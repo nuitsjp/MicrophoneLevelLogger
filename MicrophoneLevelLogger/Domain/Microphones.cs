@@ -58,25 +58,4 @@ public class Microphones : IMicrophones
             microphone.Deactivate();
         }
     }
-
-    /// <summary>
-    /// 基準となるマイクを決定する。
-    /// </summary>
-    /// <remarks>
-    /// マイクは音量をブーストできないものも多いため、基本的には入力レベルを下げて
-    /// もっとも入力レベルの小さいマイクに併せる必要があります。
-    /// そのため、
-    /// </remarks>
-    private IMicrophone SelectReference()
-    {
-        StartRecording();
-
-        Thread.Sleep(TimeSpan.FromSeconds(1));
-
-        var values = StopRecording();
-
-        return values
-            .MinBy(x => x.PeakValues.Min())!
-            .Microphone;
-    }
 }
