@@ -6,7 +6,9 @@ public interface IMicrophone : IDisposable
 
     event EventHandler<WaveInput> DataAvailable;
 
+    string Id { get; }
     string Name { get; }
+    int DeviceNumber { get; }
     WaveInput LatestWaveInput { get; }
     MasterVolumeLevelScalar MasterVolumeLevelScalar { get; set; }
     Task ActivateAsync();

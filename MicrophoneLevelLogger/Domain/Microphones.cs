@@ -1,4 +1,5 @@
 ﻿using NAudio.CoreAudioApi;
+using NAudio.Wave;
 
 namespace MicrophoneLevelLogger.Domain;
 
@@ -6,10 +7,35 @@ public class Microphones : IMicrophones
 {
     public Microphones()
     {
-        Devices = new MMDeviceEnumerator()
-            .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
-            .Select((x, index) => (IMicrophone)new Microphone(x, index))
-            .ToList();
+        using var enumerator = new MMDeviceEnumerator();
+        var mmDevices = enumerator
+                .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
+                .ToArray();
+        List<IMicrophone> devices = new();
+        try
+        {
+            for (int i = 0; i < WaveIn.DeviceCount; i++)
+            {
+                var capability = WaveIn.GetCapabilities(i);
+                var name = capability.ProductName;
+                var mmDevice = mmDevices.SingleOrDefault(x => x.FriendlyName == name);
+                if (mmDevice is not null)
+                {
+                    devices.Add(new Microphone(mmDevice.ID, name, i));
+                }
+
+            }
+
+            Devices = devices;
+        }
+        finally
+        {
+            foreach (var mmDevice in mmDevices)
+            {
+                mmDevice.DisposeQuiet();
+            }
+        }
+
     }
 
     public void Dispose()

@@ -1,6 +1,8 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System.Buffers;
+using System.Xml.Linq;
+using MMDeviceEnumerator = NAudio.CoreAudioApi.MMDeviceEnumerator;
 
 namespace MicrophoneLevelLogger.Domain;
 
@@ -8,7 +10,6 @@ public class Microphone : IMicrophone
 {
     private static readonly TimeSpan SamplingRate = TimeSpan.FromMilliseconds(50);
 
-    private readonly MMDevice _mmDevice;
     private readonly WaveInEvent _waveInEvent;
     private double[]? _lastBuffer;
 
@@ -16,9 +17,12 @@ public class Microphone : IMicrophone
 
     private readonly Timer _timer;
 
-    public Microphone(MMDevice mmDevice, int deviceNumber)
+    public Microphone(string id, string name, int deviceNumber)
     {
-        _mmDevice = mmDevice;
+        Id = id;
+        Name = name;
+        DeviceNumber = deviceNumber;
+
         _waveInEvent = new WaveInEvent
         {
             DeviceNumber = deviceNumber,
@@ -76,20 +80,35 @@ public class Microphone : IMicrophone
 
     public void Dispose()
     {
-        _mmDevice.DisposeQuiet();
         _timer.DisposeQuiet();
     }
 
 
     public event EventHandler<WaveInput>? DataAvailable;
 
-    public string Name => _mmDevice.FriendlyName;
+    public string Id { get; }
+    public string Name { get; }
+    public int DeviceNumber { get; }
     public WaveInput LatestWaveInput { get; private set; } = WaveInput.Empty;
 
     public MasterVolumeLevelScalar MasterVolumeLevelScalar
     {
-        get => (MasterVolumeLevelScalar)_mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
-        set => _mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar = (float)value;
+        get
+        {
+            using var mmDevice = GetMmDevice();
+            return (MasterVolumeLevelScalar) mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
+        }
+        set
+        {
+            var mmDevice = GetMmDevice();
+            mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar = (float) value;
+        }
+    }
+
+    private MMDevice GetMmDevice()
+    {
+        using var enumerator = new MMDeviceEnumerator();
+        return enumerator.GetDevice(Id);
     }
 
     public Task ActivateAsync()
