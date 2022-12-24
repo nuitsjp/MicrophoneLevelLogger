@@ -64,7 +64,7 @@ public class CalibrateCommand : ICommand
 
         // ターゲット側の入力レベルを少しずつ下げていきながら
         // リファレンスと同程度の音量になるように調整していく。
-        var high = 1f;
+        var high = 1d;
         for (; MasterVolumeLevelScalar.Minimum < target.MasterVolumeLevelScalar; target.MasterVolumeLevelScalar -= step)
         {
             // レコーディング開始

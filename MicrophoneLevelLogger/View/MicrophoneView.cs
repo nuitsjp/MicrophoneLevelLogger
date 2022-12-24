@@ -60,15 +60,22 @@ public abstract class MicrophoneView : IMicrophoneView
         {
             for (int i = 0; i < microphones.Devices.Count; i++)
             {
-                Console.WriteLine($"{i + 1} ={microphones.Devices[i].MasterPeakValue:0.00} {GetBars(microphones.Devices[i].MasterPeakValue)}");
+                WaveInput? waveInput = microphones.Devices[i].LatestWaveInput!;
+                Console.WriteLine($"{i + 1} ={waveInput.MaximumDecibel:0.00} {GetBars(waveInput.MaximumDecibel)}");
             }
             Console.SetCursorPosition(0, Console.CursorTop - microphones.Devices.Count);
         }
     }
 
-    private static string GetBars(double fraction, int barCount = 35)
+    private static readonly double MaxBarValue = IMicrophone.MinDecibel * -1;
+
+    private static string GetBars(double decibel, int barCount = 35)
     {
-        var barsOn = (int)(barCount * fraction);
+        var value = 
+            0 < decibel
+                ? MaxBarValue
+                : decibel + MaxBarValue;
+        var barsOn = (int)(value / MaxBarValue * barCount);
         var barsOff = barCount - barsOn;
         return new string('#', barsOn) + new string('-', barsOff);
     }

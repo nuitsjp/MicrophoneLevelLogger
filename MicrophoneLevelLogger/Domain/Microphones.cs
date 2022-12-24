@@ -1,4 +1,5 @@
 ﻿using NAudio.CoreAudioApi;
+using NAudio.Wave;
 
 namespace MicrophoneLevelLogger.Domain;
 
@@ -8,7 +9,7 @@ public class Microphones : IMicrophones
     {
         Devices = new MMDeviceEnumerator()
             .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
-            .Select(x => (IMicrophone)new Microphone(x))
+            .Select((x, index) => (IMicrophone)new Microphone(x, index))
             .ToList();
     }
 

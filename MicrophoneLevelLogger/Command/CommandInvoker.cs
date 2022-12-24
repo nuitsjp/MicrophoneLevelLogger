@@ -30,9 +30,9 @@ public class CommandInvoker : ICommandInvoker
 
     public async Task InvokeAsync()
     {
-        var microphones = _microphonesProvider.Resolve();
         while (true)
         {
+            var microphones = _microphonesProvider.Resolve();
             _view.NotifyMicrophonesInformation(microphones);
 
             var commands = new ICommand[]
