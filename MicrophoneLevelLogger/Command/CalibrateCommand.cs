@@ -27,6 +27,14 @@ public class CalibrateCommand : ICommand
         // リファレンスマイクを選択する
         var reference = _view.SelectReference(microphones);
 
+        // Recordingディレクトリを作成する
+        if (Directory.Exists(Name))
+        {
+            Directory.Delete(Name, true);
+        }
+
+        Directory.CreateDirectory(Name);
+
         // マイクを有効化する
         microphones.Activate();
 
@@ -50,7 +58,7 @@ public class CalibrateCommand : ICommand
         return Task.CompletedTask;
     }
 
-    private static void Calibrate(IMicrophone reference, IMicrophone target)
+    private void Calibrate(IMicrophone reference, IMicrophone target)
     {
         // ボリューム調整していくステップ
         MasterVolumeLevelScalar step = new(0.005f);
@@ -66,8 +74,8 @@ public class CalibrateCommand : ICommand
         for (; MasterVolumeLevelScalar.Minimum < target.MasterVolumeLevelScalar; target.MasterVolumeLevelScalar -= step)
         {
             // レコーディング開始
-            reference.StartRecording();
-            target.StartRecording();
+            reference.StartRecording(Name);
+            target.StartRecording(Name);
 
             Thread.Sleep(TimeSpan.FromMilliseconds(500));
 

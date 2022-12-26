@@ -12,6 +12,7 @@ public class Microphone : IMicrophone
 
     private readonly WaveInEvent _waveInEvent;
     private double[]? _lastBuffer;
+    private WaveFileWriter? _waveFileWriter;
 
     private readonly List<double> _masterPeakBuffer = new();
 
@@ -30,6 +31,7 @@ public class Microphone : IMicrophone
             BufferMilliseconds = 125
         };
         _waveInEvent.DataAvailable += WaveInEventOnDataAvailable;
+        _waveInEvent.RecordingStopped += WaveInEventOnRecordingStopped;
         _timer = new Timer(OnElapsed, null, Timeout.InfiniteTimeSpan, SamplingRate);
     }
 
@@ -38,6 +40,9 @@ public class Microphone : IMicrophone
 
     private void WaveInEventOnDataAvailable(object? sender, WaveInEventArgs e)
     {
+        // レコーディング中であればファイルに保存する
+        _waveFileWriter?.Write(e.Buffer, 0, e.BytesRecorded);
+
         var bytesPerSample = _waveInEvent.WaveFormat.BitsPerSample / 8;
         var samplesRecorded = e.BytesRecorded / bytesPerSample;
 
@@ -58,7 +63,7 @@ public class Microphone : IMicrophone
         {
             decibelByFrequencies[i] = new DecibelByFrequency(
                 frequencies[i],
-                power[i] < IMicrophone.MinDecibel 
+                power[i] < IMicrophone.MinDecibel
                     ? IMicrophone.MinDecibel
                     : power[i]
             );
@@ -76,6 +81,18 @@ public class Microphone : IMicrophone
             Console.WriteLine(exception);
             throw;
         }
+    }
+
+    private void WaveInEventOnRecordingStopped(object? sender, StoppedEventArgs e)
+    {
+        FinalizeWaveFile();
+    }
+
+    private void FinalizeWaveFile()
+    {
+        _waveFileWriter?.Flush();
+        _waveFileWriter?.Dispose();
+        _waveFileWriter = null;
     }
 
     public void Dispose()
@@ -117,11 +134,13 @@ public class Microphone : IMicrophone
         return Task.CompletedTask;
     }
 
-    public void StartRecording()
+    public void StartRecording(string path)
     {
         _masterPeakBuffer.Clear();
+        _waveFileWriter = new(Path.Combine(path, Name + ".wav"), _waveInEvent.WaveFormat);
         _timer.Change(TimeSpan.Zero, SamplingRate);
     }
+
 
     private void OnElapsed(object? state)
     {
@@ -130,12 +149,15 @@ public class Microphone : IMicrophone
 
     public IMasterPeakValues StopRecording()
     {
+        FinalizeWaveFile();
+
         _timer.Change(Timeout.InfiniteTimeSpan, SamplingRate);
         return new MasterPeakValues(this, _masterPeakBuffer.ToList());
     }
 
     public void Deactivate()
     {
+        StopRecording();
         _waveInEvent.StopRecording();
     }
 

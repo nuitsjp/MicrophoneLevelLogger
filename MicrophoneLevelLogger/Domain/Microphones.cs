@@ -5,6 +5,8 @@ namespace MicrophoneLevelLogger.Domain;
 
 public class Microphones : IMicrophones
 {
+    private const string RecordDirectoryName = "Record";
+
     public Microphones()
     {
         using var enumerator = new MMDeviceEnumerator();
@@ -18,7 +20,8 @@ public class Microphones : IMicrophones
             {
                 var capability = WaveIn.GetCapabilities(i);
                 var name = capability.ProductName;
-                var mmDevice = mmDevices.SingleOrDefault(x => x.FriendlyName == name);
+                // 名称が長いとWaveIn側の名前は途中までしか取得できないため、前方一致で判定する
+                var mmDevice = mmDevices.SingleOrDefault(x => x.FriendlyName.StartsWith(name));
                 if (mmDevice is not null)
                 {
                     devices.Add(new Microphone(mmDevice.ID, name, i));
@@ -63,9 +66,11 @@ public class Microphones : IMicrophones
 
     public void StartRecording()
     {
+        var saveDirectory = Path.Combine(RecordDirectoryName, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss"));
+        Directory.CreateDirectory(saveDirectory);
         foreach (var microphone in Devices)
         {
-            microphone.StartRecording();
+            microphone.StartRecording(saveDirectory);
         }
     }
 
@@ -82,6 +87,14 @@ public class Microphones : IMicrophones
         foreach (var microphone in Devices)
         {
             microphone.Deactivate();
+        }
+    }
+
+    public void DeleteRecordFiles()
+    {
+        if (Directory.Exists(RecordDirectoryName))
+        {
+            Directory.Delete(RecordDirectoryName, true);
         }
     }
 }

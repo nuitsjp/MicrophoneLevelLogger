@@ -26,6 +26,8 @@ var host = Host.CreateDefaultBuilder(args)
 
         services.AddTransient<MonitorVolumeCommand>();
         services.AddTransient<IMonitorVolumeView, MonitorVolumeView>();
+
+        services.AddTransient<DeleteRecordCommand>();
     })
     .ConfigureLogging((_, builder) =>
     {
