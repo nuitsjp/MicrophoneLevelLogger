@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-IHost host = Host.CreateDefaultBuilder(args)
+var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddHostedService<Worker>();
@@ -26,8 +26,10 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddTransient<MonitorVolumeCommand>();
         services.AddTransient<IMonitorVolumeView, MonitorVolumeView>();
+
+        services.AddTransient<DeleteRecordCommand>();
     })
-    .ConfigureLogging((context, builder) =>
+    .ConfigureLogging((_, builder) =>
     {
         builder.ClearProviders();
     })

@@ -5,12 +5,40 @@ namespace MicrophoneLevelLogger.Domain;
 
 public class Microphones : IMicrophones
 {
+    private const string RecordDirectoryName = "Record";
+
     public Microphones()
     {
-        Devices = new MMDeviceEnumerator()
-            .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
-            .Select((x, index) => (IMicrophone)new Microphone(x, index))
-            .ToList();
+        using var enumerator = new MMDeviceEnumerator();
+        var mmDevices = enumerator
+                .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
+                .ToArray();
+        List<IMicrophone> devices = new();
+        try
+        {
+            for (int i = 0; i < WaveIn.DeviceCount; i++)
+            {
+                var capability = WaveIn.GetCapabilities(i);
+                var name = capability.ProductName;
+                // 名称が長いとWaveIn側の名前は途中までしか取得できないため、前方一致で判定する
+                var mmDevice = mmDevices.SingleOrDefault(x => x.FriendlyName.StartsWith(name));
+                if (mmDevice is not null)
+                {
+                    devices.Add(new Microphone(mmDevice.ID, name, i));
+                }
+
+            }
+
+            Devices = devices;
+        }
+        finally
+        {
+            foreach (var mmDevice in mmDevices)
+            {
+                mmDevice.DisposeQuiet();
+            }
+        }
+
     }
 
     public void Dispose()
@@ -38,9 +66,11 @@ public class Microphones : IMicrophones
 
     public void StartRecording()
     {
+        var saveDirectory = Path.Combine(RecordDirectoryName, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss"));
+        Directory.CreateDirectory(saveDirectory);
         foreach (var microphone in Devices)
         {
-            microphone.StartRecording();
+            microphone.StartRecording(saveDirectory);
         }
     }
 
@@ -60,24 +90,11 @@ public class Microphones : IMicrophones
         }
     }
 
-    /// <summary>
-    /// 基準となるマイクを決定する。
-    /// </summary>
-    /// <remarks>
-    /// マイクは音量をブーストできないものも多いため、基本的には入力レベルを下げて
-    /// もっとも入力レベルの小さいマイクに併せる必要があります。
-    /// そのため、
-    /// </remarks>
-    private IMicrophone SelectReference()
+    public void DeleteRecordFiles()
     {
-        StartRecording();
-
-        Thread.Sleep(TimeSpan.FromSeconds(1));
-
-        var values = StopRecording();
-
-        return values
-            .MinBy(x => x.PeakValues.Min())!
-            .Microphone;
+        if (Directory.Exists(RecordDirectoryName))
+        {
+            Directory.Delete(RecordDirectoryName, true);
+        }
     }
 }

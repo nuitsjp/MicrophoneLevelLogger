@@ -7,5 +7,5 @@ public interface IMicrophones : IDisposable
     void StartRecording();
     IEnumerable<IMasterPeakValues> StopRecording();
     void Deactivate();
-
+    void DeleteRecordFiles();
 }

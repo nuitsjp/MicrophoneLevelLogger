@@ -1,6 +1,4 @@
-﻿using MicrophoneLevelLogger.Command;
-
-namespace MicrophoneLevelLogger.Domain;
+﻿namespace MicrophoneLevelLogger.Domain;
 
 public interface IMicrophone : IDisposable
 {
@@ -8,11 +6,13 @@ public interface IMicrophone : IDisposable
 
     event EventHandler<WaveInput> DataAvailable;
 
+    string Id { get; }
     string Name { get; }
+    int DeviceNumber { get; }
     WaveInput LatestWaveInput { get; }
     MasterVolumeLevelScalar MasterVolumeLevelScalar { get; set; }
     Task ActivateAsync();
-    void StartRecording();
+    void StartRecording(string path);
     IMasterPeakValues StopRecording();
     void Deactivate();
 }

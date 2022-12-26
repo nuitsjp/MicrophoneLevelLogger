@@ -11,6 +11,8 @@ public class CommandInvoker : ICommandInvoker
     private readonly RecordCommand _recordCommand;
     private readonly MonitorVolumeCommand _monitorVolumeCommand;
     private readonly SetMaxInputLevelCommand _setMaxInputLevelCommand;
+    private readonly DeleteRecordCommand _deleteRecordCommand;
+    private readonly ExitCommand _exitCommand = new();
 
     public CommandInvoker(
         IMicrophonesProvider microphonesProvider,
@@ -18,7 +20,8 @@ public class CommandInvoker : ICommandInvoker
         CalibrateCommand calibrateCommand, 
         RecordCommand recordCommand, 
         SetMaxInputLevelCommand setMaxInputLevelCommand, 
-        MonitorVolumeCommand monitorVolumeCommand)
+        MonitorVolumeCommand monitorVolumeCommand, 
+        DeleteRecordCommand deleteRecordCommand)
     {
         _microphonesProvider = microphonesProvider;
         _view = view;
@@ -26,6 +29,7 @@ public class CommandInvoker : ICommandInvoker
         _recordCommand = recordCommand;
         _setMaxInputLevelCommand = setMaxInputLevelCommand;
         _monitorVolumeCommand = monitorVolumeCommand;
+        _deleteRecordCommand = deleteRecordCommand;
     }
 
     public async Task InvokeAsync()
@@ -40,11 +44,28 @@ public class CommandInvoker : ICommandInvoker
                 _monitorVolumeCommand,
                 _calibrateCommand,
                 _recordCommand,
-                _setMaxInputLevelCommand
+                _setMaxInputLevelCommand,
+                _deleteRecordCommand,
+                _exitCommand
             };
             var selected = _view.SelectCommand(commands.Select(x => x.Name));
+            if (selected == _exitCommand.Name)
+            {
+                break;
+            }
+
             var command = commands.Single(x => x.Name == selected);
             await command.ExecuteAsync();
+        }
+    }
+
+    private class ExitCommand : ICommand
+    {
+        public string Name => "Exit";
+
+        public Task ExecuteAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

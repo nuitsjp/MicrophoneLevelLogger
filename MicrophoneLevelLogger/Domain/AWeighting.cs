@@ -52,14 +52,13 @@ public class AWeighting
 
     public DecibelByFrequency[] Filter(DecibelByFrequency[] decibelByFrequencies)
     {
-        DecibelByFrequency[] result = new DecibelByFrequency[Weights.Length];
+        var result = new DecibelByFrequency[Weights.Length];
 
         var weightIndex = 0;
-        Weight currentWeight = Weights[weightIndex];
-        double maxDecibel = double.MinValue;
-        for (int i = 0; i < decibelByFrequencies.Length; i++)
+        var currentWeight = Weights[weightIndex];
+        var maxDecibel = double.MinValue;
+        foreach (var currentByFrequency in decibelByFrequencies)
         {
-            DecibelByFrequency currentByFrequency = decibelByFrequencies[i];
             if (currentByFrequency.Frequency <= currentWeight.Frequency)
             {
                 // 周波数帯域内であった場合、最大値をチェックして必要に応じて更新する
@@ -79,7 +78,7 @@ public class AWeighting
                     break;
                 }
                 currentWeight = Weights[weightIndex];
-                maxDecibel = Double.MinValue;
+                maxDecibel = double.MinValue;
             }
         }
 

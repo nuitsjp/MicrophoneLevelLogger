@@ -1,7 +1,8 @@
-﻿using MicrophoneLevelLogger.Command;
-using NAudio.CoreAudioApi;
+﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System.Buffers;
+using System.Xml.Linq;
+using MMDeviceEnumerator = NAudio.CoreAudioApi.MMDeviceEnumerator;
 
 namespace MicrophoneLevelLogger.Domain;
 
@@ -9,17 +10,20 @@ public class Microphone : IMicrophone
 {
     private static readonly TimeSpan SamplingRate = TimeSpan.FromMilliseconds(50);
 
-    private readonly MMDevice _mmDevice;
     private readonly WaveInEvent _waveInEvent;
     private double[]? _lastBuffer;
+    private WaveFileWriter? _waveFileWriter;
 
     private readonly List<double> _masterPeakBuffer = new();
 
     private readonly Timer _timer;
 
-    public Microphone(MMDevice mmDevice, int deviceNumber)
+    public Microphone(string id, string name, int deviceNumber)
     {
-        _mmDevice = mmDevice;
+        Id = id;
+        Name = name;
+        DeviceNumber = deviceNumber;
+
         _waveInEvent = new WaveInEvent
         {
             DeviceNumber = deviceNumber,
@@ -27,6 +31,7 @@ public class Microphone : IMicrophone
             BufferMilliseconds = 125
         };
         _waveInEvent.DataAvailable += WaveInEventOnDataAvailable;
+        _waveInEvent.RecordingStopped += WaveInEventOnRecordingStopped;
         _timer = new Timer(OnElapsed, null, Timeout.InfiniteTimeSpan, SamplingRate);
     }
 
@@ -35,6 +40,9 @@ public class Microphone : IMicrophone
 
     private void WaveInEventOnDataAvailable(object? sender, WaveInEventArgs e)
     {
+        // レコーディング中であればファイルに保存する
+        _waveFileWriter?.Write(e.Buffer, 0, e.BytesRecorded);
+
         var bytesPerSample = _waveInEvent.WaveFormat.BitsPerSample / 8;
         var samplesRecorded = e.BytesRecorded / bytesPerSample;
 
@@ -49,13 +57,13 @@ public class Microphone : IMicrophone
         var window = new FftSharp.Windows.Hanning();
         var windowed = window.Apply(_lastBuffer);
         var power = FftSharp.Transform.FFTpower(windowed);
-        double[] frequencies = FftSharp.Transform.FFTfreq(_waveInEvent.WaveFormat.SampleRate, power.Length);
+        var frequencies = FftSharp.Transform.FFTfreq(_waveInEvent.WaveFormat.SampleRate, power.Length);
         var decibelByFrequencies = new DecibelByFrequency[power.Length];
-        for (int i = 0; i < power.Length; i++)
+        for (var i = 0; i < power.Length; i++)
         {
             decibelByFrequencies[i] = new DecibelByFrequency(
                 frequencies[i],
-                power[i] < IMicrophone.MinDecibel 
+                power[i] < IMicrophone.MinDecibel
                     ? IMicrophone.MinDecibel
                     : power[i]
             );
@@ -75,22 +83,49 @@ public class Microphone : IMicrophone
         }
     }
 
+    private void WaveInEventOnRecordingStopped(object? sender, StoppedEventArgs e)
+    {
+        FinalizeWaveFile();
+    }
+
+    private void FinalizeWaveFile()
+    {
+        _waveFileWriter?.Flush();
+        _waveFileWriter?.Dispose();
+        _waveFileWriter = null;
+    }
+
     public void Dispose()
     {
-        _mmDevice.DisposeQuiet();
         _timer.DisposeQuiet();
     }
 
 
     public event EventHandler<WaveInput>? DataAvailable;
 
-    public string Name => _mmDevice.FriendlyName;
+    public string Id { get; }
+    public string Name { get; }
+    public int DeviceNumber { get; }
     public WaveInput LatestWaveInput { get; private set; } = WaveInput.Empty;
 
     public MasterVolumeLevelScalar MasterVolumeLevelScalar
     {
-        get => (MasterVolumeLevelScalar)_mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
-        set => _mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar = (float)value;
+        get
+        {
+            using var mmDevice = GetMmDevice();
+            return (MasterVolumeLevelScalar) mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
+        }
+        set
+        {
+            var mmDevice = GetMmDevice();
+            mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar = (float) value;
+        }
+    }
+
+    private MMDevice GetMmDevice()
+    {
+        using var enumerator = new MMDeviceEnumerator();
+        return enumerator.GetDevice(Id);
     }
 
     public Task ActivateAsync()
@@ -99,11 +134,13 @@ public class Microphone : IMicrophone
         return Task.CompletedTask;
     }
 
-    public void StartRecording()
+    public void StartRecording(string path)
     {
         _masterPeakBuffer.Clear();
+        _waveFileWriter = new(Path.Combine(path, Name + ".wav"), _waveInEvent.WaveFormat);
         _timer.Change(TimeSpan.Zero, SamplingRate);
     }
+
 
     private void OnElapsed(object? state)
     {
@@ -112,12 +149,15 @@ public class Microphone : IMicrophone
 
     public IMasterPeakValues StopRecording()
     {
+        FinalizeWaveFile();
+
         _timer.Change(Timeout.InfiniteTimeSpan, SamplingRate);
         return new MasterPeakValues(this, _masterPeakBuffer.ToList());
     }
 
     public void Deactivate()
     {
+        StopRecording();
         _waveInEvent.StopRecording();
     }
 
