@@ -4,6 +4,8 @@ public interface IMicrophone : IDisposable
 {
     public const double MinDecibel = -84;
 
+    public const int SamplingMilliseconds = 125;
+
     event EventHandler<WaveInput> DataAvailable;
 
     string Id { get; }
