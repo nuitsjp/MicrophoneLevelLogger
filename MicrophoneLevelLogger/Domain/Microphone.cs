@@ -26,7 +26,7 @@ public class Microphone : IMicrophone
         {
             DeviceNumber = deviceNumber,
             WaveFormat = new WaveFormat(rate: 48_000, bits: 16, channels: 1),
-            BufferMilliseconds = 125
+            BufferMilliseconds = IMicrophone.SamplingMilliseconds
         };
         _waveInEvent.DataAvailable += WaveInEventOnDataAvailable;
         _waveInEvent.RecordingStopped += WaveInEventOnRecordingStopped;
