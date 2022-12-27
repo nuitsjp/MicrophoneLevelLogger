@@ -10,4 +10,6 @@ public readonly struct DecibelByFrequency
         Frequency = frequency;
         Decibel = decibel;
     }
+
+    public override string ToString() => $"Frequency={Frequency}, Decibel={Decibel}";
 }
