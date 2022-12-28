@@ -1,5 +1,4 @@
 ﻿using MicrophoneLevelLogger.Domain;
-using MicrophoneLevelLogger.View;
 
 namespace MicrophoneLevelLogger.Command;
 
@@ -14,7 +13,7 @@ public class MonitorVolumeCommand : ICommand
         _view = view;
     }
 
-    public string Name => "Monitor microphone input volume";
+    public string Name => "Monitor     : マイクの入力をモニターする。データの保存は行わない。";
 
     public Task ExecuteAsync()
     {

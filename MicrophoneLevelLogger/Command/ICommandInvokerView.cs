@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.View;
+﻿namespace MicrophoneLevelLogger.Command;
 
 public interface ICommandInvokerView : IMicrophoneView
 {

@@ -1,4 +1,6 @@
-﻿namespace MicrophoneLevelLogger.View;
+﻿using MicrophoneLevelLogger.Command;
+
+namespace MicrophoneLevelLogger.View;
 
 public class MonitorVolumeView : MicrophoneView, IMonitorVolumeView
 {
