@@ -1,4 +1,5 @@
-﻿using MicrophoneLevelLogger.Domain;
+﻿using System.Diagnostics;
+using MicrophoneLevelLogger.Domain;
 using MicrophoneLevelLogger.View;
 
 namespace MicrophoneLevelLogger.Command;
@@ -7,6 +8,7 @@ public class RecordCommand : ICommand
 {
     private readonly IMicrophonesProvider _microphonesProvider;
     private readonly IRecordView _view;
+    private bool _isStopped;
 
     public RecordCommand(IMicrophonesProvider microphonesProvider, IRecordView view)
     {
@@ -34,7 +36,34 @@ public class RecordCommand : ICommand
         // 画面に入力レベルを通知する。
         _view.StartNotifyMasterPeakValue(microphones);
 
+        using var writer = File.CreateText("Record\\out.csv");
+        
+        writer.Write("時刻");
+        foreach (var microphone in microphones.Devices)
+        {
+            writer.Write(",");
+            writer.Write(microphone.Name);
+        }
+        writer.WriteLine();
+
+
+        Task.Run(() =>
+        {
+            while (!_isStopped)
+            {
+                writer.Write($"{DateTime.Now:yyyy/MM/dd hh:mm:ss.fff}");
+                foreach (var microphone in microphones.Devices)
+                {
+                    writer.Write(",");
+                    writer.Write(microphone.LatestWaveInput.MaximumDecibel);
+                }
+                writer.WriteLine();
+                Thread.Sleep(IMicrophone.SamplingMilliseconds);
+            }
+        });
+
         Console.ReadLine();
+        _isStopped = true;
 
         // 画面の入力レベル通知を停止する。
         _view.StopNotifyMasterPeakValue();
