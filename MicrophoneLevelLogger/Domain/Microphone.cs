@@ -8,8 +8,6 @@ namespace MicrophoneLevelLogger.Domain;
 
 public class Microphone : IMicrophone
 {
-    private static readonly TimeSpan SamplingRate = TimeSpan.FromMilliseconds(50);
-
     private readonly WaveInEvent _waveInEvent;
     private double[]? _lastBuffer;
     private WaveFileWriter? _waveFileWriter;
@@ -102,6 +100,11 @@ public class Microphone : IMicrophone
     public void Dispose()
     {
         _waveInEvent.DisposeQuiet();
+        if (_lastBuffer is not null)
+        {
+            ArrayPool<double>.Shared.Return(_lastBuffer, true);
+            _lastBuffer = null;
+        }
     }
 
 
