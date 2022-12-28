@@ -4,18 +4,13 @@ namespace MicrophoneLevelLogger.Command;
 
 public class DeleteRecordCommand : ICommand
 {
-    private readonly IMicrophonesProvider _provider;
-
-    public DeleteRecordCommand(IMicrophonesProvider provider)
-    {
-        _provider = provider;
-    }
-
-    public string Name => "Delete record files";
+    public string Name => "Delete      : Recodeで保存したデータをすべて削除する。";
     public Task ExecuteAsync()
     {
-        using var microphones = _provider.Resolve();
-        microphones.DeleteRecordFiles();
+        if (Directory.Exists(RecordCommand.RecordDirectoryName))
+        {
+            Directory.Delete(RecordCommand.RecordDirectoryName, true);
+        }
         return Task.CompletedTask;
     }
 }

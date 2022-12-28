@@ -11,7 +11,7 @@ public class SetMaxInputLevelCommand : ICommand
         _microphonesProvider = microphonesProvider;
     }
 
-    public string Name => "Set microphone input level to maximum";
+    public string Name => "Set Maximum : マイクを入力レベルを最大に変更する。";
 
     public Task ExecuteAsync()
     {

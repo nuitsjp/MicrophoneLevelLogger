@@ -1,5 +1,4 @@
 ﻿using MicrophoneLevelLogger.Domain;
-using MicrophoneLevelLogger.View;
 
 namespace MicrophoneLevelLogger.Command;
 
@@ -61,7 +60,7 @@ public class CommandInvoker : ICommandInvoker
 
     private class ExitCommand : ICommand
     {
-        public string Name => "Exit";
+        public string Name => "Exit        : 終了する。";
 
         public Task ExecuteAsync()
         {

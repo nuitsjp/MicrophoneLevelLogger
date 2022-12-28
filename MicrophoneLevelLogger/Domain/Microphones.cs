@@ -5,8 +5,6 @@ namespace MicrophoneLevelLogger.Domain;
 
 public class Microphones : IMicrophones
 {
-    private const string RecordDirectoryName = "Record";
-
     public Microphones()
     {
         using var enumerator = new MMDeviceEnumerator();
@@ -24,7 +22,7 @@ public class Microphones : IMicrophones
                 var mmDevice = mmDevices.SingleOrDefault(x => x.FriendlyName.StartsWith(name));
                 if (mmDevice is not null)
                 {
-                    devices.Add(new Microphone(mmDevice.ID, name, i));
+                    devices.Add(new Microphone(mmDevice.ID, mmDevice.FriendlyName, i));
                 }
 
             }
@@ -64,13 +62,11 @@ public class Microphones : IMicrophones
         Task.WaitAll(tasks.ToArray());
     }
 
-    public void StartRecording()
+    public void StartRecording(string path)
     {
-        var saveDirectory = Path.Combine(RecordDirectoryName, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss"));
-        Directory.CreateDirectory(saveDirectory);
         foreach (var microphone in Devices)
         {
-            microphone.StartRecording(saveDirectory);
+            microphone.StartRecording(path);
         }
     }
 
@@ -87,14 +83,6 @@ public class Microphones : IMicrophones
         foreach (var microphone in Devices)
         {
             microphone.Deactivate();
-        }
-    }
-
-    public void DeleteRecordFiles()
-    {
-        if (Directory.Exists(RecordDirectoryName))
-        {
-            Directory.Delete(RecordDirectoryName, true);
         }
     }
 }

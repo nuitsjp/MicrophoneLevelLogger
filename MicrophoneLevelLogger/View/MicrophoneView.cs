@@ -1,4 +1,5 @@
 ﻿using FluentTextTable;
+using MicrophoneLevelLogger.Command;
 using MicrophoneLevelLogger.Domain;
 
 namespace MicrophoneLevelLogger.View;

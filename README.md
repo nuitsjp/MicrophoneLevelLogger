@@ -56,6 +56,12 @@ C# TokyoのLT枠で実施
   - 
 - Windowsのマイクの入力値を一定間隔レコーディングして、平均値を求める
 
+# 測定準備
+
+1. [オフィスの環境音](https://sounddictionary.info/mp3/ambient/busy-office-1.mp3)をダウンロードし、55dB程度に調整する
+2. 「吾輩は猫である.wav」を65dB程度に調整する
+
+
 # 隣の人の音声
 
 [VOICEVOX](https://voicevox.hiroshiba.jp/)の剣崎雌雄さんボイスで、「吾輩は猫である」の読み上げを利用。

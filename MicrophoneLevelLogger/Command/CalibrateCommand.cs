@@ -1,5 +1,4 @@
 ﻿using MicrophoneLevelLogger.Domain;
-using MicrophoneLevelLogger.View;
 
 namespace MicrophoneLevelLogger.Command;
 
@@ -14,7 +13,7 @@ public class CalibrateCommand : ICommand
         _view = view;
     }
 
-    public string Name => "Calibrate";
+    public string Name => "Calibrate   : 指定のマイクの入力レベルと同等となるように調整する。";
 
     public Task ExecuteAsync()
     {
