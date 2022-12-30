@@ -13,7 +13,7 @@ public class CalibrateCommand : ICommand
         _view = view;
     }
 
-    public string Name => "Calibrate   : 指定のマイクの入力レベルと同等となるように調整する。";
+    public string Name => "Calibrate";
 
     public Task ExecuteAsync()
     {

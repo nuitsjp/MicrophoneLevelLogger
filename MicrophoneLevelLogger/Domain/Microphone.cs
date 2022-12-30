@@ -35,8 +35,11 @@ public class Microphone : IMicrophone
 
     private void WaveInEventOnDataAvailable(object? sender, WaveInEventArgs e)
     {
-        // レコーディング中であればファイルに保存する
-        _waveFileWriter?.Write(e.Buffer, 0, e.BytesRecorded);
+        lock (this)
+        {
+            // レコーディング中であればファイルに保存する
+            _waveFileWriter?.Write(e.Buffer, 0, e.BytesRecorded);
+        }
 
         var bytesPerSample = _waveInEvent.WaveFormat.BitsPerSample / 8;
         var samplesRecorded = e.BytesRecorded / bytesPerSample;
@@ -92,14 +95,17 @@ public class Microphone : IMicrophone
 
     private void FinalizeWaveFile()
     {
-        _waveFileWriter?.Flush();
-        _waveFileWriter?.Dispose();
-        _waveFileWriter = null;
+        lock (this)
+        {
+            _waveFileWriter?.Flush();
+            _waveFileWriter?.Dispose();
+            _waveFileWriter = null;
+        }
     }
 
     public void Dispose()
     {
-        _waveInEvent.DisposeQuiet();
+        FinalizeWaveFile();
         if (_lastBuffer is not null)
         {
             ArrayPool<double>.Shared.Return(_lastBuffer, true);
