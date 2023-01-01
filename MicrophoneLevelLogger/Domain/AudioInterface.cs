@@ -3,9 +3,9 @@ using NAudio.Wave;
 
 namespace MicrophoneLevelLogger.Domain;
 
-public class Microphones : IMicrophones
+public class AudioInterface : IAudioInterface
 {
-    public Microphones()
+    public AudioInterface()
     {
         using var enumerator = new MMDeviceEnumerator();
         var mmDevices = enumerator
@@ -27,7 +27,7 @@ public class Microphones : IMicrophones
 
             }
 
-            Devices = devices;
+            Microphones = devices;
         }
         finally
         {
@@ -41,7 +41,7 @@ public class Microphones : IMicrophones
 
     public void Dispose()
     {
-        foreach (var microphone in Devices)
+        foreach (var microphone in Microphones)
         {
             try
             {
@@ -54,17 +54,17 @@ public class Microphones : IMicrophones
         }
     }
 
-    public IReadOnlyList<IMicrophone> Devices { get; }
-    public void Activate()
+    public IReadOnlyList<IMicrophone> Microphones { get; }
+    public void ActivateMicrophones()
     {
-        var tasks = Devices
+        var tasks = Microphones
             .Select(x => x.ActivateAsync());
         Task.WaitAll(tasks.ToArray());
     }
 
     public void StartRecording(string path)
     {
-        foreach (var microphone in Devices)
+        foreach (var microphone in Microphones)
         {
             microphone.StartRecording(path);
         }
@@ -72,15 +72,15 @@ public class Microphones : IMicrophones
 
     public IEnumerable<IMasterPeakValues> StopRecording()
     {
-        foreach (var microphone in Devices)
+        foreach (var microphone in Microphones)
         {
             yield return microphone.StopRecording();
         }
     }
 
-    public void Deactivate()
+    public void DeactivateMicrophones()
     {
-        foreach (var microphone in Devices)
+        foreach (var microphone in Microphones)
         {
             microphone.Deactivate();
         }

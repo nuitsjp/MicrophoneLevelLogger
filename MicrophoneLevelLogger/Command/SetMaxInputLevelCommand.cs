@@ -15,7 +15,7 @@ public class SetMaxInputLevelCommand : ICommand
 
     public Task ExecuteAsync()
     {
-        foreach (var microphone in _microphonesProvider.Resolve().Devices)
+        foreach (var microphone in _microphonesProvider.Resolve().Microphones)
         {
             microphone.MasterVolumeLevelScalar = MasterVolumeLevelScalar.Maximum;
         }

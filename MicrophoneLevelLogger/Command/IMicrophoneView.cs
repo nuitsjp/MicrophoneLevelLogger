@@ -4,7 +4,7 @@ namespace MicrophoneLevelLogger.Command;
 
 public interface IMicrophoneView
 {
-    void NotifyMicrophonesInformation(IMicrophones microphones);
-    void StartNotifyMasterPeakValue(IMicrophones microphones);
+    void NotifyMicrophonesInformation(IAudioInterface audioInterface);
+    void StartNotifyMasterPeakValue(IAudioInterface audioInterface);
     void StopNotifyMasterPeakValue();
 }

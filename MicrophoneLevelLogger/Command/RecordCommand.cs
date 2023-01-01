@@ -12,12 +12,12 @@ public class RecordCommand : ICommand
     public const string RecordDirectoryName = "Record";
 
     private readonly IRecordView _view;
-    private readonly IMicrophones _microphones;
+    private readonly IAudioInterface _audioInterface;
 
     public RecordCommand(IMicrophonesProvider microphonesProvider, IRecordView view)
     {
         _view = view;
-        _microphones = microphonesProvider.Resolve();
+        _audioInterface = microphonesProvider.Resolve();
     }
 
     public string Name => "Record      : マイクの入力をキャプチャーし保存する。";
@@ -26,19 +26,19 @@ public class RecordCommand : ICommand
     public Task ExecuteAsync()
     {
         // 起動時情報を通知する。
-        _view.NotifyMicrophonesInformation(_microphones);
+        _view.NotifyMicrophonesInformation(_audioInterface);
 
         // マイクを有効化する
-        _microphones.Activate();
+        _audioInterface.ActivateMicrophones();
 
         var saveDirectory = Path.Combine(RecordDirectoryName, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss"));
         Directory.CreateDirectory(saveDirectory);
 
         // キャプチャーを開始する。
-        _microphones.StartRecording(saveDirectory);
+        _audioInterface.StartRecording(saveDirectory);
 
         // 画面に入力レベルを通知する。
-        _view.StartNotifyMasterPeakValue(_microphones);
+        _view.StartNotifyMasterPeakValue(_audioInterface);
 
         // CSVへ出力を開始する。
         CancellationTokenSource cancellationTokenSource = new();
@@ -54,10 +54,10 @@ public class RecordCommand : ICommand
         _view.StopNotifyMasterPeakValue();
 
         // キャプチャーを停止する。
-        var peakValues = _microphones.StopRecording();
+        var peakValues = _audioInterface.StopRecording();
 
         // マイクを無効化する。
-        _microphones.Deactivate();
+        _audioInterface.DeactivateMicrophones();
 
         // 最小値、平均値、最大値をテキストファイルに出力する。
         var results = peakValues
@@ -82,7 +82,7 @@ public class RecordCommand : ICommand
             await using var writer = File.CreateText(Path.Combine(saveDirectory, "detail.csv"));
 
             await writer.WriteAsync("時刻");
-            foreach (var microphone in _microphones.Devices)
+            foreach (var microphone in _audioInterface.Microphones)
             {
                 await writer.WriteAsync(",");
                 await writer.WriteAsync(microphone.Name);
@@ -92,7 +92,7 @@ public class RecordCommand : ICommand
             while (token.IsCancellationRequested is false)
             {
                 await writer.WriteAsync($"{DateTime.Now:yyyy/MM/dd hh:mm:ss.fff}");
-                foreach (var microphone in _microphones.Devices)
+                foreach (var microphone in _audioInterface.Microphones)
                 {
                     await writer.WriteAsync(",");
                     writer.Write(microphone.LatestWaveInput.MaximumDecibel);

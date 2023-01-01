@@ -2,5 +2,5 @@
 
 public interface IMicrophonesProvider
 {
-    IMicrophones Resolve();
+    IAudioInterface Resolve();
 }

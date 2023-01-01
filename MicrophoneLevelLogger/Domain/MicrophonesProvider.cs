@@ -2,6 +2,6 @@
 
 public class MicrophonesProvider : IMicrophonesProvider
 {
-    public IMicrophones Resolve() =>
-        new Microphones();
+    public IAudioInterface Resolve() =>
+        new AudioInterface();
 }

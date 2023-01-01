@@ -35,13 +35,13 @@ public class CalibrateCommand : ICommand
         Directory.CreateDirectory(Name);
 
         // マイクを有効化する
-        microphones.Activate();
+        microphones.ActivateMicrophones();
 
         // 画面に入力レベルを通知する。
         _view.StartNotifyMasterPeakValue(microphones);
 
         // マイクレベルを順番にキャリブレーションする
-        foreach (var microphone in microphones.Devices.Where(x => x != reference))
+        foreach (var microphone in microphones.Microphones.Where(x => x != reference))
         {
             Calibrate(reference, microphone);
         }
@@ -52,7 +52,7 @@ public class CalibrateCommand : ICommand
         _view.NotifyCalibrated(microphones);
 
         // マイクを無効化する
-        microphones.Deactivate();
+        microphones.DeactivateMicrophones();
 
         return Task.CompletedTask;
     }

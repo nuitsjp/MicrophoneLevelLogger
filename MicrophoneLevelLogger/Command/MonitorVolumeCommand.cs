@@ -19,7 +19,7 @@ public class MonitorVolumeCommand : ICommand
     {
         using var microphones = _microphonesProvider.Resolve();
 
-        microphones.Activate();
+        microphones.ActivateMicrophones();
         try
         {
             _view.NotifyDetailMessage();
@@ -33,7 +33,7 @@ public class MonitorVolumeCommand : ICommand
         }
         finally
         {
-            microphones.Deactivate();
+            microphones.DeactivateMicrophones();
         }
     }
 }

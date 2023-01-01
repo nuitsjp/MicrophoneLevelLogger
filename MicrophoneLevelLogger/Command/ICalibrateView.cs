@@ -4,6 +4,6 @@ namespace MicrophoneLevelLogger.Command;
 
 public interface ICalibrateView : IMicrophoneView
 {
-    IMicrophone SelectReference(IMicrophones microphones);
-    void NotifyCalibrated(IMicrophones microphones);
+    IMicrophone SelectReference(IAudioInterface audioInterface);
+    void NotifyCalibrated(IAudioInterface audioInterface);
 }

@@ -13,10 +13,10 @@ public abstract class MicrophoneView : IMicrophoneView
 
     private Timer? _timer;
 
-    public void NotifyMicrophonesInformation(IMicrophones microphones)
+    public void NotifyMicrophonesInformation(IAudioInterface audioInterface)
     {
-        var infos = microphones
-            .Devices
+        var infos = audioInterface
+            .Microphones
             .Select((x, index) => new MicrophoneInfo(index + 1, x.Name, x.MasterVolumeLevelScalar))
             .ToList();
         Build
@@ -42,9 +42,9 @@ public abstract class MicrophoneView : IMicrophoneView
         public string Name { get; }
         public MasterVolumeLevelScalar InputLevel { get; }
     }
-    public void StartNotifyMasterPeakValue(IMicrophones microphones)
+    public void StartNotifyMasterPeakValue(IAudioInterface audioInterface)
     {
-        _timer = new Timer(OnElapsed, microphones, TimeSpan.Zero, SamplingRate);
+        _timer = new Timer(OnElapsed, audioInterface, TimeSpan.Zero, SamplingRate);
     }
 
     public void StopNotifyMasterPeakValue()
@@ -56,15 +56,15 @@ public abstract class MicrophoneView : IMicrophoneView
 
     private void OnElapsed(object? state)
     {
-        var microphones = (IMicrophones)state!;
+        var microphones = (IAudioInterface)state!;
         lock (this)
         {
-            for (var i = 0; i < microphones.Devices.Count; i++)
+            for (var i = 0; i < microphones.Microphones.Count; i++)
             {
-                var waveInput = microphones.Devices[i].LatestWaveInput;
+                var waveInput = microphones.Microphones[i].LatestWaveInput;
                 Console.WriteLine($"{i + 1} ={waveInput.MaximumDecibel:0.00} {GetBars(waveInput.MaximumDecibel)}");
             }
-            Console.SetCursorPosition(0, Console.CursorTop - microphones.Devices.Count);
+            Console.SetCursorPosition(0, Console.CursorTop - microphones.Microphones.Count);
         }
     }
 
