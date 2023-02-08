@@ -35,6 +35,8 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddTransient<ShowInputLevelCommand>();
         services.AddTransient<IShowInputLevelView, ShowInputLevelView>();
 
+        services.AddTransient<DeleteInputLevelsCommand>();
+        services.AddTransient<IRemoveInputLevelsView, RemoveInputLevelsView>();
     })
     .ConfigureLogging((_, builder) =>
     {

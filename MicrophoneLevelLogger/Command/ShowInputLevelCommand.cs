@@ -4,8 +4,6 @@ namespace MicrophoneLevelLogger.Command;
 
 public class ShowInputLevelCommand : ICommand
 {
-    public const string RecordDirectoryName = "Record";
-
     private readonly IShowInputLevelView _view;
     private readonly IAudioInterface _audioInterface;
 

@@ -40,6 +40,14 @@ public class AudioInterfaceInputLevels
         return (await JsonSerializer.DeserializeAsync<AudioInterfaceInputLevels>(stream, Options))!;
     }
 
+    public static void Remove()
+    {
+        if (File.Exists(FileName))
+        {
+            File.Delete(FileName);
+        }
+    }
+
     public static async Task SaveAsync(AudioInterfaceInputLevels audioInterfaceInputLevels)
     {
         await using var stream = new FileStream(FileName, FileMode.Create, FileAccess.Write);

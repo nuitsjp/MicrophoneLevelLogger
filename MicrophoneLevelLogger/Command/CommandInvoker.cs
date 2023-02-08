@@ -13,6 +13,7 @@ public class CommandInvoker : ICommandInvoker
     private readonly DeleteRecordCommand _deleteRecordCommand;
     private readonly MeasureInputLevelCommand _measureInputLevelCommand;
     private readonly ShowInputLevelCommand _showInputLevelCommand;
+    private readonly DeleteInputLevelsCommand _deleteInputLevelsCommand;
     private readonly ExitCommand _exitCommand = new();
 
     public CommandInvoker(
@@ -24,7 +25,8 @@ public class CommandInvoker : ICommandInvoker
         MonitorVolumeCommand monitorVolumeCommand, 
         DeleteRecordCommand deleteRecordCommand, 
         MeasureInputLevelCommand measureInputLevelCommand, 
-        ShowInputLevelCommand showInputLevelCommand)
+        ShowInputLevelCommand showInputLevelCommand, 
+        DeleteInputLevelsCommand deleteInputLevelsCommand)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
@@ -35,15 +37,16 @@ public class CommandInvoker : ICommandInvoker
         _deleteRecordCommand = deleteRecordCommand;
         _measureInputLevelCommand = measureInputLevelCommand;
         _showInputLevelCommand = showInputLevelCommand;
+        _deleteInputLevelsCommand = deleteInputLevelsCommand;
     }
 
     public async Task InvokeAsync()
     {
+        var microphones = _audioInterfaceProvider.Resolve();
+        _view.NotifyMicrophonesInformation(microphones);
+
         while (true)
         {
-            var microphones = _audioInterfaceProvider.Resolve();
-            _view.NotifyMicrophonesInformation(microphones);
-
             var commands = new ICommand[]
             {
                 _monitorVolumeCommand,
@@ -52,6 +55,7 @@ public class CommandInvoker : ICommandInvoker
                 _showInputLevelCommand,
                 _calibrateCommand,
                 _recordCommand,
+                _deleteInputLevelsCommand,
                 _deleteRecordCommand,
                 _exitCommand
             };
