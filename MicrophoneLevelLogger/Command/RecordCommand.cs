@@ -20,7 +20,7 @@ public class RecordCommand : ICommand
         _audioInterface = audioInterfaceProvider.Resolve();
     }
 
-    public string Name => "Record      : マイクの入力をキャプチャーし保存する。";
+    public string Name => "Record        : マイクの入力をキャプチャーし保存する。";
 
 
     public Task ExecuteAsync()

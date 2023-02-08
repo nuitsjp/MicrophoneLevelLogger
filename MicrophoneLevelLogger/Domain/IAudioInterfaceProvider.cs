@@ -1,6 +1,6 @@
 ﻿namespace MicrophoneLevelLogger.Domain;
 
-public interface IMicrophonesProvider
+public interface IAudioInterfaceProvider
 {
     IAudioInterface Resolve();
 }

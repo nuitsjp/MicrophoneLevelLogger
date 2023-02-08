@@ -11,6 +11,7 @@ public class CommandInvoker : ICommandInvoker
     private readonly MonitorVolumeCommand _monitorVolumeCommand;
     private readonly SetMaxInputLevelCommand _setMaxInputLevelCommand;
     private readonly DeleteRecordCommand _deleteRecordCommand;
+    private readonly MeasureInputLevelCommand _measureInputLevelCommand;
     private readonly ExitCommand _exitCommand = new();
 
     public CommandInvoker(
@@ -20,7 +21,8 @@ public class CommandInvoker : ICommandInvoker
         RecordCommand recordCommand, 
         SetMaxInputLevelCommand setMaxInputLevelCommand, 
         MonitorVolumeCommand monitorVolumeCommand, 
-        DeleteRecordCommand deleteRecordCommand)
+        DeleteRecordCommand deleteRecordCommand, 
+        MeasureInputLevelCommand measureInputLevelCommand)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
@@ -29,6 +31,7 @@ public class CommandInvoker : ICommandInvoker
         _setMaxInputLevelCommand = setMaxInputLevelCommand;
         _monitorVolumeCommand = monitorVolumeCommand;
         _deleteRecordCommand = deleteRecordCommand;
+        _measureInputLevelCommand = measureInputLevelCommand;
     }
 
     public async Task InvokeAsync()
@@ -41,6 +44,7 @@ public class CommandInvoker : ICommandInvoker
             var commands = new ICommand[]
             {
                 _monitorVolumeCommand,
+                _measureInputLevelCommand,
                 _calibrateCommand,
                 _recordCommand,
                 _setMaxInputLevelCommand,
@@ -60,7 +64,7 @@ public class CommandInvoker : ICommandInvoker
 
     private class ExitCommand : ICommand
     {
-        public string Name => "Exit        : 終了する。";
+        public string Name => "Exit          : 終了する。";
 
         public Task ExecuteAsync()
         {
