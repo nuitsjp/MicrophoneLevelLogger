@@ -14,6 +14,7 @@ public class DeleteInputLevelsCommand : ICommand
 
 
     public Task ExecuteAsync()
+
     {
         _view.Confirm();
 
