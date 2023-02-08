@@ -4,7 +4,7 @@ namespace MicrophoneLevelLogger.Command;
 
 public class CommandInvoker : ICommandInvoker
 {
-    private readonly IMicrophonesProvider _microphonesProvider;
+    private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ICommandInvokerView _view;
     private readonly CalibrateCommand _calibrateCommand;
     private readonly RecordCommand _recordCommand;
@@ -14,7 +14,7 @@ public class CommandInvoker : ICommandInvoker
     private readonly ExitCommand _exitCommand = new();
 
     public CommandInvoker(
-        IMicrophonesProvider microphonesProvider,
+        IAudioInterfaceProvider audioInterfaceProvider,
         ICommandInvokerView view, 
         CalibrateCommand calibrateCommand, 
         RecordCommand recordCommand, 
@@ -22,7 +22,7 @@ public class CommandInvoker : ICommandInvoker
         MonitorVolumeCommand monitorVolumeCommand, 
         DeleteRecordCommand deleteRecordCommand)
     {
-        _microphonesProvider = microphonesProvider;
+        _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
         _calibrateCommand = calibrateCommand;
         _recordCommand = recordCommand;
@@ -35,7 +35,7 @@ public class CommandInvoker : ICommandInvoker
     {
         while (true)
         {
-            var microphones = _microphonesProvider.Resolve();
+            var microphones = _audioInterfaceProvider.Resolve();
             _view.NotifyMicrophonesInformation(microphones);
 
             var commands = new ICommand[]

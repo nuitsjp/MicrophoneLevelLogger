@@ -4,12 +4,12 @@ namespace MicrophoneLevelLogger.Command;
 
 public class MonitorVolumeCommand : ICommand
 {
-    private readonly IMicrophonesProvider _microphonesProvider;
+    private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly IMonitorVolumeView _view;
 
-    public MonitorVolumeCommand(IMicrophonesProvider microphonesProvider, IMonitorVolumeView view)
+    public MonitorVolumeCommand(IAudioInterfaceProvider audioInterfaceProvider, IMonitorVolumeView view)
     {
-        _microphonesProvider = microphonesProvider;
+        _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
     }
 
@@ -17,7 +17,7 @@ public class MonitorVolumeCommand : ICommand
 
     public Task ExecuteAsync()
     {
-        using var microphones = _microphonesProvider.Resolve();
+        using var microphones = _audioInterfaceProvider.Resolve();
 
         microphones.ActivateMicrophones();
         try

@@ -4,12 +4,12 @@ namespace MicrophoneLevelLogger.Command;
 
 public class CalibrateCommand : ICommand
 {
-    private readonly IMicrophonesProvider _microphonesProvider;
+    private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ICalibrateView _view;
 
-    public CalibrateCommand(IMicrophonesProvider microphonesProvider, ICalibrateView view)
+    public CalibrateCommand(IAudioInterfaceProvider audioInterfaceProvider, ICalibrateView view)
     {
-        _microphonesProvider = microphonesProvider;
+        _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
     }
 
@@ -18,7 +18,7 @@ public class CalibrateCommand : ICommand
     public Task ExecuteAsync()
     {
         // すべてのマイクを取得する。
-        using var microphones = _microphonesProvider.Resolve();
+        using var microphones = _audioInterfaceProvider.Resolve();
 
         // 起動時情報を通知する。
         _view.NotifyMicrophonesInformation(microphones);

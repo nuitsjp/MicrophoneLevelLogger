@@ -14,10 +14,10 @@ public class RecordCommand : ICommand
     private readonly IRecordView _view;
     private readonly IAudioInterface _audioInterface;
 
-    public RecordCommand(IMicrophonesProvider microphonesProvider, IRecordView view)
+    public RecordCommand(IAudioInterfaceProvider audioInterfaceProvider, IRecordView view)
     {
         _view = view;
-        _audioInterface = microphonesProvider.Resolve();
+        _audioInterface = audioInterfaceProvider.Resolve();
     }
 
     public string Name => "Record      : マイクの入力をキャプチャーし保存する。";

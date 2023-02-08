@@ -11,7 +11,7 @@ var host = Host.CreateDefaultBuilder(args)
     {
         services.AddHostedService<Worker>();
 
-        services.AddTransient<IMicrophonesProvider, MicrophonesProvider>();
+        services.AddTransient<IAudioInterfaceProvider, AudioInterfaceProvider>();
 
         services.AddTransient<ICommandInvoker, CommandInvoker>();
         services.AddTransient<ICommandInvokerView, CommandInvokerView>();
