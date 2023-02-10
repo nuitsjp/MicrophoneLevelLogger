@@ -4,7 +4,7 @@ public class MediaPlayerProvider : IMediaPlayerProvider
 {
     public IMediaPlayer ResolveLocaleService()
     {
-        return new LocalMediaPlayer();
+        return new MediaPlayer();
     }
 
     public IMediaPlayer ResolveRemoteService()

@@ -12,8 +12,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IAudioInterfaceProvider, AudioInterfaceProvider>();
-builder.Services.AddSingleton<IMediaPlayer, LocalMediaPlayer>();
-builder.Services.AddSingleton<IRecorder, LocalRecorder>();
+builder.Services.AddSingleton<IMediaPlayer, MediaPlayer>();
+builder.Services.AddSingleton<IRecorder, Recorder>();
 builder.Services.AddTransient<IRecordView, RecordView>();
 
 var app = builder.Build();

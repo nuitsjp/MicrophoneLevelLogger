@@ -17,7 +17,7 @@ public class RecorderProvider : IRecorderProvider
 
     public IRecorder ResolveLocal()
     {
-        return new LocalRecorder(_view, _audioInterfaceProvider);
+        return new Recorder(_view, _audioInterfaceProvider);
     }
 
     public IRecorder ResolveRemote()

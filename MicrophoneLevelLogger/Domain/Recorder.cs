@@ -4,7 +4,7 @@ using MicrophoneLevelLogger.Command;
 
 namespace MicrophoneLevelLogger.Domain;
 
-public class LocalRecorder : IRecorder
+public class Recorder : IRecorder
 {
     public const string RecordDirectoryName = "Record";
 
@@ -14,7 +14,7 @@ public class LocalRecorder : IRecorder
     private CancellationTokenSource? _cancellationTokenSource;
     private string _saveDirectory = string.Empty;
 
-    public LocalRecorder(
+    public Recorder(
         IRecordView view,
         IAudioInterfaceProvider audioInterfaceProvider)
     {

@@ -2,7 +2,7 @@
 
 namespace MicrophoneLevelLogger.Domain;
 
-public class LocalMediaPlayer : IMediaPlayer
+public class MediaPlayer : IMediaPlayer
 {
     private SoundPlayer? _player;
 
