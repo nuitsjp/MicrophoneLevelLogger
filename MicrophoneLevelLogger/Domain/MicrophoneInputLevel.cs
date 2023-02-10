@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Command;
+﻿namespace MicrophoneLevelLogger.Domain;
 
 public class MicrophoneInputLevel
 {

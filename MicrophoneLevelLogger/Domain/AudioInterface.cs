@@ -36,7 +36,11 @@ public class AudioInterface : IAudioInterface
                 mmDevice.DisposeQuiet();
             }
         }
+    }
 
+    public AudioInterface(params IMicrophone[] microphones)
+    {
+        Microphones = microphones.ToList();
     }
 
     public void Dispose()

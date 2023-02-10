@@ -2,18 +2,18 @@
 
 namespace MicrophoneLevelLogger.Command;
 
-public class ShowInputLevelCommand : ICommand
+public class DisplayMeasurementsCommand : ICommand
 {
-    private readonly IShowInputLevelView _view;
+    private readonly IDisplayMeasurementsView _view;
     private readonly IAudioInterface _audioInterface;
 
-    public ShowInputLevelCommand(IAudioInterfaceProvider audioInterfaceProvider, IShowInputLevelView view)
+    public DisplayMeasurementsCommand(IAudioInterfaceProvider audioInterfaceProvider, IDisplayMeasurementsView view)
     {
         _view = view;
         _audioInterface = audioInterfaceProvider.Resolve();
     }
 
-    public string Name => "Show input           : マイク入力レベルの計測結果を表示する。";
+    public string Name => "Display measurements : マイク入力音量の計測結果を表示する。";
 
 
     public async Task ExecuteAsync()

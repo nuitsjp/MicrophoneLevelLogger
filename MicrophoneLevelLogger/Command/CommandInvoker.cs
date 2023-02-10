@@ -11,10 +11,10 @@ public class CommandInvoker : ICommandInvoker
     private readonly MonitorVolumeCommand _monitorVolumeCommand;
     private readonly SetMaxInputLevelCommand _setMaxInputLevelCommand;
     private readonly DeleteRecordCommand _deleteRecordCommand;
-    private readonly MeasureInputLevelCommand _measureInputLevelCommand;
-    private readonly ShowInputLevelCommand _showInputLevelCommand;
+    private readonly DisplayMeasurementsCommand _displayMeasurementsCommand;
     private readonly DeleteInputLevelsCommand _deleteInputLevelsCommand;
     private readonly RecordingSettingsCommand _recordingSettingsCommand;
+    private readonly MeasureCommand _measureCommand;
     private readonly ExitCommand _exitCommand = new();
 
     public CommandInvoker(
@@ -25,10 +25,10 @@ public class CommandInvoker : ICommandInvoker
         SetMaxInputLevelCommand setMaxInputLevelCommand, 
         MonitorVolumeCommand monitorVolumeCommand, 
         DeleteRecordCommand deleteRecordCommand, 
-        MeasureInputLevelCommand measureInputLevelCommand, 
-        ShowInputLevelCommand showInputLevelCommand, 
+        DisplayMeasurementsCommand displayMeasurementsCommand, 
         DeleteInputLevelsCommand deleteInputLevelsCommand, 
-        RecordingSettingsCommand recordingSettingsCommand)
+        RecordingSettingsCommand recordingSettingsCommand, 
+        MeasureCommand measureCommand)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
@@ -37,10 +37,10 @@ public class CommandInvoker : ICommandInvoker
         _setMaxInputLevelCommand = setMaxInputLevelCommand;
         _monitorVolumeCommand = monitorVolumeCommand;
         _deleteRecordCommand = deleteRecordCommand;
-        _measureInputLevelCommand = measureInputLevelCommand;
-        _showInputLevelCommand = showInputLevelCommand;
+        _displayMeasurementsCommand = displayMeasurementsCommand;
         _deleteInputLevelsCommand = deleteInputLevelsCommand;
         _recordingSettingsCommand = recordingSettingsCommand;
+        _measureCommand = measureCommand;
     }
 
     public async Task InvokeAsync()
@@ -53,9 +53,9 @@ public class CommandInvoker : ICommandInvoker
             var commands = new ICommand[]
             {
                 _monitorVolumeCommand,
+                _measureCommand,
+                _displayMeasurementsCommand,
                 _setMaxInputLevelCommand,
-                _measureInputLevelCommand,
-                _showInputLevelCommand,
                 _calibrateCommand,
                 _recordCommand,
                 _recordingSettingsCommand,

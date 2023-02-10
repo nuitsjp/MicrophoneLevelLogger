@@ -1,12 +1,11 @@
 ﻿using FluentTextTable;
 using MicrophoneLevelLogger.Command;
 using MicrophoneLevelLogger.Domain;
-using NAudio.Utils;
 using Sharprompt;
 
 namespace MicrophoneLevelLogger.View;
 
-public class MeasureInputLevelView : MicrophoneView, IMeasureInputLevelView
+public class MeasureView : MicrophoneView, IMeasureView
 {
     public IMicrophone SelectMicrophone(IAudioInterface audioInterface)
     {
@@ -21,6 +20,12 @@ public class MeasureInputLevelView : MicrophoneView, IMeasureInputLevelView
         }
 
         return microphone;
+
+    }
+
+    public int InputSpan()
+    {
+        return Prompt.Input<int>("計測時間[秒]を入力してください。", 30);
     }
 
     public void NotifyResult(AudioInterfaceInputLevels audioInterfaceInputLevels)

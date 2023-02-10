@@ -2,7 +2,7 @@
 
 namespace MicrophoneLevelLogger.Command;
 
-public interface IShowInputLevelView
+public interface IDisplayMeasurementsView
 {
     void NotifyResult(AudioInterfaceInputLevels audioInterfaceInputLevels);
 }

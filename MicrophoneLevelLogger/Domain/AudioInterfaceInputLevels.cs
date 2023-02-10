@@ -4,7 +4,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 
-namespace MicrophoneLevelLogger.Command;
+namespace MicrophoneLevelLogger.Domain;
 
 public class AudioInterfaceInputLevels
 {

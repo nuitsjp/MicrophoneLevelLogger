@@ -6,7 +6,7 @@ using Sharprompt;
 
 namespace MicrophoneLevelLogger.View;
 
-public class ShowInputLevelView : IShowInputLevelView
+public class DisplayMeasurementsView : IDisplayMeasurementsView
 {
     public void NotifyResult(AudioInterfaceInputLevels audioInterfaceInputLevels)
     {
