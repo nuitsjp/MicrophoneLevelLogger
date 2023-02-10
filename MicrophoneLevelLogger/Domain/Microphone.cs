@@ -150,7 +150,10 @@ public class Microphone : IMicrophone
     public void StartRecording(string path)
     {
         _masterPeakBuffer.Clear();
-        _waveFileWriter = new(Path.Combine(path, Name + ".wav"), _waveInEvent.WaveFormat);
+        lock (this)
+        {
+            _waveFileWriter = new(Path.Combine(path, Name + ".wav"), _waveInEvent.WaveFormat);
+        }
     }
 
 

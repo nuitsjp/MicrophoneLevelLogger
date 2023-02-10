@@ -17,13 +17,13 @@ public class MonitorVolumeCommand : ICommand
 
     public Task ExecuteAsync()
     {
-        using var microphones = _audioInterfaceProvider.Resolve();
+        using var audioInterface = _audioInterfaceProvider.Resolve();
 
-        microphones.ActivateMicrophones();
+        audioInterface.ActivateMicrophones();
         try
         {
             _view.NotifyDetailMessage();
-            _view.StartNotifyMasterPeakValue(microphones);
+            _view.StartNotifyMasterPeakValue(audioInterface);
 
             _view.WaitToBeStopped();
 
@@ -33,7 +33,7 @@ public class MonitorVolumeCommand : ICommand
         }
         finally
         {
-            microphones.DeactivateMicrophones();
+            audioInterface.DeactivateMicrophones();
         }
     }
 }
