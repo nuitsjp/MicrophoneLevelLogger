@@ -1,4 +1,5 @@
-﻿using MicrophoneLevelLogger.Command;
+﻿using FluentTextTable;
+using MicrophoneLevelLogger.Command;
 using MicrophoneLevelLogger.Domain;
 using Sharprompt;
 
@@ -32,6 +33,37 @@ public class CalibrateView : MicrophoneView, ICalibrateView
         }
     }
 
+    public void NotifyProgress(IMicrophone reference, double referenceDecibel, IMicrophone target, double targetDecibel)
+    {
+        Build
+            .TextTable<MicrophoneMasterVolumeLevelScalar>(builder =>
+            {
+                builder.Borders.InsideHorizontal.AsDisable();
+                builder.Columns.Add(x => x.Label);
+                builder.Columns.Add(x => x.Name);
+                builder.Columns.Add(x => x.AverageDecibel).FormatAs("{0:0.00}");
+                builder.Columns.Add(x => x.InputLevel).FormatAs("{0:0.00}");
+            })
+            .WriteLine(new []
+            {
+                new MicrophoneMasterVolumeLevelScalar("リファレンス", reference.Name, reference.MasterVolumeLevelScalar.AsPrimitive(), referenceDecibel),
+                new MicrophoneMasterVolumeLevelScalar("ターゲット", target.Name, target.MasterVolumeLevelScalar.AsPrimitive(), targetDecibel)
+            });
+    }
+
+    public void NotifyCalibrated(AudioInterfaceCalibrationValues calibrationValue, IMicrophone microphone)
+    {
+        lock (this)
+        {
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("マイクのキャリブレーションを完了しました。");
+            Console.WriteLine($"名称      ：{microphone.Name}");
+            Console.WriteLine($"入力レベル :{microphone.MasterVolumeLevelScalar.AsPrimitive():0.00}");
+            Console.WriteLine();
+        }
+    }
+
     public void NotifyCalibrated(IAudioInterface audioInterface)
     {
         lock (this)
@@ -46,5 +78,25 @@ public class CalibrateView : MicrophoneView, ICalibrateView
                 Console.WriteLine($"{i + 1} = {microphone.Name} 入力レベル：{microphone.MasterVolumeLevelScalar}");
             }
         }
+    }
+
+    public class MicrophoneMasterVolumeLevelScalar
+    {
+        public MicrophoneMasterVolumeLevelScalar(
+            string label, 
+            string name,
+            float inputLevel, 
+            double averageDecibel)
+        {
+            Label = label;
+            Name = name;
+            InputLevel = inputLevel;
+            AverageDecibel = averageDecibel;
+        }
+
+        public string Label { get; }
+        public string Name { get; }
+        public double AverageDecibel { get; }
+        public float InputLevel { get; }
     }
 }

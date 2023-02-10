@@ -8,28 +8,33 @@ public class CalibrateCommand : ICommand
 
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ICalibrateView _view;
+    private readonly IMediaPlayer _mediaPlayer;
 
-    public CalibrateCommand(IAudioInterfaceProvider audioInterfaceProvider, ICalibrateView view)
+    public CalibrateCommand(
+        IAudioInterfaceProvider audioInterfaceProvider, 
+        ICalibrateView view, 
+        IMediaPlayer mediaPlayer)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
+        _mediaPlayer = mediaPlayer;
     }
 
     public string Name => "Calibrate            : マイクの入力レベルを調整する。";
 
-    public Task ExecuteAsync()
+    public async Task ExecuteAsync()
     {
         // すべてのマイクを取得する。
-        using var microphones = _audioInterfaceProvider.Resolve();
+        using var audioInterface = _audioInterfaceProvider.Resolve();
 
         // 起動時情報を通知する。
-        _view.NotifyMicrophonesInformation(microphones);
+        _view.NotifyMicrophonesInformation(audioInterface);
 
         // リファレンスマイクを選択する
-        var reference = _view.SelectReference(microphones);
+        var reference = _view.SelectReference(audioInterface);
 
         // 調整対象のマイクを選択する
-        var target = _view.SelectTarget(microphones, reference);
+        var target = _view.SelectTarget(audioInterface, reference);
 
         // Recordingディレクトリを作成する
         if (Directory.Exists(DirectoryName))
@@ -39,30 +44,44 @@ public class CalibrateCommand : ICommand
 
         Directory.CreateDirectory(DirectoryName);
 
-        // マイクを有効化する
-        microphones.ActivateMicrophones();
+        // 音声を再生する
+        await _mediaPlayer.PlayAsync();
+        try
+        {
+            // マイクを有効化する
+            audioInterface.ActivateMicrophones();
 
-        // 画面に入力レベルを通知する。
-        //_view.StartNotifyMasterPeakValue(microphones);
+            // 画面に入力レベルを通知する。
+            //_view.StartNotifyMasterPeakValue(microphones);
 
-        // マイクレベルを順番にキャリブレーションする
-        Calibrate(reference, target);
+            // マイクレベルを順番にキャリブレーションする
+            Calibrate(reference, target);
 
-        // 画面の入力レベル通知を停止する。
-        //_view.StopNotifyMasterPeakValue();
+            // 画面の入力レベル通知を停止する。
+            //_view.StopNotifyMasterPeakValue();
 
-        _view.NotifyCalibrated(microphones);
+            // キャリブレート結果を保存する
+            MicrophoneCalibrationValue value = new(target.Id, target.Name, target.MasterVolumeLevelScalar);
+            AudioInterfaceCalibrationValues values = await AudioInterfaceCalibrationValues.LoadAsync();
+            values.Update(value);
+            await AudioInterfaceCalibrationValues.SaveAsync(values);
 
-        // マイクを無効化する
-        microphones.DeactivateMicrophones();
+            // 結果を表示する
+            _view.NotifyCalibrated(values, target);
 
-        return Task.CompletedTask;
+
+        }
+        finally
+        {
+            await _mediaPlayer.StopAsync();
+            audioInterface.DeactivateMicrophones();
+        }
     }
 
     private void Calibrate(IMicrophone reference, IMicrophone target)
     {
         // ボリューム調整していくステップ
-        MasterVolumeLevelScalar step = new(0.005f);
+        MasterVolumeLevelScalar step = new(0.01f);
 
         Console.WriteLine(target);
 
@@ -72,17 +91,20 @@ public class CalibrateCommand : ICommand
         // ターゲット側の入力レベルを少しずつ下げていきながら
         // リファレンスと同程度の音量になるように調整していく。
         var high = 1d;
+
         for (; MasterVolumeLevelScalar.Minimum < target.MasterVolumeLevelScalar; target.MasterVolumeLevelScalar -= step)
         {
             // レコーディング開始
             reference.StartRecording(DirectoryName);
             target.StartRecording(DirectoryName);
 
-            Thread.Sleep(TimeSpan.FromMilliseconds(500));
+            Thread.Sleep(TimeSpan.FromSeconds(5));
 
             // レコーディング停止
             var referenceLevel = reference.StopRecording().PeakValues.Average();
             var targetLevel = target.StopRecording().PeakValues.Average();
+
+            _view.NotifyProgress(reference, referenceLevel, target, targetLevel);
 
             if (targetLevel <= referenceLevel)
             {
@@ -101,6 +123,11 @@ public class CalibrateCommand : ICommand
 
                 return;
             }
+
+            var diff = Math.Floor(Math.Abs(referenceLevel) - Math.Abs(targetLevel));
+            step = new((float)(diff / 100));
+            // 差がごく小さい場合、stepが0になってしまうので最小は0.01になるように調整する
+            step = step == new MasterVolumeLevelScalar(0f) ? new(0.01f) : step;
 
             high = targetLevel;
         }

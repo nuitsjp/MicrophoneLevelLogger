@@ -2,7 +2,9 @@
 
 namespace MicrophoneLevelLogger.Domain;
 
-[UnitOf(typeof(float), UnitGenerateOptions.Comparable | UnitGenerateOptions.Validate | UnitGenerateOptions.ArithmeticOperator)]
+[UnitOf(
+    typeof(float), 
+    UnitGenerateOptions.Comparable | UnitGenerateOptions.Validate | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.JsonConverter)]
 public readonly partial struct MasterVolumeLevelScalar
 {
     private const float MinimumValue = 0f;
