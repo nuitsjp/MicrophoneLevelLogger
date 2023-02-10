@@ -14,6 +14,7 @@ public class CommandInvoker : ICommandInvoker
     private readonly MeasureInputLevelCommand _measureInputLevelCommand;
     private readonly ShowInputLevelCommand _showInputLevelCommand;
     private readonly DeleteInputLevelsCommand _deleteInputLevelsCommand;
+    private readonly RecordingSettingsCommand _recordingSettingsCommand;
     private readonly ExitCommand _exitCommand = new();
 
     public CommandInvoker(
@@ -26,7 +27,8 @@ public class CommandInvoker : ICommandInvoker
         DeleteRecordCommand deleteRecordCommand, 
         MeasureInputLevelCommand measureInputLevelCommand, 
         ShowInputLevelCommand showInputLevelCommand, 
-        DeleteInputLevelsCommand deleteInputLevelsCommand)
+        DeleteInputLevelsCommand deleteInputLevelsCommand, 
+        RecordingSettingsCommand recordingSettingsCommand)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
@@ -38,6 +40,7 @@ public class CommandInvoker : ICommandInvoker
         _measureInputLevelCommand = measureInputLevelCommand;
         _showInputLevelCommand = showInputLevelCommand;
         _deleteInputLevelsCommand = deleteInputLevelsCommand;
+        _recordingSettingsCommand = recordingSettingsCommand;
     }
 
     public async Task InvokeAsync()
@@ -55,6 +58,7 @@ public class CommandInvoker : ICommandInvoker
                 _showInputLevelCommand,
                 _calibrateCommand,
                 _recordCommand,
+                _recordingSettingsCommand,
                 _deleteInputLevelsCommand,
                 _deleteRecordCommand,
                 _exitCommand
@@ -65,14 +69,21 @@ public class CommandInvoker : ICommandInvoker
                 break;
             }
 
-            var command = commands.Single(x => x.Name == selected);
-            await command.ExecuteAsync();
+            try
+            {
+                var command = commands.Single(x => x.Name == selected);
+                await command.ExecuteAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 
     private class ExitCommand : ICommand
     {
-        public string Name => "Exit          : 終了する。";
+        public string Name => "Exit                 : 終了する。";
 
         public Task ExecuteAsync()
         {

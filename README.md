@@ -88,3 +88,10 @@ C# TokyoのLT枠で実施
 # 参考文献
 
 - [C# Microphone Level Monitor](https://swharden.com/blog/2021-07-03-csharp-microphone/)
+
+
+# ファイアウォールの開放
+
+```cmd
+netsh advfirewall firewall add rule name="Http Port 5000" dir=in action=allow protocol=TCP localport=5000
+```

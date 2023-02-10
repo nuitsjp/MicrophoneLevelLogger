@@ -13,95 +13,75 @@ public class RecordCommand : ICommand
 
     private readonly IRecordView _view;
     private readonly IAudioInterface _audioInterface;
+    private readonly IRecorderProvider _recorderProviderProvider;
+    private readonly IMediaPlayerProvider _mediaPlayerProvider;
 
-    public RecordCommand(IAudioInterfaceProvider audioInterfaceProvider, IRecordView view)
+    public RecordCommand(
+        IAudioInterfaceProvider audioInterfaceProvider, 
+        IRecordView view,
+        IRecorderProvider recorderProvider, 
+        IMediaPlayerProvider mediaPlayerProvider)
     {
         _view = view;
+        _recorderProviderProvider = recorderProvider;
+        _mediaPlayerProvider = mediaPlayerProvider;
         _audioInterface = audioInterfaceProvider.Resolve();
     }
 
-    public string Name => "Record        : マイクの入力をキャプチャーし保存する。";
+    public string Name => "Record               : マイクの入力をキャプチャーし保存する。";
 
 
-    public Task ExecuteAsync()
+    public async Task ExecuteAsync()
     {
         // 起動時情報を通知する。
         _view.NotifyMicrophonesInformation(_audioInterface);
 
-        // マイクを有効化する
-        _audioInterface.ActivateMicrophones();
+        var settings = await RecordingSettings.LoadAsync();
+        _view.NotifyStarting(settings.RecordingSpan);
 
-        var saveDirectory = Path.Combine(RecordDirectoryName, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss"));
-        Directory.CreateDirectory(saveDirectory);
+        // 背景音源を再生する
+        var mediaPlayer = settings.IsEnableRemotePlaying
+            ? _mediaPlayerProvider.ResolveRemoteService()
+            : _mediaPlayerProvider.ResolveLocaleService();
+        await mediaPlayer.PlayAsync();
 
-        // キャプチャーを開始する。
-        _audioInterface.StartRecording(saveDirectory);
-
-        // 画面に入力レベルを通知する。
-        _view.StartNotifyMasterPeakValue(_audioInterface);
-
-        // CSVへ出力を開始する。
-        CancellationTokenSource cancellationTokenSource = new();
-        WriteMaximumDecibels(saveDirectory, cancellationTokenSource.Token);
-
-        // Enterが押下されるまで待機する。
-        Console.ReadLine();
-
-        // CSV出力へキャンセルを通知する。
-        cancellationTokenSource.Cancel();
-
-        // 画面の入力レベル通知を停止する。
-        _view.StopNotifyMasterPeakValue();
-
-        // キャプチャーを停止する。
-        var peakValues = _audioInterface.StopRecording();
-
-        // マイクを無効化する。
-        _audioInterface.DeactivateMicrophones();
-
-        // 最小値、平均値、最大値をテキストファイルに出力する。
-        var results = peakValues
-            .Select((x, index) => new RecordResult(index + 1, x))
-            .ToList();
-        using var writer =
-            new CsvWriter(
-                File.CreateText(Path.Combine(saveDirectory, "summary.csv")),
-                new CultureInfo("ja-JP", false));
-        writer.WriteRecords(results);
-
-        // 結果を通知する
-        _view.NotifyResult(results);
-
-        return Task.CompletedTask;
-    }
-
-    private void WriteMaximumDecibels(string saveDirectory, CancellationToken token)
-    {
-        Task.Run(async () =>
+        var localRecorder = _recorderProviderProvider.ResolveLocal();
+        var remoteRecorder = _recorderProviderProvider.ResolveRemote();
+        try
         {
-            await using var writer = File.CreateText(Path.Combine(saveDirectory, "detail.csv"));
-
-            await writer.WriteAsync("時刻");
-            foreach (var microphone in _audioInterface.Microphones)
+            if (settings.IsEnableRemoteRecording)
             {
-                await writer.WriteAsync(",");
-                await writer.WriteAsync(microphone.Name);
+                await remoteRecorder.RecodeAsync();
             }
-            await writer.WriteLineAsync();
+            await localRecorder.RecodeAsync();
 
-            while (token.IsCancellationRequested is false)
+            // 録音時間、待機する。
+            await Task.Delay(settings.RecordingSpan);
+        }
+        finally
+        {
+            if (settings.IsEnableRemoteRecording)
             {
-                await writer.WriteAsync($"{DateTime.Now:yyyy/MM/dd hh:mm:ss.fff}");
-                foreach (var microphone in _audioInterface.Microphones)
-                {
-                    await writer.WriteAsync(",");
-                    writer.Write(microphone.LatestWaveInput.MaximumDecibel);
-                }
-                await writer.WriteLineAsync();
-                await Task.Delay(IMicrophone.SamplingMilliseconds, token);
+                await remoteRecorder.StopQuietAsync();
             }
+            await localRecorder.StopQuietAsync();
+            await mediaPlayer.StopAsync();
+        }
 
-            await writer.FlushAsync();
-        }, token);
+    }
+}
+
+public static class RecorderExtensions
+{
+    public static async Task StopQuietAsync(this IRecorder recorder)
+    {
+        try
+        {
+            await recorder.StopAsync();
+        }
+        catch
+        {
+            // ignore
+        }
     }
 }

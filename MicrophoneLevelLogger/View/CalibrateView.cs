@@ -13,16 +13,38 @@ public class CalibrateView : MicrophoneView, ICalibrateView
             audioInterface.Microphones);
     }
 
+    public IMicrophone SelectTarget(IAudioInterface audioInterface, IMicrophone reference)
+    {
+        while (true)
+        {
+            var target =
+                Prompt.Select(
+                    "キャリブレーション対象のマイクを選択してください。",
+                    audioInterface.Microphones);
+
+            if (target.Id != reference.Id)
+            {
+                return target;
+            }
+            Console.WriteLine();
+            Console.WriteLine("リファレンスとは異なるマイクを選択してください。");
+            Console.WriteLine();
+        }
+    }
+
     public void NotifyCalibrated(IAudioInterface audioInterface)
     {
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.WriteLine("マイクのキャリブレーションを完了しました。");
-
-        for (var i = 0; i < audioInterface.Microphones.Count; i++)
+        lock (this)
         {
-            var microphone = audioInterface.Microphones[i];
-            Console.WriteLine($"{i + 1} = {microphone.Name} 入力レベル：{microphone.MasterVolumeLevelScalar}");
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("マイクのキャリブレーションを完了しました。");
+
+            for (var i = 0; i < audioInterface.Microphones.Count; i++)
+            {
+                var microphone = audioInterface.Microphones[i];
+                Console.WriteLine($"{i + 1} = {microphone.Name} 入力レベル：{microphone.MasterVolumeLevelScalar}");
+            }
         }
     }
 }

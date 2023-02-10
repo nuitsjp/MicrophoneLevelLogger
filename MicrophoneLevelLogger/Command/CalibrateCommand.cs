@@ -4,6 +4,8 @@ namespace MicrophoneLevelLogger.Command;
 
 public class CalibrateCommand : ICommand
 {
+    private const string DirectoryName = "Calibrate";
+
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ICalibrateView _view;
 
@@ -13,7 +15,7 @@ public class CalibrateCommand : ICommand
         _view = view;
     }
 
-    public string Name => "Calibrate     : マイクの入力レベルを調整する。";
+    public string Name => "Calibrate            : マイクの入力レベルを調整する。";
 
     public Task ExecuteAsync()
     {
@@ -26,28 +28,28 @@ public class CalibrateCommand : ICommand
         // リファレンスマイクを選択する
         var reference = _view.SelectReference(microphones);
 
+        // 調整対象のマイクを選択する
+        var target = _view.SelectTarget(microphones, reference);
+
         // Recordingディレクトリを作成する
-        if (Directory.Exists(Name))
+        if (Directory.Exists(DirectoryName))
         {
-            Directory.Delete(Name, true);
+            Directory.Delete(DirectoryName, true);
         }
 
-        Directory.CreateDirectory(Name);
+        Directory.CreateDirectory(DirectoryName);
 
         // マイクを有効化する
         microphones.ActivateMicrophones();
 
         // 画面に入力レベルを通知する。
-        _view.StartNotifyMasterPeakValue(microphones);
+        //_view.StartNotifyMasterPeakValue(microphones);
 
         // マイクレベルを順番にキャリブレーションする
-        foreach (var microphone in microphones.Microphones.Where(x => x != reference))
-        {
-            Calibrate(reference, microphone);
-        }
+        Calibrate(reference, target);
 
         // 画面の入力レベル通知を停止する。
-        _view.StopNotifyMasterPeakValue();
+        //_view.StopNotifyMasterPeakValue();
 
         _view.NotifyCalibrated(microphones);
 
@@ -73,8 +75,8 @@ public class CalibrateCommand : ICommand
         for (; MasterVolumeLevelScalar.Minimum < target.MasterVolumeLevelScalar; target.MasterVolumeLevelScalar -= step)
         {
             // レコーディング開始
-            reference.StartRecording(Name);
-            target.StartRecording(Name);
+            reference.StartRecording(DirectoryName);
+            target.StartRecording(DirectoryName);
 
             Thread.Sleep(TimeSpan.FromMilliseconds(500));
 

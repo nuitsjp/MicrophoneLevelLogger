@@ -10,7 +10,7 @@ public class DeleteInputLevelsCommand : ICommand
         _view = view;
     }
 
-    public string Name => "Delete inputs : マイク入力レベルの計測結果をすべて削除する。";
+    public string Name => "Delete inputs        : マイク入力レベルの計測結果をすべて削除する。";
 
 
     public Task ExecuteAsync()

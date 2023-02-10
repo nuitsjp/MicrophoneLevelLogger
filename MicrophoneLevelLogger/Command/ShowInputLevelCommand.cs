@@ -13,7 +13,7 @@ public class ShowInputLevelCommand : ICommand
         _audioInterface = audioInterfaceProvider.Resolve();
     }
 
-    public string Name => "Show input    : マイク入力レベルの計測結果を表示する。";
+    public string Name => "Show input           : マイク入力レベルの計測結果を表示する。";
 
 
     public async Task ExecuteAsync()

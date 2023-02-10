@@ -20,7 +20,7 @@ public class MeasureInputLevelCommand : ICommand
         _audioInterface = audioInterfaceProvider.Resolve();
     }
 
-    public string Name => "Measure input : 指定のマイクの入力レベルを計測する。";
+    public string Name => "Measure input        : 指定のマイクの入力レベルを計測する。";
 
 
     public async Task ExecuteAsync()
