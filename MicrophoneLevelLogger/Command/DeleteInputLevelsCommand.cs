@@ -10,16 +10,16 @@ public class DeleteInputLevelsCommand : ICommand
         _view = view;
     }
 
-    public string Name => "Delete inputs        : マイク入力レベルの計測結果をすべて削除する。";
+    public string Name => "Delete measurements  : マイク入力音量の計測結果をすべて削除する。";
 
 
     public Task ExecuteAsync()
 
     {
-        _view.Confirm();
-
-        AudioInterfaceInputLevels.Remove();
-
+        if (_view.Confirm())
+        {
+            AudioInterfaceInputLevels.Remove();
+        }
         return Task.CompletedTask;
     }
 }

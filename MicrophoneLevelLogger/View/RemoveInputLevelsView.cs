@@ -7,6 +7,6 @@ public class RemoveInputLevelsView : IRemoveInputLevelsView
 {
     public bool Confirm()
     {
-        return Prompt.Confirm("マイク入力レベルの計測結果をすべて削除しますか？", false);
+        return Prompt.Confirm("マイク入力音量の計測結果をすべて削除しますか？", false);
     }
 }

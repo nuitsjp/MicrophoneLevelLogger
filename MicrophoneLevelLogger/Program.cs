@@ -41,6 +41,9 @@ var host = Host.CreateDefaultBuilder((string[]) args)
         services.AddTransient<MeasureCommand>();
         services.AddTransient<IMeasureView, MeasureView>();
 
+        services.AddTransient<DeleteCalibratesCommand>();
+        services.AddTransient<IDeleteCalibrateView, DeleteCalibrateView>();
+
         services.AddTransient<IRecorderProvider, RecorderProvider>();
         services.AddTransient<IMediaPlayerProvider, MediaPlayerProvider>();
         services.AddTransient<IMediaPlayer, MediaPlayer>();
