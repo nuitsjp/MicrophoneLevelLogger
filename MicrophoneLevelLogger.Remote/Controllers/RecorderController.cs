@@ -14,11 +14,11 @@ public class RecorderController : ControllerBase
         _recorder = recorder;
     }
 
-    [HttpGet("Recode")]
-    public Task RecodeAsync()
+    [HttpGet("Recode/{recordName}")]
+    public Task RecodeAsync(string recordName)
     {
-        Console.WriteLine("Recorder#Record");
-        return _recorder.RecodeAsync();
+        Console.WriteLine($"Recorder#Record name:{recordName}");
+        return _recorder.RecodeAsync(recordName);
     }
 
     [HttpGet("Stop")]

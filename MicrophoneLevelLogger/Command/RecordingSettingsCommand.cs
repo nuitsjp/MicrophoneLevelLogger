@@ -36,8 +36,8 @@ public class RecordingSettingsCommand : ICommand
                     mediaPlayerHost, 
                     recorderHost,
                     TimeSpan.FromSeconds(recordingSpan),
-                    isEnableRemoteRecording,
-                    isEnableRemotePlaying));
+                    isEnableRemotePlaying,
+                    isEnableRemoteRecording));
 
             _view.ShowSettings(await RecordingSettings.LoadAsync());
         }

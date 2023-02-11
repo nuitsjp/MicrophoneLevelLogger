@@ -36,6 +36,9 @@ public class RecordCommand : ICommand
         // 起動時情報を通知する。
         _view.NotifyMicrophonesInformation(_audioInterface);
 
+        // 録音名を入力する。
+        string recordName = _view.InputRecordName();
+
         var settings = await RecordingSettings.LoadAsync();
         _view.NotifyStarting(settings.RecordingSpan);
 
@@ -51,9 +54,9 @@ public class RecordCommand : ICommand
         {
             if (settings.IsEnableRemoteRecording)
             {
-                await remoteRecorder.RecodeAsync();
+                await remoteRecorder.RecodeAsync(recordName);
             }
-            await localRecorder.RecodeAsync();
+            await localRecorder.RecodeAsync(recordName);
 
             // 録音時間、待機する。
             await Task.Delay(settings.RecordingSpan);

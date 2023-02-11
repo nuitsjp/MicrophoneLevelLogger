@@ -2,6 +2,6 @@
 
 public interface IRecorder
 {
-    Task RecodeAsync();
+    Task RecodeAsync(string name);
     Task StopAsync();
 }

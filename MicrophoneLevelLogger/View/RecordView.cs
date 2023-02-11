@@ -7,6 +7,11 @@ namespace MicrophoneLevelLogger.View;
 
 public class RecordView : MicrophoneView, IRecordView
 {
+    public string InputRecordName()
+    {
+        return Prompt.Input<string>("録音名を入力してください。");
+    }
+
     public void NotifyResult(IEnumerable<RecordResult> results)
     {
         lock (this)

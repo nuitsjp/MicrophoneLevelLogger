@@ -22,7 +22,7 @@ public class Recorder : IRecorder
         _audioInterface = audioInterfaceProvider.Resolve();
     }
 
-    public Task RecodeAsync()
+    public Task RecodeAsync(string name)
     {
         // 起動時情報を通知する。
         _view.NotifyMicrophonesInformation(_audioInterface);
@@ -30,7 +30,10 @@ public class Recorder : IRecorder
         // マイクを有効化する
         _audioInterface.ActivateMicrophones();
 
-        _saveDirectory = Path.Combine(RecordDirectoryName, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss"));
+        _saveDirectory = 
+            Path.Combine(
+                RecordDirectoryName, 
+                $"{DateTime.Now:yyyy-MM-dd_HHmmss}_{name}");
         Directory.CreateDirectory(_saveDirectory);
 
         // キャプチャーを開始する。
