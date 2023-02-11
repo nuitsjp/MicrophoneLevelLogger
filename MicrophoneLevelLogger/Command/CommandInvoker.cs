@@ -18,6 +18,7 @@ public class CommandInvoker : ICommandInvoker
     private readonly MeasureCommand _measureCommand;
     private readonly DeleteCalibratesCommand _deleteCalibratesCommand;
     private readonly DisplayCalibratesCommand _displayCalibratesCommand;
+    private readonly SetInputLevelCommand _setInputLevelCommand;
     private readonly ExitCommand _exitCommand = new();
 
     public CommandInvoker(
@@ -34,7 +35,7 @@ public class CommandInvoker : ICommandInvoker
         MeasureCommand measureCommand, 
         DeleteCalibratesCommand deleteCalibratesCommand, 
         DisplayCalibratesCommand displayCalibratesCommand, 
-        CalibrateOutputCommand calibrateOutputCommand)
+        CalibrateOutputCommand calibrateOutputCommand, SetInputLevelCommand setInputLevelCommand)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
@@ -50,6 +51,7 @@ public class CommandInvoker : ICommandInvoker
         _deleteCalibratesCommand = deleteCalibratesCommand;
         _displayCalibratesCommand = displayCalibratesCommand;
         _calibrateOutputCommand = calibrateOutputCommand;
+        _setInputLevelCommand = setInputLevelCommand;
     }
 
     public async Task InvokeAsync()
@@ -68,6 +70,7 @@ public class CommandInvoker : ICommandInvoker
                 _calibrateCommand,
                 _calibrateOutputCommand,
                 _displayCalibratesCommand,
+                _setInputLevelCommand,
                 _recordCommand,
                 _recordingSettingsCommand,
                 _deleteInputLevelsCommand,
