@@ -17,7 +17,7 @@ public abstract class MicrophoneView : IMicrophoneView
     {
         var infos = audioInterface
             .Microphones
-            .Select((x, index) => new MicrophoneInfo(index + 1, x.Name, x.MasterVolumeLevelScalar))
+            .Select((x, index) => new MicrophoneInfo(index + 1, x.Name, x.VolumeLevel))
             .ToList();
         Build
             .TextTable<MicrophoneInfo>(builder =>
@@ -31,7 +31,7 @@ public abstract class MicrophoneView : IMicrophoneView
 
     public class MicrophoneInfo
     {
-        public MicrophoneInfo(int no, string name, MasterVolumeLevelScalar inputLevel)
+        public MicrophoneInfo(int no, string name, VolumeLevel inputLevel)
         {
             No = no;
             Name = name;
@@ -40,7 +40,7 @@ public abstract class MicrophoneView : IMicrophoneView
 
         public int No { get; }
         public string Name { get; }
-        public MasterVolumeLevelScalar InputLevel { get; }
+        public VolumeLevel InputLevel { get; }
     }
     public void StartNotifyMasterPeakValue(IAudioInterface audioInterface)
     {

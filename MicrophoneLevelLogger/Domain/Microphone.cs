@@ -121,12 +121,12 @@ public class Microphone : IMicrophone
     public int DeviceNumber { get; }
     public WaveInput LatestWaveInput { get; private set; } = WaveInput.Empty;
 
-    public MasterVolumeLevelScalar MasterVolumeLevelScalar
+    public VolumeLevel VolumeLevel
     {
         get
         {
             using var mmDevice = GetMmDevice();
-            return (MasterVolumeLevelScalar) mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
+            return (VolumeLevel) mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
         }
         set
         {

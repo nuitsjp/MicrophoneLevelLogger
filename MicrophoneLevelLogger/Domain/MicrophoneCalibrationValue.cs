@@ -5,14 +5,14 @@ public class MicrophoneCalibrationValue
     public MicrophoneCalibrationValue(
         string id,
         string name,
-        MasterVolumeLevelScalar masterVolumeLevelScalar)
+        VolumeLevel volumeLevel)
     {
         Id = id;
         Name = name;
-        MasterVolumeLevelScalar = masterVolumeLevelScalar;
+        VolumeLevel = volumeLevel;
     }
 
     public string Id { get; }
     public string Name { get; }
-    public MasterVolumeLevelScalar MasterVolumeLevelScalar { get; }
+    public VolumeLevel VolumeLevel { get; }
 }

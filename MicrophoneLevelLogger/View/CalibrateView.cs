@@ -46,8 +46,8 @@ public class CalibrateView : MicrophoneView, ICalibrateView
             })
             .WriteLine(new []
             {
-                new MicrophoneMasterVolumeLevelScalar("リファレンス", reference.Name, reference.MasterVolumeLevelScalar.AsPrimitive(), referenceDecibel),
-                new MicrophoneMasterVolumeLevelScalar("ターゲット", target.Name, target.MasterVolumeLevelScalar.AsPrimitive(), targetDecibel)
+                new MicrophoneMasterVolumeLevelScalar("リファレンス", reference.Name, reference.VolumeLevel.AsPrimitive(), referenceDecibel),
+                new MicrophoneMasterVolumeLevelScalar("ターゲット", target.Name, target.VolumeLevel.AsPrimitive(), targetDecibel)
             });
     }
 
@@ -59,7 +59,7 @@ public class CalibrateView : MicrophoneView, ICalibrateView
             Console.WriteLine();
             Console.WriteLine("マイクのキャリブレーションを完了しました。");
             Console.WriteLine($"名称      ：{microphone.Name}");
-            Console.WriteLine($"入力レベル :{microphone.MasterVolumeLevelScalar.AsPrimitive():0.00}");
+            Console.WriteLine($"入力レベル :{microphone.VolumeLevel.AsPrimitive():0.00}");
             Console.WriteLine();
         }
     }
@@ -75,7 +75,7 @@ public class CalibrateView : MicrophoneView, ICalibrateView
             for (var i = 0; i < audioInterface.Microphones.Count; i++)
             {
                 var microphone = audioInterface.Microphones[i];
-                Console.WriteLine($"{i + 1} = {microphone.Name} 入力レベル：{microphone.MasterVolumeLevelScalar}");
+                Console.WriteLine($"{i + 1} = {microphone.Name} 入力レベル：{microphone.VolumeLevel}");
             }
         }
     }

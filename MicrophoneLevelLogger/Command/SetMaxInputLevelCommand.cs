@@ -17,7 +17,7 @@ public class SetMaxInputLevelCommand : ICommand
     {
         foreach (var microphone in _audioInterfaceProvider.Resolve().Microphones)
         {
-            microphone.MasterVolumeLevelScalar = MasterVolumeLevelScalar.Maximum;
+            microphone.VolumeLevel = VolumeLevel.Maximum;
         }
 
         return Task.CompletedTask;

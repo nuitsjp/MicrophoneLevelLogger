@@ -61,7 +61,7 @@ public class CalibrateCommand : ICommand
             //_view.StopNotifyMasterPeakValue();
 
             // キャリブレート結果を保存する
-            MicrophoneCalibrationValue value = new(target.Id, target.Name, target.MasterVolumeLevelScalar);
+            MicrophoneCalibrationValue value = new(target.Id, target.Name, target.VolumeLevel);
             AudioInterfaceCalibrationValues values = await AudioInterfaceCalibrationValues.LoadAsync();
             values.Update(value);
             await AudioInterfaceCalibrationValues.SaveAsync(values);
@@ -81,18 +81,18 @@ public class CalibrateCommand : ICommand
     private void Calibrate(IMicrophone reference, IMicrophone target)
     {
         // ボリューム調整していくステップ
-        MasterVolumeLevelScalar step = new(0.01f);
+        VolumeLevel step = new(0.01f);
 
         Console.WriteLine(target);
 
         // ターゲットの入力レベルをMaxにする
-        target.MasterVolumeLevelScalar = MasterVolumeLevelScalar.Maximum;
+        target.VolumeLevel = VolumeLevel.Maximum;
 
         // ターゲット側の入力レベルを少しずつ下げていきながら
         // リファレンスと同程度の音量になるように調整していく。
         var high = 1d;
 
-        for (; MasterVolumeLevelScalar.Minimum < target.MasterVolumeLevelScalar; target.MasterVolumeLevelScalar -= step)
+        for (; VolumeLevel.Minimum < target.VolumeLevel; target.VolumeLevel -= step)
         {
             // レコーディング開始
             reference.StartRecording(DirectoryName);
@@ -116,9 +116,9 @@ public class CalibrateCommand : ICommand
 
 
                 // 大きかった時(high)の方が誤差が小さかった場合、入力レベルをステップ分戻す
-                if (target.MasterVolumeLevelScalar < MasterVolumeLevelScalar.Maximum)
+                if (target.VolumeLevel < VolumeLevel.Maximum)
                 {
-                    target.MasterVolumeLevelScalar += step;
+                    target.VolumeLevel += step;
                 }
 
                 return;
@@ -127,7 +127,7 @@ public class CalibrateCommand : ICommand
             var diff = Math.Floor(Math.Abs(referenceLevel) - Math.Abs(targetLevel));
             step = new((float)(diff / 100));
             // 差がごく小さい場合、stepが0になってしまうので最小は0.01になるように調整する
-            step = step == new MasterVolumeLevelScalar(0f) ? new(0.01f) : step;
+            step = step == new VolumeLevel(0f) ? new(0.01f) : step;
 
             high = targetLevel;
         }

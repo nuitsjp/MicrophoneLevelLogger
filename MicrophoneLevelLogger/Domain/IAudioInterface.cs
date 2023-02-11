@@ -7,4 +7,5 @@ public interface IAudioInterface : IDisposable
     void StartRecording(string path);
     IEnumerable<IMasterPeakValues> StopRecording();
     void DeactivateMicrophones();
+
 }

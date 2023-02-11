@@ -12,7 +12,7 @@ public interface IMicrophone : IDisposable
     string Name { get; }
     int DeviceNumber { get; }
     WaveInput LatestWaveInput { get; }
-    MasterVolumeLevelScalar MasterVolumeLevelScalar { get; set; }
+    VolumeLevel VolumeLevel { get; set; }
     Task ActivateAsync();
     void StartRecording(string path);
     IMasterPeakValues StopRecording();

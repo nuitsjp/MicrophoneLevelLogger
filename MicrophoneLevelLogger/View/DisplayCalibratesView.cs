@@ -15,7 +15,7 @@ public class DisplayCalibratesView : IDisplayCalibratesView
                 {
                     builder.Borders.InsideHorizontal.AsDisable();
                     builder.Columns.Add(x => x.Name);
-                    builder.Columns.Add(x => x.MasterVolumeLevelScalar).FormatAs("{0:#.00}");
+                    builder.Columns.Add(x => x.VolumeLevel).FormatAs("{0:#.00}");
                 })
                 .WriteLine(calibrates.Microphones);
         }
