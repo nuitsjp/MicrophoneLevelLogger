@@ -31,11 +31,25 @@ public class MeasureCommand : ICommand
         // 計測時間を入力する
         var span = TimeSpan.FromSeconds(_view.InputSpan());
 
+        // メディアの再生可否を確認する
+        var isPlayMedia = _view.ConfirmPlayMedia();
+
+        if (isPlayMedia is false)
+        {
+            // 準備ができたか確認する
+            while (_view.ConfirmReady() is false)
+            {
+            }
+        }
+
         // 計測値の画面通知を開始する
         _view.StartNotifyMasterPeakValue(new AudioInterface(microphone));
 
         // 音声を再生する
-        await _mediaPlayer.PlayLoopingAsync();
+        if (isPlayMedia)
+        {
+            await _mediaPlayer.PlayLoopingAsync();
+        }
 
         // 計測を開始する
         var meter = new InputLevelMeter(microphone);
@@ -61,14 +75,10 @@ public class MeasureCommand : ICommand
             // リソースを停止・解放する。
             microphone.Deactivate();
             _view.StopNotifyMasterPeakValue();
-            await _mediaPlayer.StopAsync();
+            if (isPlayMedia)
+            {
+                await _mediaPlayer.StopAsync();
+            }
         }
     }
-}
-
-public interface IMeasureView : IMicrophoneView
-{
-    IMicrophone SelectMicrophone(IAudioInterface audioInterface);
-    int InputSpan();
-    void NotifyResult(AudioInterfaceInputLevels audioInterfaceInputLevels);
 }

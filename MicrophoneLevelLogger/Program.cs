@@ -16,6 +16,9 @@ var host = Host.CreateDefaultBuilder((string[]) args)
         services.AddTransient<ICommandInvoker, CommandInvoker>();
         services.AddTransient<ICommandInvokerView, CommandInvokerView>();
 
+        services.AddTransient<CalibrateOutputCommand>();
+        services.AddTransient<ICalibrateOutputView, CalibrateOutputView>();
+
         services.AddTransient<CalibrateCommand>();
         services.AddTransient<ICalibrateView, CalibrateView>();
 

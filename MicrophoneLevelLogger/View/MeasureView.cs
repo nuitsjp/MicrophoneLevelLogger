@@ -28,6 +28,16 @@ public class MeasureView : MicrophoneView, IMeasureView
         return Prompt.Input<int>("計測時間[秒]を入力してください。", 30);
     }
 
+    public bool ConfirmPlayMedia()
+    {
+        return Prompt.Confirm("メディアを再生しますか？", true);
+    }
+
+    public bool ConfirmReady()
+    {
+        return Prompt.Confirm("準備はできましたか？", true);
+    }
+
     public void NotifyResult(AudioInterfaceInputLevels audioInterfaceInputLevels)
     {
         lock (this)

@@ -58,6 +58,21 @@ public class AudioInterface : IAudioInterface
         }
     }
 
+    public VolumeLevel DefaultOutputLevel
+    {
+        get
+        {
+            using var deviceEnumerator = new MMDeviceEnumerator();
+            using var device = deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+            return new VolumeLevel(device.AudioEndpointVolume.MasterVolumeLevelScalar);
+        }
+        set
+        {
+            using var deviceEnumerator = new MMDeviceEnumerator();
+            using var device = deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+            device.AudioEndpointVolume.MasterVolumeLevelScalar = value.AsPrimitive();
+        }
+    }
     public IReadOnlyList<IMicrophone> Microphones { get; }
     public void ActivateMicrophones()
     {

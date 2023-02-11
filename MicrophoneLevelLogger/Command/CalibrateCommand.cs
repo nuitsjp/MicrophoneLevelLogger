@@ -20,7 +20,7 @@ public class CalibrateCommand : ICommand
         _mediaPlayer = mediaPlayer;
     }
 
-    public string Name => "Calibrate            : マイクの入力レベルを調整する。";
+    public string Name => "Calibrate input      : マイクの入力レベルを調整する。";
 
     public async Task ExecuteAsync()
     {

@@ -21,7 +21,10 @@ public class InputLevelMeter
         {
             while (_isRunning)
             {
-                _maximumDecibels.Add(_microphone.LatestWaveInput.MaximumDecibel);
+                lock (_maximumDecibels)
+                {
+                    _maximumDecibels.Add(_microphone.LatestWaveInput.MaximumDecibel);
+                }
             }
 
             await Task.Delay(delay);
@@ -31,12 +34,15 @@ public class InputLevelMeter
     public MicrophoneInputLevel StopMonitoring()
     {
         _isRunning = false;
-        return new MicrophoneInputLevel(
-            _microphone.Id,
-            _microphone.Name,
-            _maximumDecibels.Min(),
-            _maximumDecibels.Average(),
-            _maximumDecibels.Median(),
-            _maximumDecibels.Max());
+        lock (_maximumDecibels)
+        {
+            return new MicrophoneInputLevel(
+                _microphone.Id,
+                _microphone.Name,
+                _maximumDecibels.Min(),
+                _maximumDecibels.Average(),
+                _maximumDecibels.Median(),
+                _maximumDecibels.Max());
+        }
     }
 }
