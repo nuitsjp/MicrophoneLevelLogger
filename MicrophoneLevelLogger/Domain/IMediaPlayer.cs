@@ -2,6 +2,6 @@
 
 public interface IMediaPlayer
 {
-    Task PlayAsync();
+    Task PlayLoopingAsync();
     Task StopAsync();
 }

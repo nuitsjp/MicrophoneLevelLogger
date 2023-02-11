@@ -45,7 +45,7 @@ public class CalibrateCommand : ICommand
         Directory.CreateDirectory(DirectoryName);
 
         // 音声を再生する
-        await _mediaPlayer.PlayAsync();
+        await _mediaPlayer.PlayLoopingAsync();
         try
         {
             // マイクを有効化する

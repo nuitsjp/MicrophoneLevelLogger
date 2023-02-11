@@ -35,7 +35,7 @@ public class MeasureCommand : ICommand
         _view.StartNotifyMasterPeakValue(new AudioInterface(microphone));
 
         // 音声を再生する
-        await _mediaPlayer.PlayAsync();
+        await _mediaPlayer.PlayLoopingAsync();
 
         // 計測を開始する
         var meter = new InputLevelMeter(microphone);

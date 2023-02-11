@@ -6,10 +6,10 @@ public class MediaPlayer : IMediaPlayer
 {
     private SoundPlayer? _player;
 
-    public Task PlayAsync()
+    public Task PlayLoopingAsync()
     {
         _player = new(Properties.Resources.吾輩は猫である);
-        _player.Play();
+        _player.PlayLooping();
         return Task.CompletedTask;
     }
 

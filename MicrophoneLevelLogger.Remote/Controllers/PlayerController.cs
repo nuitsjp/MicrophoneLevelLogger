@@ -19,7 +19,7 @@ public class PlayerController : ControllerBase
     public Task PlayAsync()
     {
         Console.WriteLine("Player#Play");
-        return _mediaPlayer.PlayAsync();
+        return _mediaPlayer.PlayLoopingAsync();
     }
 
     [HttpGet("Stop")]

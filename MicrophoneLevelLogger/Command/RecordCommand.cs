@@ -46,7 +46,7 @@ public class RecordCommand : ICommand
         var mediaPlayer = settings.IsEnableRemotePlaying
             ? _mediaPlayerProvider.ResolveRemoteService()
             : _mediaPlayerProvider.ResolveLocaleService();
-        await mediaPlayer.PlayAsync();
+        await mediaPlayer.PlayLoopingAsync();
 
         var localRecorder = _recorderProviderProvider.ResolveLocal();
         var remoteRecorder = _recorderProviderProvider.ResolveRemote();
