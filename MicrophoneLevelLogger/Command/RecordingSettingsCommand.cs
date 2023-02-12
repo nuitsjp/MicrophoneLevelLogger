@@ -23,12 +23,12 @@ public class RecordingSettingsCommand : ICommand
         {
             var recordingSpan = _view.InputRecodingSpan();
             var isEnableRemoteRecording = _view.ConfirmEnableRemoteRecording();
-            var mediaPlayerHost = isEnableRemoteRecording
-                ? _view.InputMediaPlayerHost()
+            var recorderHost = isEnableRemoteRecording
+                ? _view.InputRecorderHost()
                 : "localhost";
             var isEnableRemotePlaying = _view.ConfirmEnableRemotePlaying();
-            var recorderHost = isEnableRemotePlaying
-                ? _view.InputRecorderHost()
+            var mediaPlayerHost = isEnableRemotePlaying
+                ? _view.InputMediaPlayerHost()
                 : "localhost";
 
             await RecordingSettings.SaveAsync(
