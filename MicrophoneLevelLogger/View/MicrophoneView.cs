@@ -4,7 +4,7 @@ using MicrophoneLevelLogger.Domain;
 
 namespace MicrophoneLevelLogger.View;
 
-public abstract class MicrophoneView : IMicrophoneView
+public class MicrophoneView : IMicrophoneView
 {
     /// <summary>
     /// 画面に入力レベルを表示する際のサンプリングレート。Microphone側にもあるがあちらは分析用のため別々に定義する。

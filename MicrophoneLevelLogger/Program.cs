@@ -53,6 +53,9 @@ var host = Host.CreateDefaultBuilder((string[]) args)
         services.AddTransient<SetInputLevelCommand>();
         services.AddTransient<ISetInputLevelView, SetInputLevelView>();
 
+        services.AddTransient<DisplayMicrophonesCommand>();
+        services.AddTransient<IMicrophoneView, MicrophoneView>();
+
         services.AddTransient<IRecorderProvider, RecorderProvider>();
         services.AddTransient<IMediaPlayerProvider, MediaPlayerProvider>();
         services.AddTransient<IMediaPlayer, MediaPlayer>();
