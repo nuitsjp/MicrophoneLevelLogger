@@ -34,7 +34,7 @@ public class CalibrateOutputCommand : ICommand
         var specifyVolume = _view.InputDecibel();
 
         // 音声を再生する
-        var recordingSettings = await RecordingSettings.LoadAsync();
+        var recordingSettings = await Domain.RecordingSettings.LoadAsync();
         var mediaPlayer =
             recordingSettings.IsEnableRemotePlaying
                 ? _mediaPlayerProvider.ResolveRemoteService()

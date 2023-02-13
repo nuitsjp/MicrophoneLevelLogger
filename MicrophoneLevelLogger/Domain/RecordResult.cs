@@ -1,6 +1,4 @@
-﻿using MicrophoneLevelLogger.Domain;
-
-namespace MicrophoneLevelLogger.Command;
+﻿namespace MicrophoneLevelLogger.Domain;
 
 public class RecordResult
 {

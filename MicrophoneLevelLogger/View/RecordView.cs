@@ -1,5 +1,5 @@
 ﻿using FluentTextTable;
-using MicrophoneLevelLogger.Command;
+using MicrophoneLevelLogger.Command.Record;
 using MicrophoneLevelLogger.Domain;
 using Sharprompt;
 

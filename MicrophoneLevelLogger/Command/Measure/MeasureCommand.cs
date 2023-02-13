@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms.VisualStyles;
 using MicrophoneLevelLogger.Domain;
 
-namespace MicrophoneLevelLogger.Command;
+namespace MicrophoneLevelLogger.Command.Measure;
 
 public class MeasureCommand : ICommand
 {
@@ -10,8 +10,8 @@ public class MeasureCommand : ICommand
     private readonly IMediaPlayer _mediaPlayer;
 
     public MeasureCommand(
-        IMeasureView view, 
-        IAudioInterfaceProvider provider, 
+        IMeasureView view,
+        IAudioInterfaceProvider provider,
         IMediaPlayer mediaPlayer)
     {
         _view = view;

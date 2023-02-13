@@ -1,7 +1,7 @@
 ﻿using MicrophoneLevelLogger.Domain;
 using Sharprompt;
 
-namespace MicrophoneLevelLogger.Command;
+namespace MicrophoneLevelLogger.Command.RecordingSettings;
 
 public class RecordingSettingsCommand : ICommand
 {
@@ -16,7 +16,7 @@ public class RecordingSettingsCommand : ICommand
 
     public async Task ExecuteAsync()
     {
-        RecordingSettings settings = await RecordingSettings.LoadAsync();
+        var settings = await Domain.RecordingSettings.LoadAsync();
         _view.ShowSettings(settings);
 
         if (_view.ConfirmModify())
@@ -31,27 +31,15 @@ public class RecordingSettingsCommand : ICommand
                 ? _view.InputMediaPlayerHost()
                 : "localhost";
 
-            await RecordingSettings.SaveAsync(
-                new RecordingSettings(
-                    mediaPlayerHost, 
+            await Domain.RecordingSettings.SaveAsync(
+                new Domain.RecordingSettings(
+                    mediaPlayerHost,
                     recorderHost,
                     TimeSpan.FromSeconds(recordingSpan),
                     isEnableRemotePlaying,
                     isEnableRemoteRecording));
 
-            _view.ShowSettings(await RecordingSettings.LoadAsync());
+            _view.ShowSettings(await Domain.RecordingSettings.LoadAsync());
         }
     }
-}
-
-public interface IRecordingSettingsView
-{
-    void ShowSettings(RecordingSettings settings);
-
-    bool ConfirmModify();
-    int InputRecodingSpan();
-    bool ConfirmEnableRemotePlaying();
-    string InputMediaPlayerHost();
-    bool ConfirmEnableRemoteRecording();
-    string InputRecorderHost();
 }

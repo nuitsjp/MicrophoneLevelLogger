@@ -1,6 +1,6 @@
 ﻿using MicrophoneLevelLogger.Domain;
 
-namespace MicrophoneLevelLogger.Command;
+namespace MicrophoneLevelLogger.Command.SetInputLevel;
 
 public class SetInputLevelCommand : ICommand
 {
@@ -8,7 +8,7 @@ public class SetInputLevelCommand : ICommand
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
 
     public SetInputLevelCommand(
-        ISetInputLevelView view, 
+        ISetInputLevelView view,
         IAudioInterfaceProvider audioInterfaceProvider)
     {
         _view = view;
@@ -25,6 +25,6 @@ public class SetInputLevelCommand : ICommand
 
         _view.NotifyMicrophonesInformation(audioInterface);
 
-        return Task.CompletedTask;;
+        return Task.CompletedTask; ;
     }
 }

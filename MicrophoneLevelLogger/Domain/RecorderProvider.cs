@@ -1,4 +1,4 @@
-﻿using MicrophoneLevelLogger.Command;
+﻿using MicrophoneLevelLogger.Command.Record;
 
 namespace MicrophoneLevelLogger.Domain;
 

@@ -1,6 +1,6 @@
 ﻿using MicrophoneLevelLogger.Domain;
 
-namespace MicrophoneLevelLogger.Command;
+namespace MicrophoneLevelLogger.Command.DisplayMicrophones;
 
 public class DisplayMicrophonesCommand : ICommand
 {
@@ -8,7 +8,7 @@ public class DisplayMicrophonesCommand : ICommand
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
 
     public DisplayMicrophonesCommand(
-        IMicrophoneView view, 
+        IMicrophoneView view,
         IAudioInterfaceProvider audioInterfaceProvider)
     {
         _view = view;

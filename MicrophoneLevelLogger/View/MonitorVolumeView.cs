@@ -1,4 +1,4 @@
-﻿using MicrophoneLevelLogger.Command;
+﻿using MicrophoneLevelLogger.Command.MonitorVolume;
 
 namespace MicrophoneLevelLogger.View;
 

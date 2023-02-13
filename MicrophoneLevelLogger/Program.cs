@@ -1,5 +1,17 @@
 ﻿using MicrophoneLevelLogger;
 using MicrophoneLevelLogger.Command;
+using MicrophoneLevelLogger.Command.CalibrateInput;
+using MicrophoneLevelLogger.Command.DeleteInputLevels;
+using MicrophoneLevelLogger.Command.DeleteRecord;
+using MicrophoneLevelLogger.Command.DisplayCalibrates;
+using MicrophoneLevelLogger.Command.DisplayMeasurements;
+using MicrophoneLevelLogger.Command.DisplayMicrophones;
+using MicrophoneLevelLogger.Command.Measure;
+using MicrophoneLevelLogger.Command.MonitorVolume;
+using MicrophoneLevelLogger.Command.Record;
+using MicrophoneLevelLogger.Command.RecordingSettings;
+using MicrophoneLevelLogger.Command.SetInputLevel;
+using MicrophoneLevelLogger.Command.SetMaxInputLevel;
 using MicrophoneLevelLogger.Domain;
 using MicrophoneLevelLogger.View;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,12 +49,13 @@ var host = Host.CreateDefaultBuilder((string[]) args)
         services.AddTransient<IMonitorVolumeView, MonitorVolumeView>();
 
         services.AddTransient<DeleteRecordCommand>();
+        services.AddTransient<IDeleteRecordView, DeleteRecordView>();
 
         services.AddTransient<DisplayMeasurementsCommand>();
         services.AddTransient<IDisplayMeasurementsView, DisplayMeasurementsView>();
 
         services.AddTransient<DeleteInputLevelsCommand>();
-        services.AddTransient<IRemoveInputLevelsView, RemoveInputLevelsView>();
+        services.AddTransient<IDeleteInputLevelsView, DeleteInputLevelsView>();
 
         services.AddTransient<RecordingSettingsCommand>();
         services.AddTransient<IRecordingSettingsView, RecordingSettingsView>();

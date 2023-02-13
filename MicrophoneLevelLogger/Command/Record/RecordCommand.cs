@@ -5,7 +5,7 @@ using FftSharp.Windows;
 using FluentTextTable;
 using MicrophoneLevelLogger.Domain;
 
-namespace MicrophoneLevelLogger.Command;
+namespace MicrophoneLevelLogger.Command.Record;
 
 public class RecordCommand : ICommand
 {
@@ -17,9 +17,9 @@ public class RecordCommand : ICommand
     private readonly IMediaPlayerProvider _mediaPlayerProvider;
 
     public RecordCommand(
-        IAudioInterfaceProvider audioInterfaceProvider, 
+        IAudioInterfaceProvider audioInterfaceProvider,
         IRecordView view,
-        IRecorderProvider recorderProvider, 
+        IRecorderProvider recorderProvider,
         IMediaPlayerProvider mediaPlayerProvider)
     {
         _view = view;
@@ -39,7 +39,7 @@ public class RecordCommand : ICommand
         // 録音名を入力する。
         string recordName = _view.InputRecordName();
 
-        var settings = await RecordingSettings.LoadAsync();
+        var settings = await Domain.RecordingSettings.LoadAsync();
         _view.NotifyStarting(settings.RecordingSpan);
 
         // 背景音源を再生する

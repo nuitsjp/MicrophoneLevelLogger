@@ -1,9 +1,9 @@
-﻿using MicrophoneLevelLogger.Command;
+﻿using MicrophoneLevelLogger.Command.DeleteInputLevels;
 using Sharprompt;
 
 namespace MicrophoneLevelLogger.View;
 
-public class RemoveInputLevelsView : IRemoveInputLevelsView
+public class DeleteInputLevelsView : IDeleteInputLevelsView
 {
     public bool Confirm()
     {

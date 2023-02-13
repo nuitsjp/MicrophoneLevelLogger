@@ -1,6 +1,6 @@
 ﻿using MicrophoneLevelLogger.Domain;
 
-namespace MicrophoneLevelLogger.Command;
+namespace MicrophoneLevelLogger.Command.SetInputLevel;
 
 public interface ISetInputLevelView : IMicrophoneView
 {

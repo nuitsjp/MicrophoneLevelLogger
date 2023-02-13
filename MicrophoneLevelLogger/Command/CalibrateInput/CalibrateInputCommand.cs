@@ -1,6 +1,6 @@
 ﻿using MicrophoneLevelLogger.Domain;
 
-namespace MicrophoneLevelLogger.Command;
+namespace MicrophoneLevelLogger.Command.CalibrateInput;
 
 public class CalibrateInputCommand : ICommand
 {
@@ -11,8 +11,8 @@ public class CalibrateInputCommand : ICommand
     private readonly IMediaPlayer _mediaPlayer;
 
     public CalibrateInputCommand(
-        IAudioInterfaceProvider audioInterfaceProvider, 
-        ICalibrateInputView view, 
+        IAudioInterfaceProvider audioInterfaceProvider,
+        ICalibrateInputView view,
         IMediaPlayer mediaPlayer)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
