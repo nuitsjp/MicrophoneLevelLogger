@@ -8,16 +8,19 @@ public class RecordController : IController
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly IRecorderProvider _recorderProviderProvider;
     private readonly IMediaPlayerProvider _mediaPlayerProvider;
+    private readonly IRecordingSettingsRepository _recordingSettingsRepository;
 
     public RecordController(
         IAudioInterfaceProvider audioInterfaceProvider,
         IRecordView view,
         IRecorderProvider recorderProvider,
-        IMediaPlayerProvider mediaPlayerProvider)
+        IMediaPlayerProvider mediaPlayerProvider, 
+        IRecordingSettingsRepository recordingSettingsRepository)
     {
         _view = view;
         _recorderProviderProvider = recorderProvider;
         _mediaPlayerProvider = mediaPlayerProvider;
+        _recordingSettingsRepository = recordingSettingsRepository;
         _audioInterfaceProvider = audioInterfaceProvider;
     }
 
@@ -34,7 +37,7 @@ public class RecordController : IController
         // 録音名を入力する。
         string recordName = _view.InputRecordName();
 
-        var settings = await MicrophoneLevelLogger.RecordingSettings.LoadAsync();
+        var settings = await _recordingSettingsRepository.LoadAsync();
         _view.NotifyStarting(settings.RecordingSpan);
 
         // 画面に入力レベルを通知する。

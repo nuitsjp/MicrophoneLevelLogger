@@ -2,6 +2,13 @@
 
 public class MediaPlayerProvider : IMediaPlayerProvider
 {
+    private readonly IRecordingSettingsRepository _repository;
+
+    public MediaPlayerProvider(IRecordingSettingsRepository repository)
+    {
+        _repository = repository;
+    }
+
     public IMediaPlayer ResolveLocale()
     {
         return new MediaPlayer();
@@ -9,6 +16,6 @@ public class MediaPlayerProvider : IMediaPlayerProvider
 
     public IMediaPlayer ResolveRemote()
     {
-        return new RemoteMediaPlayer();
+        return new RemoteMediaPlayer(_repository);
     }
 }

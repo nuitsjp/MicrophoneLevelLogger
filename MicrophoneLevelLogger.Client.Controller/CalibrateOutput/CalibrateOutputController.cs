@@ -5,15 +5,18 @@ public class CalibrateOutputController : IController
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ICalibrateOutputView _view;
     private readonly IMediaPlayerProvider _mediaPlayerProvider;
+    private readonly IRecordingSettingsRepository _recordingSettingsRepository;
 
     public CalibrateOutputController(
         IAudioInterfaceProvider audioInterfaceProvider, 
         ICalibrateOutputView view, 
-        IMediaPlayerProvider mediaPlayerProvider)
+        IMediaPlayerProvider mediaPlayerProvider, 
+        IRecordingSettingsRepository recordingSettingsRepository)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
         _mediaPlayerProvider = mediaPlayerProvider;
+        _recordingSettingsRepository = recordingSettingsRepository;
     }
 
     public string Name => "Calibrate output     : スピーカーの出力レベルを調整する。";
@@ -31,7 +34,7 @@ public class CalibrateOutputController : IController
         var specifyVolume = _view.InputDecibel();
 
         // 音声を再生する
-        var recordingSettings = await MicrophoneLevelLogger.RecordingSettings.LoadAsync();
+        var recordingSettings = await _recordingSettingsRepository.LoadAsync();
         var mediaPlayer =
             recordingSettings.IsEnableRemotePlaying
                 ? _mediaPlayerProvider.ResolveRemote()

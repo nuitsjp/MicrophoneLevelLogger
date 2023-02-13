@@ -3,10 +3,14 @@
 public class RecorderProvider : IRecorderProvider
 {
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
+    private readonly IRecordingSettingsRepository _repository;
 
-    public RecorderProvider(IAudioInterfaceProvider audioInterfaceProvider)
+    public RecorderProvider(
+        IAudioInterfaceProvider audioInterfaceProvider, 
+        IRecordingSettingsRepository repository)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
+        _repository = repository;
     }
 
     public IRecorder ResolveLocal()
@@ -16,6 +20,6 @@ public class RecorderProvider : IRecorderProvider
 
     public IRecorder ResolveRemote()
     {
-        return new RemoteRecorder();
+        return new RemoteRecorder(_repository);
     }
 }

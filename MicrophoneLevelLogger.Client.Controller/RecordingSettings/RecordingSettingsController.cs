@@ -2,18 +2,22 @@
 
 public class RecordingSettingsController : IController
 {
-    private IRecordingSettingsView _view;
+    private readonly IRecordingSettingsView _view;
+    private readonly IRecordingSettingsRepository _repository;
 
-    public RecordingSettingsController(IRecordingSettingsView view)
+    public RecordingSettingsController(
+        IRecordingSettingsView view, 
+        IRecordingSettingsRepository repository)
     {
         _view = view;
+        _repository = repository;
     }
 
     public string Name => "Recoding Settings    : 録音設定を確認・変更する。";
 
     public async Task ExecuteAsync()
     {
-        var settings = await MicrophoneLevelLogger.RecordingSettings.LoadAsync();
+        var settings = await _repository.LoadAsync();
         _view.ShowSettings(settings);
 
         if (_view.ConfirmModify())
@@ -28,7 +32,7 @@ public class RecordingSettingsController : IController
                 ? _view.InputMediaPlayerHost()
                 : "localhost";
 
-            await MicrophoneLevelLogger.RecordingSettings.SaveAsync(
+            await _repository.SaveAsync(
                 new MicrophoneLevelLogger.RecordingSettings(
                     mediaPlayerHost,
                     recorderHost,
@@ -36,7 +40,7 @@ public class RecordingSettingsController : IController
                     isEnableRemotePlaying,
                     isEnableRemoteRecording));
 
-            _view.ShowSettings(await MicrophoneLevelLogger.RecordingSettings.LoadAsync());
+            _view.ShowSettings(await _repository.LoadAsync());
         }
     }
 }
