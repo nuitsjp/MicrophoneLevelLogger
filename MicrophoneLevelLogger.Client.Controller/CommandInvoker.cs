@@ -19,56 +19,56 @@ public class CommandInvoker : ICommandInvoker
 {
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ICommandInvokerView _view;
-    private readonly CalibrateOutputCommand _calibrateOutputCommand;
-    private readonly CalibrateInputCommand _calibrateInputCommand;
-    private readonly RecordCommand _recordCommand;
-    private readonly MonitorVolumeCommand _monitorVolumeCommand;
-    private readonly SetMaxInputLevelCommand _setMaxInputLevelCommand;
-    private readonly DeleteRecordCommand _deleteRecordCommand;
-    private readonly DisplayMeasurementsCommand _displayMeasurementsCommand;
-    private readonly DeleteInputLevelsCommand _deleteInputLevelsCommand;
-    private readonly RecordingSettingsCommand _recordingSettingsCommand;
-    private readonly MeasureCommand _measureCommand;
-    private readonly DeleteCalibratesCommand _deleteCalibratesCommand;
-    private readonly DisplayCalibratesCommand _displayCalibratesCommand;
-    private readonly SetInputLevelCommand _setInputLevelCommand;
-    private readonly DisplayMicrophonesCommand _displayMicrophonesCommand;
-    private readonly ExitCommand _exitCommand = new();
+    private readonly CalibrateOutputController _calibrateOutputController;
+    private readonly CalibrateInputController _calibrateInputController;
+    private readonly RecordController _recordController;
+    private readonly MonitorVolumeController _monitorVolumeController;
+    private readonly SetMaxInputLevelController _setMaxInputLevelController;
+    private readonly DeleteRecordController _deleteRecordController;
+    private readonly DisplayMeasurementsController _displayMeasurementsController;
+    private readonly DeleteInputLevelsController _deleteInputLevelsController;
+    private readonly RecordingSettingsController _recordingSettingsController;
+    private readonly MeasureController _measureController;
+    private readonly DeleteCalibratesController _deleteCalibratesController;
+    private readonly DisplayCalibratesController _displayCalibratesController;
+    private readonly SetInputLevelController _setInputLevelController;
+    private readonly DisplayMicrophonesController _displayMicrophonesController;
+    private readonly ExitController _exitController = new();
 
     public CommandInvoker(
         IAudioInterfaceProvider audioInterfaceProvider,
         ICommandInvokerView view, 
-        CalibrateInputCommand calibrateInputCommand, 
-        RecordCommand recordCommand, 
-        SetMaxInputLevelCommand setMaxInputLevelCommand, 
-        MonitorVolumeCommand monitorVolumeCommand, 
-        DeleteRecordCommand deleteRecordCommand, 
-        DisplayMeasurementsCommand displayMeasurementsCommand, 
-        DeleteInputLevelsCommand deleteInputLevelsCommand, 
-        RecordingSettingsCommand recordingSettingsCommand, 
-        MeasureCommand measureCommand, 
-        DeleteCalibratesCommand deleteCalibratesCommand, 
-        DisplayCalibratesCommand displayCalibratesCommand, 
-        CalibrateOutputCommand calibrateOutputCommand, 
-        SetInputLevelCommand setInputLevelCommand, 
-        DisplayMicrophonesCommand displayMicrophonesCommand)
+        CalibrateInputController calibrateInputController, 
+        RecordController recordController, 
+        SetMaxInputLevelController setMaxInputLevelController, 
+        MonitorVolumeController monitorVolumeController, 
+        DeleteRecordController deleteRecordController, 
+        DisplayMeasurementsController displayMeasurementsController, 
+        DeleteInputLevelsController deleteInputLevelsController, 
+        RecordingSettingsController recordingSettingsController, 
+        MeasureController measureController, 
+        DeleteCalibratesController deleteCalibratesController, 
+        DisplayCalibratesController displayCalibratesController, 
+        CalibrateOutputController calibrateOutputController, 
+        SetInputLevelController setInputLevelController, 
+        DisplayMicrophonesController displayMicrophonesController)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
-        _calibrateInputCommand = calibrateInputCommand;
-        _recordCommand = recordCommand;
-        _setMaxInputLevelCommand = setMaxInputLevelCommand;
-        _monitorVolumeCommand = monitorVolumeCommand;
-        _deleteRecordCommand = deleteRecordCommand;
-        _displayMeasurementsCommand = displayMeasurementsCommand;
-        _deleteInputLevelsCommand = deleteInputLevelsCommand;
-        _recordingSettingsCommand = recordingSettingsCommand;
-        _measureCommand = measureCommand;
-        _deleteCalibratesCommand = deleteCalibratesCommand;
-        _displayCalibratesCommand = displayCalibratesCommand;
-        _calibrateOutputCommand = calibrateOutputCommand;
-        _setInputLevelCommand = setInputLevelCommand;
-        _displayMicrophonesCommand = displayMicrophonesCommand;
+        _calibrateInputController = calibrateInputController;
+        _recordController = recordController;
+        _setMaxInputLevelController = setMaxInputLevelController;
+        _monitorVolumeController = monitorVolumeController;
+        _deleteRecordController = deleteRecordController;
+        _displayMeasurementsController = displayMeasurementsController;
+        _deleteInputLevelsController = deleteInputLevelsController;
+        _recordingSettingsController = recordingSettingsController;
+        _measureController = measureController;
+        _deleteCalibratesController = deleteCalibratesController;
+        _displayCalibratesController = displayCalibratesController;
+        _calibrateOutputController = calibrateOutputController;
+        _setInputLevelController = setInputLevelController;
+        _displayMicrophonesController = displayMicrophonesController;
     }
 
     public async Task InvokeAsync()
@@ -78,26 +78,26 @@ public class CommandInvoker : ICommandInvoker
 
         while (true)
         {
-            var commands = new ICommand[]
+            var commands = new IController[]
             {
-                _displayMicrophonesCommand,
-                _monitorVolumeCommand,
-                _measureCommand,
-                _displayMeasurementsCommand,
-                _setMaxInputLevelCommand,
-                _calibrateInputCommand,
-                _calibrateOutputCommand,
-                _displayCalibratesCommand,
-                _setInputLevelCommand,
-                _recordCommand,
-                _recordingSettingsCommand,
-                _deleteInputLevelsCommand,
-                _deleteCalibratesCommand,
-                _deleteRecordCommand,
-                _exitCommand
+                _displayMicrophonesController,
+                _monitorVolumeController,
+                _measureController,
+                _displayMeasurementsController,
+                _setMaxInputLevelController,
+                _calibrateInputController,
+                _calibrateOutputController,
+                _displayCalibratesController,
+                _setInputLevelController,
+                _recordController,
+                _recordingSettingsController,
+                _deleteInputLevelsController,
+                _deleteCalibratesController,
+                _deleteRecordController,
+                _exitController
             };
             var selected = _view.SelectCommand(commands.Select(x => x.Name));
-            if (selected == _exitCommand.Name)
+            if (selected == _exitController.Name)
             {
                 break;
             }
@@ -114,7 +114,7 @@ public class CommandInvoker : ICommandInvoker
         }
     }
 
-    private class ExitCommand : ICommand
+    private class ExitController : IController
     {
         public string Name => "Exit                 : 終了する。";
 

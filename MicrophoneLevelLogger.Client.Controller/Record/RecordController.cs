@@ -1,6 +1,6 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.Record;
 
-public class RecordCommand : ICommand
+public class RecordController : IController
 {
     public const string RecordDirectoryName = "Record";
 
@@ -9,7 +9,7 @@ public class RecordCommand : ICommand
     private readonly IRecorderProvider _recorderProviderProvider;
     private readonly IMediaPlayerProvider _mediaPlayerProvider;
 
-    public RecordCommand(
+    public RecordController(
         IAudioInterfaceProvider audioInterfaceProvider,
         IRecordView view,
         IRecorderProvider recorderProvider,

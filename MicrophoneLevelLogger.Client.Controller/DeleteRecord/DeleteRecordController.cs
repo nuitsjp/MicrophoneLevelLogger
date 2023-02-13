@@ -2,11 +2,11 @@
 
 namespace MicrophoneLevelLogger.Client.Controller.DeleteRecord;
 
-public class DeleteRecordCommand : ICommand
+public class DeleteRecordController : IController
 {
     private readonly IDeleteRecordView _view;
 
-    public DeleteRecordCommand(IDeleteRecordView view)
+    public DeleteRecordController(IDeleteRecordView view)
     {
         _view = view;
     }
@@ -16,9 +16,9 @@ public class DeleteRecordCommand : ICommand
     {
         if (_view.Confirm())
         {
-            if (Directory.Exists(RecordCommand.RecordDirectoryName))
+            if (Directory.Exists(RecordController.RecordDirectoryName))
             {
-                Directory.Delete(RecordCommand.RecordDirectoryName, true);
+                Directory.Delete(RecordController.RecordDirectoryName, true);
             }
         }
         return Task.CompletedTask;

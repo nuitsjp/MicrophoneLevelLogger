@@ -1,10 +1,10 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.RecordingSettings;
 
-public class RecordingSettingsCommand : ICommand
+public class RecordingSettingsController : IController
 {
     private IRecordingSettingsView _view;
 
-    public RecordingSettingsCommand(IRecordingSettingsView view)
+    public RecordingSettingsController(IRecordingSettingsView view)
     {
         _view = view;
     }

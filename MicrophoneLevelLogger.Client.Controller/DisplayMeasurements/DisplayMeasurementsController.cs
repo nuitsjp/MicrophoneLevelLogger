@@ -1,10 +1,10 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.DisplayMeasurements;
 
-public class DisplayMeasurementsCommand : ICommand
+public class DisplayMeasurementsController : IController
 {
     private readonly IDisplayMeasurementsView _view;
 
-    public DisplayMeasurementsCommand(IDisplayMeasurementsView view)
+    public DisplayMeasurementsController(IDisplayMeasurementsView view)
     {
         _view = view;
     }

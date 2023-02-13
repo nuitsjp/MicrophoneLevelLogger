@@ -1,12 +1,12 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.Measure;
 
-public class MeasureCommand : ICommand
+public class MeasureController : IController
 {
     private readonly IMeasureView _view;
     private readonly IAudioInterfaceProvider _provider;
     private readonly IMediaPlayer _mediaPlayer;
 
-    public MeasureCommand(
+    public MeasureController(
         IMeasureView view,
         IAudioInterfaceProvider provider,
         IMediaPlayer mediaPlayer)

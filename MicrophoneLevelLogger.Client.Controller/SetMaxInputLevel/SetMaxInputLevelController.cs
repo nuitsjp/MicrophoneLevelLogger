@@ -1,10 +1,10 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.SetMaxInputLevel;
 
-public class SetMaxInputLevelCommand : ICommand
+public class SetMaxInputLevelController : IController
 {
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
 
-    public SetMaxInputLevelCommand(IAudioInterfaceProvider audioInterfaceProvider)
+    public SetMaxInputLevelController(IAudioInterfaceProvider audioInterfaceProvider)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
     }

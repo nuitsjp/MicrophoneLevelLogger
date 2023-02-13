@@ -1,11 +1,11 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.DisplayMicrophones;
 
-public class DisplayMicrophonesCommand : ICommand
+public class DisplayMicrophonesController : IController
 {
     private readonly IMicrophoneView _view;
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
 
-    public DisplayMicrophonesCommand(
+    public DisplayMicrophonesController(
         IMicrophoneView view,
         IAudioInterfaceProvider audioInterfaceProvider)
     {

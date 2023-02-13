@@ -1,11 +1,11 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.SetInputLevel;
 
-public class SetInputLevelCommand : ICommand
+public class SetInputLevelController : IController
 {
     private readonly ISetInputLevelView _view;
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
 
-    public SetInputLevelCommand(
+    public SetInputLevelController(
         ISetInputLevelView view,
         IAudioInterfaceProvider audioInterfaceProvider)
     {

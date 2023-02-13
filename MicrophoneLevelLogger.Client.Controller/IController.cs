@@ -1,6 +1,6 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller;
 
-public interface ICommand
+public interface IController
 {
     string Name { get; }
     Task ExecuteAsync();

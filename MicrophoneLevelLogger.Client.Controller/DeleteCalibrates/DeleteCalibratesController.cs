@@ -1,10 +1,10 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.DeleteCalibrates;
 
-public class DeleteCalibratesCommand : ICommand
+public class DeleteCalibratesController : IController
 {
     private readonly IDeleteCalibrateView _view;
 
-    public DeleteCalibratesCommand(IDeleteCalibrateView view)
+    public DeleteCalibratesController(IDeleteCalibrateView view)
     {
         _view = view;
     }

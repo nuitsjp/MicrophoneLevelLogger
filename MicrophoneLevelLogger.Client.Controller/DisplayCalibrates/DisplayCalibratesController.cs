@@ -1,10 +1,10 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
 
-public class DisplayCalibratesCommand : ICommand
+public class DisplayCalibratesController : IController
 {
     private readonly IDisplayCalibratesView _view;
 
-    public DisplayCalibratesCommand(IDisplayCalibratesView view)
+    public DisplayCalibratesController(IDisplayCalibratesView view)
     {
         _view = view;
     }

@@ -1,9 +1,9 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.DeleteInputLevels;
 
-public class DeleteInputLevelsCommand : ICommand
+public class DeleteInputLevelsController : IController
 {
     private readonly IDeleteInputLevelsView _view;
-    public DeleteInputLevelsCommand(IDeleteInputLevelsView view)
+    public DeleteInputLevelsController(IDeleteInputLevelsView view)
     {
         _view = view;
     }

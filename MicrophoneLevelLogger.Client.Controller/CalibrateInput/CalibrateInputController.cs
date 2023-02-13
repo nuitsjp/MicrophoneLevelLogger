@@ -3,7 +3,7 @@
 /// <summary>
 /// ２つのマイクの入力音量が、同程度になるように調整する
 /// </summary>
-public class CalibrateInputCommand : ICommand
+public class CalibrateInputController : IController
 {
     private const string DirectoryName = "Calibrate";
 
@@ -11,7 +11,7 @@ public class CalibrateInputCommand : ICommand
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly IMediaPlayer _mediaPlayer;
 
-    public CalibrateInputCommand(
+    public CalibrateInputController(
         ICalibrateInputView view,
         IAudioInterfaceProvider audioInterfaceProvider,
         IMediaPlayer mediaPlayer)

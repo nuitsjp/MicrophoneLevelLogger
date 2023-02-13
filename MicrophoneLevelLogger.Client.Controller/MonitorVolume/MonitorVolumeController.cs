@@ -1,11 +1,11 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.MonitorVolume;
 
-public class MonitorVolumeCommand : ICommand
+public class MonitorVolumeController : IController
 {
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly IMonitorVolumeView _view;
 
-    public MonitorVolumeCommand(IAudioInterfaceProvider audioInterfaceProvider, IMonitorVolumeView view)
+    public MonitorVolumeController(IAudioInterfaceProvider audioInterfaceProvider, IMonitorVolumeView view)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;

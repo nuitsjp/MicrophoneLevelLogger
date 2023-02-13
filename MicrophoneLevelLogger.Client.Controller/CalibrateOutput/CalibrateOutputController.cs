@@ -1,12 +1,12 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
 
-public class CalibrateOutputCommand : ICommand
+public class CalibrateOutputController : IController
 {
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ICalibrateOutputView _view;
     private readonly IMediaPlayerProvider _mediaPlayerProvider;
 
-    public CalibrateOutputCommand(
+    public CalibrateOutputController(
         IAudioInterfaceProvider audioInterfaceProvider, 
         ICalibrateOutputView view, 
         IMediaPlayerProvider mediaPlayerProvider)
