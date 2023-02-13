@@ -5,15 +5,18 @@ public class MeasureController : IController
     private readonly IMeasureView _view;
     private readonly IAudioInterfaceProvider _provider;
     private readonly IMediaPlayer _mediaPlayer;
+    private readonly IAudioInterfaceInputLevelsRepository _repository;
 
     public MeasureController(
         IMeasureView view,
         IAudioInterfaceProvider provider,
-        IMediaPlayer mediaPlayer)
+        IMediaPlayer mediaPlayer, 
+        IAudioInterfaceInputLevelsRepository repository)
     {
         _view = view;
         _provider = provider;
         _mediaPlayer = mediaPlayer;
+        _repository = repository;
     }
 
     public string Name => "Measure              : 指定マイクの入力音量を計測する。";
@@ -60,9 +63,9 @@ public class MeasureController : IController
             var microphoneInputLevel = meter.StopMonitoring();
 
             // 計測結果リストを更新する
-            AudioInterfaceInputLevels inputLevels = await AudioInterfaceInputLevels.LoadAsync();
+            AudioInterfaceInputLevels inputLevels = await _repository.LoadAsync();
             inputLevels.Update(microphoneInputLevel);
-            await AudioInterfaceInputLevels.SaveAsync(inputLevels);
+            await _repository.SaveAsync(inputLevels);
 
             // 結果を通知する
             _view.NotifyResult(inputLevels);

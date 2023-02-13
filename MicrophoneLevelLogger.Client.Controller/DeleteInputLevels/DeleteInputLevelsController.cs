@@ -3,9 +3,13 @@
 public class DeleteInputLevelsController : IController
 {
     private readonly IDeleteInputLevelsView _view;
-    public DeleteInputLevelsController(IDeleteInputLevelsView view)
+    private readonly IAudioInterfaceInputLevelsRepository _repository;
+    public DeleteInputLevelsController(
+        IDeleteInputLevelsView view, 
+        IAudioInterfaceInputLevelsRepository repository)
     {
         _view = view;
+        _repository = repository;
     }
 
     public string Name => "Delete measurements  : マイク入力音量の計測結果をすべて削除する。";
@@ -16,7 +20,7 @@ public class DeleteInputLevelsController : IController
     {
         if (_view.Confirm())
         {
-            AudioInterfaceInputLevels.Remove();
+            _repository.Remove();
         }
         return Task.CompletedTask;
     }
