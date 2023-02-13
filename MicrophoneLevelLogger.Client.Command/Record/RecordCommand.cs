@@ -5,7 +5,7 @@ public class RecordCommand : ICommand
     public const string RecordDirectoryName = "Record";
 
     private readonly IRecordView _view;
-    private readonly IAudioInterface _audioInterface;
+    private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly IRecorderProvider _recorderProviderProvider;
     private readonly IMediaPlayerProvider _mediaPlayerProvider;
 
@@ -18,7 +18,7 @@ public class RecordCommand : ICommand
         _view = view;
         _recorderProviderProvider = recorderProvider;
         _mediaPlayerProvider = mediaPlayerProvider;
-        _audioInterface = audioInterfaceProvider.Resolve();
+        _audioInterfaceProvider = audioInterfaceProvider;
     }
 
     public string Name => "Record               : マイクの入力をキャプチャーし保存する。";
@@ -26,8 +26,10 @@ public class RecordCommand : ICommand
 
     public async Task ExecuteAsync()
     {
+        var audioInterface = _audioInterfaceProvider.Resolve();
+
         // 起動時情報を通知する。
-        _view.NotifyMicrophonesInformation(_audioInterface);
+        _view.NotifyMicrophonesInformation(audioInterface);
 
         // 録音名を入力する。
         string recordName = _view.InputRecordName();
@@ -36,7 +38,7 @@ public class RecordCommand : ICommand
         _view.NotifyStarting(settings.RecordingSpan);
 
         // 画面に入力レベルを通知する。
-        _view.StartNotifyMasterPeakValue(_audioInterface);
+        _view.StartNotifyMasterPeakValue(audioInterface);
 
         // 背景音源を再生する
         var mediaPlayer = settings.IsEnableRemotePlaying
