@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Client.Command.DisplayMicrophones;
+﻿namespace MicrophoneLevelLogger.Client.Controller.DisplayMicrophones;
 
 public class DisplayMicrophonesCommand : ICommand
 {

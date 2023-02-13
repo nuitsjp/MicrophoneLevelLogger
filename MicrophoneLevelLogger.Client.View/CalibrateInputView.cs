@@ -1,5 +1,5 @@
 ﻿using FluentTextTable;
-using MicrophoneLevelLogger.Client.Command.CalibrateInput;
+using MicrophoneLevelLogger.Client.Controller.CalibrateInput;
 using Sharprompt;
 
 namespace MicrophoneLevelLogger.Client.View;

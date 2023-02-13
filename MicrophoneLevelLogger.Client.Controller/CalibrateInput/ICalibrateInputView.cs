@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Client.Command.CalibrateInput;
+﻿namespace MicrophoneLevelLogger.Client.Controller.CalibrateInput;
 
 public interface ICalibrateInputView : IMicrophoneView
 {

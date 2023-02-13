@@ -1,19 +1,19 @@
-﻿using MicrophoneLevelLogger.Client.Command.CalibrateInput;
-using MicrophoneLevelLogger.Client.Command.CalibrateOutput;
-using MicrophoneLevelLogger.Client.Command.DeleteCalibrates;
-using MicrophoneLevelLogger.Client.Command.DeleteInputLevels;
-using MicrophoneLevelLogger.Client.Command.DeleteRecord;
-using MicrophoneLevelLogger.Client.Command.DisplayCalibrates;
-using MicrophoneLevelLogger.Client.Command.DisplayMeasurements;
-using MicrophoneLevelLogger.Client.Command.DisplayMicrophones;
-using MicrophoneLevelLogger.Client.Command.Measure;
-using MicrophoneLevelLogger.Client.Command.MonitorVolume;
-using MicrophoneLevelLogger.Client.Command.Record;
-using MicrophoneLevelLogger.Client.Command.RecordingSettings;
-using MicrophoneLevelLogger.Client.Command.SetInputLevel;
-using MicrophoneLevelLogger.Client.Command.SetMaxInputLevel;
+﻿using MicrophoneLevelLogger.Client.Controller.CalibrateInput;
+using MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
+using MicrophoneLevelLogger.Client.Controller.DeleteCalibrates;
+using MicrophoneLevelLogger.Client.Controller.DeleteInputLevels;
+using MicrophoneLevelLogger.Client.Controller.DeleteRecord;
+using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
+using MicrophoneLevelLogger.Client.Controller.DisplayMeasurements;
+using MicrophoneLevelLogger.Client.Controller.DisplayMicrophones;
+using MicrophoneLevelLogger.Client.Controller.Measure;
+using MicrophoneLevelLogger.Client.Controller.MonitorVolume;
+using MicrophoneLevelLogger.Client.Controller.Record;
+using MicrophoneLevelLogger.Client.Controller.RecordingSettings;
+using MicrophoneLevelLogger.Client.Controller.SetInputLevel;
+using MicrophoneLevelLogger.Client.Controller.SetMaxInputLevel;
 
-namespace MicrophoneLevelLogger.Client.Command;
+namespace MicrophoneLevelLogger.Client.Controller;
 
 public class CommandInvoker : ICommandInvoker
 {

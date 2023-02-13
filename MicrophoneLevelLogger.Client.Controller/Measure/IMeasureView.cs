@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Client.Command.Measure;
+﻿namespace MicrophoneLevelLogger.Client.Controller.Measure;
 
 public interface IMeasureView : IMicrophoneView
 {

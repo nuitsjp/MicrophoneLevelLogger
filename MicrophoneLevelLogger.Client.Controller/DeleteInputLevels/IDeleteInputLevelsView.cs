@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Client.Command.DeleteInputLevels;
+﻿namespace MicrophoneLevelLogger.Client.Controller.DeleteInputLevels;
 
 public interface IDeleteInputLevelsView
 {

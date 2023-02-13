@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Client.Command.RecordingSettings;
+﻿namespace MicrophoneLevelLogger.Client.Controller.RecordingSettings;
 
 public interface IRecordingSettingsView
 {

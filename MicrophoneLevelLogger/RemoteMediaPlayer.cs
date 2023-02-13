@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-
-namespace MicrophoneLevelLogger;
+﻿namespace MicrophoneLevelLogger;
 
 public class RemoteMediaPlayer : IMediaPlayer
 {

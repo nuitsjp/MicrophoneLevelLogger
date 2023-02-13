@@ -1,6 +1,6 @@
 ﻿using UnitGenerator;
 
-namespace MicrophoneLevelLogger.Domain;
+namespace MicrophoneLevelLogger;
 
 [UnitOf(
     typeof(float), 

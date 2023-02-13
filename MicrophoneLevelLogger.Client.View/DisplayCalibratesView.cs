@@ -1,5 +1,5 @@
 ﻿using FluentTextTable;
-using MicrophoneLevelLogger.Client.Command.DisplayCalibrates;
+using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
 
 namespace MicrophoneLevelLogger.Client.View;
 

@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Client.Command.SetInputLevel;
+﻿namespace MicrophoneLevelLogger.Client.Controller.SetInputLevel;
 
 public interface ISetInputLevelView : IMicrophoneView
 {

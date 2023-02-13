@@ -1,6 +1,4 @@
-﻿using MicrophoneLevelLogger.Domain;
-
-namespace MicrophoneLevelLogger.Client.Command.CalibrateInput;
+﻿namespace MicrophoneLevelLogger.Client.Controller.CalibrateInput;
 
 /// <summary>
 /// ２つのマイクの入力音量が、同程度になるように調整する

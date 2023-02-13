@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Client.Command.DisplayCalibrates;
+﻿namespace MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
 
 public class DisplayCalibratesCommand : ICommand
 {

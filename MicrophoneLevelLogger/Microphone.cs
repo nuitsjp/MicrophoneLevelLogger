@@ -1,8 +1,6 @@
-﻿using MicrophoneLevelLogger.Domain;
-using NAudio.CoreAudioApi;
+﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System.Buffers;
-using System.Xml.Linq;
 using MMDeviceEnumerator = NAudio.CoreAudioApi.MMDeviceEnumerator;
 
 namespace MicrophoneLevelLogger;

@@ -1,4 +1,4 @@
-﻿using MicrophoneLevelLogger.Client.Command.DeleteCalibrates;
+﻿using MicrophoneLevelLogger.Client.Controller.DeleteCalibrates;
 using Sharprompt;
 
 namespace MicrophoneLevelLogger.Client.View;

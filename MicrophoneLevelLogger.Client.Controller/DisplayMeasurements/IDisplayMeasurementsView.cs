@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Client.Command.DisplayMeasurements;
+﻿namespace MicrophoneLevelLogger.Client.Controller.DisplayMeasurements;
 
 public interface IDisplayMeasurementsView
 {

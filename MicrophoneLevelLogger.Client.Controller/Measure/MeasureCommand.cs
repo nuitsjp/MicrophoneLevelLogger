@@ -1,6 +1,4 @@
-﻿using MicrophoneLevelLogger.Domain;
-
-namespace MicrophoneLevelLogger.Client.Command.Measure;
+﻿namespace MicrophoneLevelLogger.Client.Controller.Measure;
 
 public class MeasureCommand : ICommand
 {

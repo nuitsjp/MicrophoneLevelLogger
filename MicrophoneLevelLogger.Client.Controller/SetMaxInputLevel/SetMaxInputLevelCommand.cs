@@ -1,6 +1,4 @@
-﻿using MicrophoneLevelLogger.Domain;
-
-namespace MicrophoneLevelLogger.Client.Command.SetMaxInputLevel;
+﻿namespace MicrophoneLevelLogger.Client.Controller.SetMaxInputLevel;
 
 public class SetMaxInputLevelCommand : ICommand
 {

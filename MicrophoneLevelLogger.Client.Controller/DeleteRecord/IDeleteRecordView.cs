@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Client.Command.DeleteRecord;
+﻿namespace MicrophoneLevelLogger.Client.Controller.DeleteRecord;
 
 public interface IDeleteRecordView
 {

@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using CsvHelper;
-using MicrophoneLevelLogger.Domain;
 
 namespace MicrophoneLevelLogger;
 

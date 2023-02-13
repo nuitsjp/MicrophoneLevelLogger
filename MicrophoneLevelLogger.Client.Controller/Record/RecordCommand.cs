@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Client.Command.Record;
+﻿namespace MicrophoneLevelLogger.Client.Controller.Record;
 
 public class RecordCommand : ICommand
 {

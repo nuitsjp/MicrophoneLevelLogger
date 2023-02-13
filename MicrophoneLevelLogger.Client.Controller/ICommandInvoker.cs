@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Client.Command;
+﻿namespace MicrophoneLevelLogger.Client.Controller;
 
 public interface ICommandInvoker
 {

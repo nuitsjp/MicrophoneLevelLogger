@@ -1,6 +1,6 @@
-﻿using MicrophoneLevelLogger.Client.Command.Record;
+﻿using MicrophoneLevelLogger.Client.Controller.Record;
 
-namespace MicrophoneLevelLogger.Client.Command.DeleteRecord;
+namespace MicrophoneLevelLogger.Client.Controller.DeleteRecord;
 
 public class DeleteRecordCommand : ICommand
 {
