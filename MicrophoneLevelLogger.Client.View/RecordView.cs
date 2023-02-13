@@ -13,7 +13,7 @@ public class RecordView : MicrophoneView, IRecordView
 
     public void Wait(TimeSpan timeout)
     {
-        ConsoleEx.ReadLine(timeout);
+        ConsoleEx.Wait(timeout);
     }
 
     public void NotifyResult(IEnumerable<RecordResult> results)

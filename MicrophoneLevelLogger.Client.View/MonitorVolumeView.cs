@@ -12,6 +12,6 @@ public class MonitorVolumeView : MicrophoneView, IMonitorVolumeView
 
     public void WaitToBeStopped()
     {
-        ConsoleEx.ReadLine();
+        Console.ReadLine();
     }
 }

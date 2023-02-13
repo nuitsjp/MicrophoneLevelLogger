@@ -11,18 +11,15 @@ public class ConsoleEx
         Console.SetCursorPosition(left, top);
     }
 
-    public static string ReadLine(TimeSpan? timeout = null)
+    public static void Wait(TimeSpan timeout)
     {
-        if (timeout != null)
+        Task.Run(() =>
         {
-            Task.Run(() =>
-            {
-                Thread.Sleep((TimeSpan)timeout);
-                IntPtr stdin = GetStdHandle(StdHandle.Stdin);
-                CloseHandle(stdin);
-            });
-        }
-        return Console.ReadLine()!;
+            Thread.Sleep((TimeSpan)timeout);
+            IntPtr stdin = GetStdHandle(StdHandle.Stdin);
+            CloseHandle(stdin);
+        });
+        Console.ReadLine();
     }
 
     public static void WriteLine(string line = "", ConsoleColor? foreground = null, ConsoleColor? background = null)

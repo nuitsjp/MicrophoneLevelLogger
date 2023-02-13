@@ -39,7 +39,7 @@ public class MeasureView : MicrophoneView, IMeasureView
 
     public void Wait(TimeSpan timeout)
     {
-        ConsoleEx.ReadLine(timeout);
+        ConsoleEx.Wait(timeout);
     }
 
     public void NotifyResult(AudioInterfaceInputLevels audioInterfaceInputLevels)
