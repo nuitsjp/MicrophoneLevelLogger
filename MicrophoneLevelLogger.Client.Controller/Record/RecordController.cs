@@ -60,7 +60,7 @@ public class RecordController : IController
             await localRecorder.RecodeAsync(recordName);
 
             // 録音時間、待機する。
-            await Task.Delay(settings.RecordingSpan);
+            _view.Wait(settings.RecordingSpan);
 
         }
         finally

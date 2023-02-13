@@ -6,6 +6,6 @@ public interface IMeasureView : IMicrophoneView
     int InputSpan();
     bool ConfirmPlayMedia();
     bool ConfirmReady();
-    void WaitToBeStopped(TimeSpan timeout);
+    void Wait(TimeSpan timeout);
     void NotifyResult(AudioInterfaceInputLevels audioInterfaceInputLevels);
 }

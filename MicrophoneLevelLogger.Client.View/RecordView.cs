@@ -11,6 +11,11 @@ public class RecordView : MicrophoneView, IRecordView
         return Prompt.Input<string>("録音名を入力してください。");
     }
 
+    public void Wait(TimeSpan timeout)
+    {
+        ConsoleEx.ReadLine(timeout);
+    }
+
     public void NotifyResult(IEnumerable<RecordResult> results)
     {
         lock (this)

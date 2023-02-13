@@ -37,7 +37,7 @@ public class MeasureView : MicrophoneView, IMeasureView
         return Prompt.Confirm("準備はできましたか？", true);
     }
 
-    public void WaitToBeStopped(TimeSpan timeout)
+    public void Wait(TimeSpan timeout)
     {
         ConsoleEx.ReadLine(timeout);
     }
