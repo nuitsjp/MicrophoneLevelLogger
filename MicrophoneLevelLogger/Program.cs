@@ -19,8 +19,8 @@ var host = Host.CreateDefaultBuilder((string[]) args)
         services.AddTransient<CalibrateOutputCommand>();
         services.AddTransient<ICalibrateOutputView, CalibrateOutputView>();
 
-        services.AddTransient<CalibrateCommand>();
-        services.AddTransient<ICalibrateView, CalibrateView>();
+        services.AddTransient<CalibrateInputCommand>();
+        services.AddTransient<ICalibrateInputView, CalibrateInputView>();
 
         services.AddTransient<DisplayCalibratesCommand>();
         services.AddTransient<IDisplayCalibratesView, DisplayCalibratesView>();

@@ -2,17 +2,17 @@
 
 namespace MicrophoneLevelLogger.Command;
 
-public class CalibrateCommand : ICommand
+public class CalibrateInputCommand : ICommand
 {
     private const string DirectoryName = "Calibrate";
 
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
-    private readonly ICalibrateView _view;
+    private readonly ICalibrateInputView _view;
     private readonly IMediaPlayer _mediaPlayer;
 
-    public CalibrateCommand(
+    public CalibrateInputCommand(
         IAudioInterfaceProvider audioInterfaceProvider, 
-        ICalibrateView view, 
+        ICalibrateInputView view, 
         IMediaPlayer mediaPlayer)
     {
         _audioInterfaceProvider = audioInterfaceProvider;

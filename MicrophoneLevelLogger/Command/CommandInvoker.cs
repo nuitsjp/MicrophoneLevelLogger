@@ -7,7 +7,7 @@ public class CommandInvoker : ICommandInvoker
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ICommandInvokerView _view;
     private readonly CalibrateOutputCommand _calibrateOutputCommand;
-    private readonly CalibrateCommand _calibrateCommand;
+    private readonly CalibrateInputCommand _calibrateInputCommand;
     private readonly RecordCommand _recordCommand;
     private readonly MonitorVolumeCommand _monitorVolumeCommand;
     private readonly SetMaxInputLevelCommand _setMaxInputLevelCommand;
@@ -25,7 +25,7 @@ public class CommandInvoker : ICommandInvoker
     public CommandInvoker(
         IAudioInterfaceProvider audioInterfaceProvider,
         ICommandInvokerView view, 
-        CalibrateCommand calibrateCommand, 
+        CalibrateInputCommand calibrateInputCommand, 
         RecordCommand recordCommand, 
         SetMaxInputLevelCommand setMaxInputLevelCommand, 
         MonitorVolumeCommand monitorVolumeCommand, 
@@ -42,7 +42,7 @@ public class CommandInvoker : ICommandInvoker
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
-        _calibrateCommand = calibrateCommand;
+        _calibrateInputCommand = calibrateInputCommand;
         _recordCommand = recordCommand;
         _setMaxInputLevelCommand = setMaxInputLevelCommand;
         _monitorVolumeCommand = monitorVolumeCommand;
@@ -72,7 +72,7 @@ public class CommandInvoker : ICommandInvoker
                 _measureCommand,
                 _displayMeasurementsCommand,
                 _setMaxInputLevelCommand,
-                _calibrateCommand,
+                _calibrateInputCommand,
                 _calibrateOutputCommand,
                 _displayCalibratesCommand,
                 _setInputLevelCommand,
