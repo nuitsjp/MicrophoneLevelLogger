@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrophoneLevelLogger", "Mi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogAggregator", "LogAggregator\LogAggregator.csproj", "{1A4C77DB-4209-4696-A1FD-7705FAC5DA43}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrophoneLevelLogger.Remote", "MicrophoneLevelLogger.Remote\MicrophoneLevelLogger.Remote.csproj", "{4D37A408-8F1D-4501-BB81-8782828B7D19}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrophoneLevelLogger.Client", "MicrophoneLevelLogger.Client\MicrophoneLevelLogger.Client.csproj", "{62B36883-6EDD-41C3-A2BF-E7FB9A92A9E9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrophoneLevelLogger.Client.View", "MicrophoneLevelLogger.Client.View\MicrophoneLevelLogger.Client.View.csproj", "{92B6A8A7-3DE9-4110-A716-40E1C37840F2}"
@@ -16,6 +14,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrophoneLevelLogger.Client.Controller", "MicrophoneLevelLogger.Client.Controller\MicrophoneLevelLogger.Client.Controller.csproj", "{19BE0E24-6D97-4677-B42D-18124BA1F112}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrophoneLevelLogger.Repository", "MicrophoneLevelLogger.Repository\MicrophoneLevelLogger.Repository.csproj", "{30CBB0D1-FF7C-4659-8161-0C043517CEBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrophoneLevelLogger.Server", "MicrophoneLevelLogger.Server\MicrophoneLevelLogger.Server.csproj", "{EFB0B8E7-43D7-482A-AD22-4BC043775962}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +31,6 @@ Global
 		{1A4C77DB-4209-4696-A1FD-7705FAC5DA43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A4C77DB-4209-4696-A1FD-7705FAC5DA43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A4C77DB-4209-4696-A1FD-7705FAC5DA43}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4D37A408-8F1D-4501-BB81-8782828B7D19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4D37A408-8F1D-4501-BB81-8782828B7D19}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4D37A408-8F1D-4501-BB81-8782828B7D19}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4D37A408-8F1D-4501-BB81-8782828B7D19}.Release|Any CPU.Build.0 = Release|Any CPU
 		{62B36883-6EDD-41C3-A2BF-E7FB9A92A9E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{62B36883-6EDD-41C3-A2BF-E7FB9A92A9E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62B36883-6EDD-41C3-A2BF-E7FB9A92A9E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,6 +47,10 @@ Global
 		{30CBB0D1-FF7C-4659-8161-0C043517CEBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30CBB0D1-FF7C-4659-8161-0C043517CEBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30CBB0D1-FF7C-4659-8161-0C043517CEBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFB0B8E7-43D7-482A-AD22-4BC043775962}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFB0B8E7-43D7-482A-AD22-4BC043775962}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFB0B8E7-43D7-482A-AD22-4BC043775962}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFB0B8E7-43D7-482A-AD22-4BC043775962}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

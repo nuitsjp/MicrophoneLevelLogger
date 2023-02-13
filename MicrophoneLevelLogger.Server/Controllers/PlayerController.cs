@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace MicrophoneLevelLogger.Remote.Controllers;
+namespace MicrophoneLevelLogger.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
