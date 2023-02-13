@@ -10,15 +10,18 @@ public class CalibrateInputController : IController
     private readonly ICalibrateInputView _view;
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly IMediaPlayer _mediaPlayer;
+    private readonly IAudioInterfaceCalibrationValuesRepository _audioInterfaceCalibrationValuesRepository;
 
     public CalibrateInputController(
         ICalibrateInputView view,
         IAudioInterfaceProvider audioInterfaceProvider,
-        IMediaPlayer mediaPlayer)
+        IMediaPlayer mediaPlayer, 
+        IAudioInterfaceCalibrationValuesRepository audioInterfaceCalibrationValuesRepository)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
         _mediaPlayer = mediaPlayer;
+        _audioInterfaceCalibrationValuesRepository = audioInterfaceCalibrationValuesRepository;
     }
 
     /// <summary>
@@ -50,9 +53,9 @@ public class CalibrateInputController : IController
 
             // キャリブレート結果を保存する
             MicrophoneCalibrationValue value = new(target.Id, target.Name, target.VolumeLevel);
-            AudioInterfaceCalibrationValues values = await AudioInterfaceCalibrationValues.LoadAsync();
+            AudioInterfaceCalibrationValues values = await _audioInterfaceCalibrationValuesRepository.LoadAsync();
             values.Update(value);
-            await AudioInterfaceCalibrationValues.SaveAsync(values);
+            await _audioInterfaceCalibrationValuesRepository.SaveAsync(values);
 
             // 結果を表示する
             _view.NotifyCalibrated(values, target);

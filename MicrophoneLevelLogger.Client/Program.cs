@@ -16,6 +16,7 @@ using MicrophoneLevelLogger.Client.Controller.RecordingSettings;
 using MicrophoneLevelLogger.Client.Controller.SetInputLevel;
 using MicrophoneLevelLogger.Client.Controller.SetMaxInputLevel;
 using MicrophoneLevelLogger.Client.View;
+using MicrophoneLevelLogger.Repository;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -34,7 +35,12 @@ var host = Host.CreateDefaultBuilder((string[])args)
         services.AddTransient<IMediaPlayer, MediaPlayer>();
 
         /////////////////////////////////////////////////////////////////////////
-        // Domain & View
+        // Repository
+        /////////////////////////////////////////////////////////////////////////
+        services.AddTransient<IAudioInterfaceCalibrationValuesRepository, AudioInterfaceCalibrationValuesRepository>();
+
+        /////////////////////////////////////////////////////////////////////////
+        // Controller & View
         /////////////////////////////////////////////////////////////////////////
         services.AddTransient<ICommandInvoker, CommandInvoker>();
         services.AddTransient<ICommandInvokerView, CommandInvokerView>();

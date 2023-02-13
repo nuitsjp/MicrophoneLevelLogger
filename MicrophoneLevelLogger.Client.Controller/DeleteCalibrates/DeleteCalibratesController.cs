@@ -3,10 +3,12 @@
 public class DeleteCalibratesController : IController
 {
     private readonly IDeleteCalibrateView _view;
+    private readonly IAudioInterfaceCalibrationValuesRepository _audioInterfaceCalibrationValuesRepository;
 
-    public DeleteCalibratesController(IDeleteCalibrateView view)
+    public DeleteCalibratesController(IDeleteCalibrateView view, IAudioInterfaceCalibrationValuesRepository audioInterfaceCalibrationValuesRepository)
     {
         _view = view;
+        _audioInterfaceCalibrationValuesRepository = audioInterfaceCalibrationValuesRepository;
     }
 
     public string Name => "Delete calibrates    : マイク入力レベルの調整結果をすべて削除する。";
@@ -15,7 +17,7 @@ public class DeleteCalibratesController : IController
     {
         if (_view.Confirm())
         {
-            AudioInterfaceCalibrationValues.Remove();
+            _audioInterfaceCalibrationValuesRepository.Remove();
         }
 
         return Task.CompletedTask;
