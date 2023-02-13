@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MicrophoneLevelLogger.Command;
+using MicrophoneLevelLogger.Command.CalibrateOutput;
 using MicrophoneLevelLogger.Domain;
 using Sharprompt;
 

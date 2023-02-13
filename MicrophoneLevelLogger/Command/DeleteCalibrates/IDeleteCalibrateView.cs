@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Command;
+﻿namespace MicrophoneLevelLogger.Command.DeleteCalibrates;
 
 public interface IDeleteCalibrateView
 {

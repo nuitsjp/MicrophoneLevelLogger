@@ -1,4 +1,6 @@
 ﻿using MicrophoneLevelLogger.Command.CalibrateInput;
+using MicrophoneLevelLogger.Command.CalibrateOutput;
+using MicrophoneLevelLogger.Command.DeleteCalibrates;
 using MicrophoneLevelLogger.Command.DeleteInputLevels;
 using MicrophoneLevelLogger.Command.DeleteRecord;
 using MicrophoneLevelLogger.Command.DisplayCalibrates;

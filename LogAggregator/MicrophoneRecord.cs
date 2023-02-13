@@ -1,4 +1,4 @@
-﻿using LogAggregator;
+﻿namespace LogAggregator;
 
 public class MicrophoneRecord
 {

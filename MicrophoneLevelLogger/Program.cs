@@ -1,6 +1,8 @@
 ﻿using MicrophoneLevelLogger;
 using MicrophoneLevelLogger.Command;
 using MicrophoneLevelLogger.Command.CalibrateInput;
+using MicrophoneLevelLogger.Command.CalibrateOutput;
+using MicrophoneLevelLogger.Command.DeleteCalibrates;
 using MicrophoneLevelLogger.Command.DeleteInputLevels;
 using MicrophoneLevelLogger.Command.DeleteRecord;
 using MicrophoneLevelLogger.Command.DisplayCalibrates;
@@ -23,55 +25,60 @@ var host = Host.CreateDefaultBuilder((string[]) args)
     {
         services.AddHostedService<Worker>();
 
+        /////////////////////////////////////////////////////////////////////////
+        // Domain
+        /////////////////////////////////////////////////////////////////////////
         services.AddTransient<IAudioInterfaceProvider, AudioInterfaceProvider>();
+        services.AddTransient<IRecorderProvider, RecorderProvider>();
+        services.AddTransient<IMediaPlayerProvider, MediaPlayerProvider>();
+        services.AddTransient<IMediaPlayer, MediaPlayer>();
 
+        /////////////////////////////////////////////////////////////////////////
+        // Domain & View
+        /////////////////////////////////////////////////////////////////////////
         services.AddTransient<ICommandInvoker, CommandInvoker>();
         services.AddTransient<ICommandInvokerView, CommandInvokerView>();
-
-        services.AddTransient<CalibrateOutputCommand>();
-        services.AddTransient<ICalibrateOutputView, CalibrateOutputView>();
 
         services.AddTransient<CalibrateInputCommand>();
         services.AddTransient<ICalibrateInputView, CalibrateInputView>();
 
-        services.AddTransient<DisplayCalibratesCommand>();
-        services.AddTransient<IDisplayCalibratesView, DisplayCalibratesView>();
+        services.AddTransient<CalibrateOutputCommand>();
+        services.AddTransient<ICalibrateOutputView, CalibrateOutputView>();
 
         services.AddTransient<DeleteCalibratesCommand>();
         services.AddTransient<IDeleteCalibrateView, DeleteCalibrateView>();
 
-        services.AddTransient<RecordCommand>();
-        services.AddTransient<IRecordView, RecordView>();
-
-        services.AddTransient<SetMaxInputLevelCommand>();
-
-        services.AddTransient<MonitorVolumeCommand>();
-        services.AddTransient<IMonitorVolumeView, MonitorVolumeView>();
+        services.AddTransient<DeleteInputLevelsCommand>();
+        services.AddTransient<IDeleteInputLevelsView, DeleteInputLevelsView>();
 
         services.AddTransient<DeleteRecordCommand>();
         services.AddTransient<IDeleteRecordView, DeleteRecordView>();
 
+        services.AddTransient<DisplayCalibratesCommand>();
+        services.AddTransient<IDisplayCalibratesView, DisplayCalibratesView>();
+
         services.AddTransient<DisplayMeasurementsCommand>();
         services.AddTransient<IDisplayMeasurementsView, DisplayMeasurementsView>();
-
-        services.AddTransient<DeleteInputLevelsCommand>();
-        services.AddTransient<IDeleteInputLevelsView, DeleteInputLevelsView>();
-
-        services.AddTransient<RecordingSettingsCommand>();
-        services.AddTransient<IRecordingSettingsView, RecordingSettingsView>();
-
-        services.AddTransient<MeasureCommand>();
-        services.AddTransient<IMeasureView, MeasureView>();
-
-        services.AddTransient<SetInputLevelCommand>();
-        services.AddTransient<ISetInputLevelView, SetInputLevelView>();
 
         services.AddTransient<DisplayMicrophonesCommand>();
         services.AddTransient<IMicrophoneView, MicrophoneView>();
 
-        services.AddTransient<IRecorderProvider, RecorderProvider>();
-        services.AddTransient<IMediaPlayerProvider, MediaPlayerProvider>();
-        services.AddTransient<IMediaPlayer, MediaPlayer>();
+        services.AddTransient<MeasureCommand>();
+        services.AddTransient<IMeasureView, MeasureView>();
+
+        services.AddTransient<MonitorVolumeCommand>();
+        services.AddTransient<IMonitorVolumeView, MonitorVolumeView>();
+
+        services.AddTransient<RecordCommand>();
+        services.AddTransient<IRecordView, RecordView>();
+
+        services.AddTransient<RecordingSettingsCommand>();
+        services.AddTransient<IRecordingSettingsView, RecordingSettingsView>();
+
+        services.AddTransient<SetInputLevelCommand>();
+        services.AddTransient<ISetInputLevelView, SetInputLevelView>();
+
+        services.AddTransient<SetMaxInputLevelCommand>();
     })
     .ConfigureLogging((_, builder) =>
     {

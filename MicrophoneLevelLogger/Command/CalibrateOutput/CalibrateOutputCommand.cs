@@ -1,7 +1,6 @@
 ﻿using MicrophoneLevelLogger.Domain;
-using System;
 
-namespace MicrophoneLevelLogger.Command;
+namespace MicrophoneLevelLogger.Command.CalibrateOutput;
 
 public class CalibrateOutputCommand : ICommand
 {
