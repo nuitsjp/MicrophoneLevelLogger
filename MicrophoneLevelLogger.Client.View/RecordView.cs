@@ -32,18 +32,6 @@ public class RecordView : MicrophoneView, IRecordView
 
     public void NotifyStarting(TimeSpan timeSpan)
     {
-        var beforeForegroundColor = Console.ForegroundColor;
-        var beforeBackgroundColor = Console.BackgroundColor;
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.BackgroundColor = ConsoleColor.Red;
-        try
-        {
-            Console.WriteLine($"{timeSpan.Seconds}秒間、録音します。");
-        }
-        finally
-        {
-            Console.ForegroundColor = beforeForegroundColor;
-            Console.BackgroundColor = beforeBackgroundColor;
-        }
+        ConsoleEx.WriteLine($"{timeSpan.Seconds}秒間、録音します。", ConsoleColor.White, ConsoleColor.Red);
     }
 }

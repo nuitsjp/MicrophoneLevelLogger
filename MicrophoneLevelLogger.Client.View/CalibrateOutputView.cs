@@ -41,12 +41,12 @@ public class CalibrateOutputView : ICalibrateOutputView
 
     public void DisplayOutputVolume(double volume)
     {
-        Console.WriteLine($" -> 音量 : {volume:0.00}");
+        ConsoleEx.WriteLine($" -> 音量 : {volume:0.00}");
     }
 
 
     public void DisplayDefaultOutputLevel(VolumeLevel level)
     {
-        Console.Write($"出力レベル : {level.AsPrimitive():0.00}");
+        ConsoleEx.Write($"出力レベル : {level.AsPrimitive():0.00}");
     }
 }

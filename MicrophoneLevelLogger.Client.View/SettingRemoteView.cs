@@ -9,13 +9,13 @@ public class RecordingSettingsView : IRecordingSettingsView
     {
         lock (this)
         {
-            Console.WriteLine();
-            Console.WriteLine($"録音時間[秒]     : {settings.RecordingSpan.Seconds}");
-            Console.WriteLine($"リモート録音実施 : {settings.IsEnableRemoteRecording}");
-            Console.WriteLine($"録音ホスト       : {settings.RecorderHost}");
-            Console.WriteLine($"リモート再生実施 : {settings.IsEnableRemotePlaying}");
-            Console.WriteLine($"音楽再生ホスト   : {settings.MediaPlayerHost}");
-            Console.WriteLine();
+            ConsoleEx.WriteLine();
+            ConsoleEx.WriteLine($"録音時間[秒]     : {settings.RecordingSpan.Seconds}");
+            ConsoleEx.WriteLine($"リモート録音実施 : {settings.IsEnableRemoteRecording}");
+            ConsoleEx.WriteLine($"録音ホスト       : {settings.RecorderHost}");
+            ConsoleEx.WriteLine($"リモート再生実施 : {settings.IsEnableRemotePlaying}");
+            ConsoleEx.WriteLine($"音楽再生ホスト   : {settings.MediaPlayerHost}");
+            ConsoleEx.WriteLine();
         }
     }
 

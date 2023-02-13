@@ -26,9 +26,9 @@ public class CalibrateInputView : MicrophoneView, ICalibrateInputView
             {
                 return target;
             }
-            Console.WriteLine();
-            Console.WriteLine("リファレンスとは異なるマイクを選択してください。");
-            Console.WriteLine();
+            ConsoleEx.WriteLine();
+            ConsoleEx.WriteLine("リファレンスとは異なるマイクを選択してください。");
+            ConsoleEx.WriteLine();
         }
     }
 
@@ -54,12 +54,12 @@ public class CalibrateInputView : MicrophoneView, ICalibrateInputView
     {
         lock (this)
         {
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine("マイクのキャリブレーションを完了しました。");
-            Console.WriteLine($"名称      ：{microphone.Name}");
-            Console.WriteLine($"入力レベル :{microphone.VolumeLevel.AsPrimitive():0.00}");
-            Console.WriteLine();
+            ConsoleEx.WriteLine();
+            ConsoleEx.WriteLine();
+            ConsoleEx.WriteLine("マイクのキャリブレーションを完了しました。");
+            ConsoleEx.WriteLine($"名称      ：{microphone.Name}");
+            ConsoleEx.WriteLine($"入力レベル :{microphone.VolumeLevel.AsPrimitive():0.00}");
+            ConsoleEx.WriteLine();
         }
     }
 
@@ -67,14 +67,14 @@ public class CalibrateInputView : MicrophoneView, ICalibrateInputView
     {
         lock (this)
         {
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine("マイクのキャリブレーションを完了しました。");
+            ConsoleEx.WriteLine();
+            ConsoleEx.WriteLine();
+            ConsoleEx.WriteLine("マイクのキャリブレーションを完了しました。");
 
             for (var i = 0; i < audioInterface.Microphones.Count; i++)
             {
                 var microphone = audioInterface.Microphones[i];
-                Console.WriteLine($"{i + 1} = {microphone.Name} 入力レベル：{microphone.VolumeLevel}");
+                ConsoleEx.WriteLine($"{i + 1} = {microphone.Name} 入力レベル：{microphone.VolumeLevel}");
             }
         }
     }

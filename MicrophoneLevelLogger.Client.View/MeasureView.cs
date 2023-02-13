@@ -37,6 +37,11 @@ public class MeasureView : MicrophoneView, IMeasureView
         return Prompt.Confirm("準備はできましたか？", true);
     }
 
+    public void WaitToBeStopped(TimeSpan timeout)
+    {
+        ConsoleEx.ReadLine(timeout);
+    }
+
     public void NotifyResult(AudioInterfaceInputLevels audioInterfaceInputLevels)
     {
         lock (this)

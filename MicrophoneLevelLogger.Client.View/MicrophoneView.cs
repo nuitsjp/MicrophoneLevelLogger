@@ -25,7 +25,7 @@ public class MicrophoneView : IMicrophoneView
             })
             .WriteLine(infos);
 
-        Console.WriteLine();
+        ConsoleEx.WriteLine();
     }
 
     public class MicrophoneInfo
@@ -61,9 +61,9 @@ public class MicrophoneView : IMicrophoneView
             for (var i = 0; i < microphones.Microphones.Count; i++)
             {
                 var waveInput = microphones.Microphones[i].LatestWaveInput;
-                Console.WriteLine($"{i + 1} ={waveInput.MaximumDecibel:0.00} {GetBars(waveInput.MaximumDecibel)}");
+                ConsoleEx.WriteLine($"{i + 1} ={waveInput.MaximumDecibel:0.00} {GetBars(waveInput.MaximumDecibel)}");
             }
-            Console.SetCursorPosition(0, Console.CursorTop - microphones.Microphones.Count);
+            ConsoleEx.SetCursorPosition(0, ConsoleEx.CursorTop - microphones.Microphones.Count);
         }
     }
 

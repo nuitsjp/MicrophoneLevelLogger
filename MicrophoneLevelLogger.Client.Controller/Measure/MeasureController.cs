@@ -57,7 +57,7 @@ public class MeasureController : IController
         try
         {
             // 計測完了を待機する
-            await Task.Delay(span);
+            _view.WaitToBeStopped(span);
 
             // 計測結果を取得する
             var microphoneInputLevel = meter.StopMonitoring();

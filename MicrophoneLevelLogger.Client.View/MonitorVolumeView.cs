@@ -6,12 +6,12 @@ public class MonitorVolumeView : MicrophoneView, IMonitorVolumeView
 {
     public void NotifyDetailMessage()
     {
-        Console.WriteLine("Enterキーでモニターを停止します。");
-        Console.WriteLine();
+        ConsoleEx.WriteLine("Enterキーでモニターを停止します。");
+        ConsoleEx.WriteLine();
     }
 
     public void WaitToBeStopped()
     {
-        Console.ReadLine();
+        ConsoleEx.ReadLine();
     }
 }
