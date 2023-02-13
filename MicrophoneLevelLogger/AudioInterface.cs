@@ -1,7 +1,8 @@
-﻿using NAudio.CoreAudioApi;
+﻿using MicrophoneLevelLogger.Domain;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
-namespace MicrophoneLevelLogger.Domain;
+namespace MicrophoneLevelLogger;
 
 public class AudioInterface : IAudioInterface
 {

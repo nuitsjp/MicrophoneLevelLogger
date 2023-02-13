@@ -1,6 +1,4 @@
-﻿using MicrophoneLevelLogger.Domain;
-
-namespace MicrophoneLevelLogger.Client.Command.MonitorVolume;
+﻿namespace MicrophoneLevelLogger.Client.Command.MonitorVolume;
 
 public class MonitorVolumeCommand : ICommand
 {

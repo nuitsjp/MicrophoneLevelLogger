@@ -1,6 +1,4 @@
-﻿using MicrophoneLevelLogger.Domain;
-
-namespace MicrophoneLevelLogger.Client.Command.DisplayCalibrates;
+﻿namespace MicrophoneLevelLogger.Client.Command.DisplayCalibrates;
 
 public class DisplayCalibratesCommand : ICommand
 {

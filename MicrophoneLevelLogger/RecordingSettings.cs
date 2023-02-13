@@ -2,17 +2,17 @@
 using System.Text.Json;
 using System.Text.Unicode;
 
-namespace MicrophoneLevelLogger.Domain;
+namespace MicrophoneLevelLogger;
 
 public class RecordingSettings
 {
     private const string FileName = $"{nameof(RecordingSettings)}.json";
 
     public RecordingSettings(
-        string mediaPlayerHost, 
-        string recorderHost, 
-        TimeSpan recordingSpan, 
-        bool isEnableRemotePlaying, 
+        string mediaPlayerHost,
+        string recorderHost,
+        TimeSpan recordingSpan,
+        bool isEnableRemotePlaying,
         bool isEnableRemoteRecording)
     {
         MediaPlayerHost = mediaPlayerHost;
@@ -45,7 +45,7 @@ public class RecordingSettings
         else
         {
             return new RecordingSettings(
-                "localhost", 
+                "localhost",
                 "localhost",
                 TimeSpan.FromSeconds(30),
                 false,

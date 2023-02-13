@@ -1,7 +1,8 @@
 ﻿using System.Globalization;
 using CsvHelper;
+using MicrophoneLevelLogger.Domain;
 
-namespace MicrophoneLevelLogger.Domain;
+namespace MicrophoneLevelLogger;
 
 public class Recorder : IRecorder
 {
@@ -22,9 +23,9 @@ public class Recorder : IRecorder
         // マイクを有効化する
         _audioInterface.ActivateMicrophones();
 
-        _saveDirectory = 
+        _saveDirectory =
             Path.Combine(
-                RecordDirectoryName, 
+                RecordDirectoryName,
                 $"{DateTime.Now:yyyy-MM-dd_HHmmss}_{name}");
         Directory.CreateDirectory(_saveDirectory);
 

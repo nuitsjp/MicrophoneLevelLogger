@@ -1,6 +1,4 @@
-﻿using MicrophoneLevelLogger.Domain;
-
-namespace MicrophoneLevelLogger.Client.Command;
+﻿namespace MicrophoneLevelLogger.Client.Command;
 
 public interface IMicrophoneView
 {

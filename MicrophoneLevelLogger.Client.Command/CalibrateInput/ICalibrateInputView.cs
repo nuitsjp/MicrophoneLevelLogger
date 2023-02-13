@@ -1,6 +1,4 @@
-﻿using MicrophoneLevelLogger.Domain;
-
-namespace MicrophoneLevelLogger.Client.Command.CalibrateInput;
+﻿namespace MicrophoneLevelLogger.Client.Command.CalibrateInput;
 
 public interface ICalibrateInputView : IMicrophoneView
 {

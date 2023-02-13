@@ -1,6 +1,5 @@
 ﻿using FluentTextTable;
 using MicrophoneLevelLogger.Client.Command.Record;
-using MicrophoneLevelLogger.Domain;
 using Sharprompt;
 
 namespace MicrophoneLevelLogger.Client.View;

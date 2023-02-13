@@ -1,4 +1,4 @@
-﻿namespace MicrophoneLevelLogger.Domain;
+﻿namespace MicrophoneLevelLogger;
 
 public interface IRecorder
 {

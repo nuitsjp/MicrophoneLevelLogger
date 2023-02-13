@@ -1,6 +1,6 @@
 ﻿using System.Media;
 
-namespace MicrophoneLevelLogger.Domain;
+namespace MicrophoneLevelLogger;
 
 public class MediaPlayer : IMediaPlayer
 {

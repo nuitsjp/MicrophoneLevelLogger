@@ -1,4 +1,6 @@
-﻿namespace MicrophoneLevelLogger.Domain;
+﻿using MicrophoneLevelLogger.Domain;
+
+namespace MicrophoneLevelLogger;
 
 public class MediaPlayerProvider : IMediaPlayerProvider
 {

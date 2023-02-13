@@ -1,5 +1,4 @@
-﻿using MicrophoneLevelLogger.Domain;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace MicrophoneLevelLogger.Remote.Controllers;
 

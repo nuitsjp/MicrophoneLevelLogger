@@ -1,6 +1,4 @@
-﻿using MicrophoneLevelLogger.Domain;
-
-namespace MicrophoneLevelLogger.Client.Command.Record;
+﻿namespace MicrophoneLevelLogger.Client.Command.Record;
 
 public class RecordCommand : ICommand
 {
@@ -34,7 +32,7 @@ public class RecordCommand : ICommand
         // 録音名を入力する。
         string recordName = _view.InputRecordName();
 
-        var settings = await Domain.RecordingSettings.LoadAsync();
+        var settings = await MicrophoneLevelLogger.RecordingSettings.LoadAsync();
         _view.NotifyStarting(settings.RecordingSpan);
 
         // 画面に入力レベルを通知する。

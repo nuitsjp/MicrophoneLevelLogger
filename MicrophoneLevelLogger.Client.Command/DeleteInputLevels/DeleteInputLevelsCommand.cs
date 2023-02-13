@@ -1,6 +1,4 @@
-﻿using MicrophoneLevelLogger.Domain;
-
-namespace MicrophoneLevelLogger.Client.Command.DeleteInputLevels;
+﻿namespace MicrophoneLevelLogger.Client.Command.DeleteInputLevels;
 
 public class DeleteInputLevelsCommand : ICommand
 {

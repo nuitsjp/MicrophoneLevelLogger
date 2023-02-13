@@ -1,10 +1,11 @@
-﻿using NAudio.CoreAudioApi;
+﻿using MicrophoneLevelLogger.Domain;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System.Buffers;
 using System.Xml.Linq;
 using MMDeviceEnumerator = NAudio.CoreAudioApi.MMDeviceEnumerator;
 
-namespace MicrophoneLevelLogger.Domain;
+namespace MicrophoneLevelLogger;
 
 public class Microphone : IMicrophone
 {
@@ -126,12 +127,12 @@ public class Microphone : IMicrophone
         get
         {
             using var mmDevice = GetMmDevice();
-            return (VolumeLevel) mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
+            return (VolumeLevel)mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
         }
         set
         {
             var mmDevice = GetMmDevice();
-            mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar = (float) value;
+            mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar = (float)value;
         }
     }
 

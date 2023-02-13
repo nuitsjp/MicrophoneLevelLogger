@@ -13,7 +13,7 @@ public class RecordingSettingsCommand : ICommand
 
     public async Task ExecuteAsync()
     {
-        var settings = await Domain.RecordingSettings.LoadAsync();
+        var settings = await MicrophoneLevelLogger.RecordingSettings.LoadAsync();
         _view.ShowSettings(settings);
 
         if (_view.ConfirmModify())
@@ -28,15 +28,15 @@ public class RecordingSettingsCommand : ICommand
                 ? _view.InputMediaPlayerHost()
                 : "localhost";
 
-            await Domain.RecordingSettings.SaveAsync(
-                new Domain.RecordingSettings(
+            await MicrophoneLevelLogger.RecordingSettings.SaveAsync(
+                new MicrophoneLevelLogger.RecordingSettings(
                     mediaPlayerHost,
                     recorderHost,
                     TimeSpan.FromSeconds(recordingSpan),
                     isEnableRemotePlaying,
                     isEnableRemoteRecording));
 
-            _view.ShowSettings(await Domain.RecordingSettings.LoadAsync());
+            _view.ShowSettings(await MicrophoneLevelLogger.RecordingSettings.LoadAsync());
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using MicrophoneLevelLogger.Domain;
-
-namespace MicrophoneLevelLogger.Client.Command.DeleteCalibrates;
+﻿namespace MicrophoneLevelLogger.Client.Command.DeleteCalibrates;
 
 public class DeleteCalibratesCommand : ICommand
 {

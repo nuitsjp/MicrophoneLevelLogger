@@ -1,5 +1,4 @@
 ﻿using MicrophoneLevelLogger.Client.Command.RecordingSettings;
-using MicrophoneLevelLogger.Domain;
 using Sharprompt;
 
 namespace MicrophoneLevelLogger.Client.View;

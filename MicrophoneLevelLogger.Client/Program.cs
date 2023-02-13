@@ -16,7 +16,6 @@ using MicrophoneLevelLogger.Client.Command.RecordingSettings;
 using MicrophoneLevelLogger.Client.Command.SetInputLevel;
 using MicrophoneLevelLogger.Client.Command.SetMaxInputLevel;
 using MicrophoneLevelLogger.Client.View;
-using MicrophoneLevelLogger.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

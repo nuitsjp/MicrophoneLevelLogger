@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MicrophoneLevelLogger.Client.Command.SetInputLevel;
-using MicrophoneLevelLogger.Domain;
 using Sharprompt;
 
 namespace MicrophoneLevelLogger.Client.View;
