@@ -34,6 +34,7 @@ public class CommandInvoker : ICommandInvoker
     private readonly SetInputLevelController _setInputLevelController;
     private readonly DisplayMicrophonesController _displayMicrophonesController;
     private readonly ExitController _exitController = new();
+    private readonly BorderController _borderController = new();
 
     public CommandInvoker(
         IAudioInterfaceProvider audioInterfaceProvider,
@@ -94,6 +95,7 @@ public class CommandInvoker : ICommandInvoker
                 _deleteInputLevelsController,
                 _deleteCalibratesController,
                 _deleteRecordController,
+                _borderController,
                 _exitController
             };
             var selected = _view.SelectCommand(commands.Select(x => x.Name));
@@ -122,5 +124,11 @@ public class CommandInvoker : ICommandInvoker
         {
             throw new NotImplementedException();
         }
+    }
+
+    private class BorderController : IController
+    {
+        public string Name => "-----------------------------------------------------------";
+        public Task ExecuteAsync() => Task.CompletedTask;
     }
 }
