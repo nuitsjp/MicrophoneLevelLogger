@@ -1,7 +1,5 @@
 ﻿using System.Globalization;
 using CsvHelper;
-using MicrophoneLevelLogger.Command;
-using MicrophoneLevelLogger.Command.Record;
 
 namespace MicrophoneLevelLogger.Domain;
 
@@ -9,25 +7,18 @@ public class Recorder : IRecorder
 {
     public const string RecordDirectoryName = "Record";
 
-    private readonly IRecordView _view;
     private readonly IAudioInterface _audioInterface;
 
     private CancellationTokenSource? _cancellationTokenSource;
     private string _saveDirectory = string.Empty;
 
-    public Recorder(
-        IRecordView view,
-        IAudioInterfaceProvider audioInterfaceProvider)
+    public Recorder(IAudioInterfaceProvider audioInterfaceProvider)
     {
-        _view = view;
         _audioInterface = audioInterfaceProvider.Resolve();
     }
 
     public Task RecodeAsync(string name)
     {
-        // 起動時情報を通知する。
-        _view.NotifyMicrophonesInformation(_audioInterface);
-
         // マイクを有効化する
         _audioInterface.ActivateMicrophones();
 
@@ -39,9 +30,6 @@ public class Recorder : IRecorder
 
         // キャプチャーを開始する。
         _audioInterface.StartRecording(_saveDirectory);
-
-        // 画面に入力レベルを通知する。
-        _view.StartNotifyMasterPeakValue(_audioInterface);
 
         // CSVへ出力を開始する。
         _cancellationTokenSource = new();
@@ -60,9 +48,6 @@ public class Recorder : IRecorder
         // CSV出力へキャンセルを通知する。
         _cancellationTokenSource.Cancel();
 
-        // 画面の入力レベル通知を停止する。
-        _view.StopNotifyMasterPeakValue();
-
         // キャプチャーを停止する。
         var peakValues = _audioInterface.StopRecording();
 
@@ -78,9 +63,6 @@ public class Recorder : IRecorder
                 File.CreateText(Path.Combine(_saveDirectory, "summary.csv")),
                 new CultureInfo("ja-JP", false));
         writer.WriteRecords(results);
-
-        // 結果を通知する
-        _view.NotifyResult(results);
 
         return Task.CompletedTask;
     }

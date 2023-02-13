@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0-windows7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MicrophoneLevelLogger.Client.Command\MicrophoneLevelLogger.Client.Command.csproj" />
+    <ProjectReference Include="..\MicrophoneLevelLogger.Client.View\MicrophoneLevelLogger.Client.View.csproj" />
+    <ProjectReference Include="..\MicrophoneLevelLogger\MicrophoneLevelLogger.csproj" />
+  </ItemGroup>
+
+</Project>

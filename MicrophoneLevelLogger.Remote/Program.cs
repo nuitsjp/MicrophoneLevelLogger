@@ -1,6 +1,6 @@
-using MicrophoneLevelLogger.Command.Record;
+using MicrophoneLevelLogger.Client.Command.Record;
+using MicrophoneLevelLogger.Client.View;
 using MicrophoneLevelLogger.Domain;
-using MicrophoneLevelLogger.View;
 
 var builder = WebApplication.CreateBuilder(args);
 

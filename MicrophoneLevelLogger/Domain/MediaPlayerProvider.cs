@@ -2,12 +2,12 @@
 
 public class MediaPlayerProvider : IMediaPlayerProvider
 {
-    public IMediaPlayer ResolveLocaleService()
+    public IMediaPlayer ResolveLocale()
     {
         return new MediaPlayer();
     }
 
-    public IMediaPlayer ResolveRemoteService()
+    public IMediaPlayer ResolveRemote()
     {
         return new RemoteMediaPlayer();
     }

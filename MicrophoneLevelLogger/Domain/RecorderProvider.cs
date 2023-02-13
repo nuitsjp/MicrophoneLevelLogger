@@ -1,23 +1,17 @@
-﻿using MicrophoneLevelLogger.Command.Record;
-
-namespace MicrophoneLevelLogger.Domain;
+﻿namespace MicrophoneLevelLogger.Domain;
 
 public class RecorderProvider : IRecorderProvider
 {
-    private readonly IRecordView _view;
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
 
-    public RecorderProvider(
-        IRecordView view, 
-        IAudioInterfaceProvider audioInterfaceProvider)
+    public RecorderProvider(IAudioInterfaceProvider audioInterfaceProvider)
     {
-        _view = view;
         _audioInterfaceProvider = audioInterfaceProvider;
     }
 
     public IRecorder ResolveLocal()
     {
-        return new Recorder(_view, _audioInterfaceProvider);
+        return new Recorder(_audioInterfaceProvider);
     }
 
     public IRecorder ResolveRemote()
