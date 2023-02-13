@@ -5,5 +5,6 @@ public enum Direction
     Front,
     Right,
     Left,
-    Back
+    Back,
+    Speak
 }
