@@ -1,4 +1,9 @@
-﻿namespace MicrophoneLevelLogger.Client.Controller.Record;
+﻿using CsvHelper;
+using FftSharp.Windows;
+using NAudio.Wave;
+using System.Xml.Linq;
+
+namespace MicrophoneLevelLogger.Client.Controller.Record;
 
 public class RecordController : IController
 {
@@ -6,21 +11,21 @@ public class RecordController : IController
 
     private readonly IRecordView _view;
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
-    private readonly IRecorderProvider _recorderProviderProvider;
+    private readonly IAudioInterfaceLoggerProvider _audioInterfaceLoggerProvider;
     private readonly IMediaPlayerProvider _mediaPlayerProvider;
     private readonly IRecordingSettingsRepository _recordingSettingsRepository;
 
     public RecordController(
         IAudioInterfaceProvider audioInterfaceProvider,
         IRecordView view,
-        IRecorderProvider recorderProvider,
         IMediaPlayerProvider mediaPlayerProvider, 
-        IRecordingSettingsRepository recordingSettingsRepository)
+        IRecordingSettingsRepository recordingSettingsRepository, 
+        IAudioInterfaceLoggerProvider audioInterfaceLoggerProvider)
     {
         _view = view;
-        _recorderProviderProvider = recorderProvider;
         _mediaPlayerProvider = mediaPlayerProvider;
         _recordingSettingsRepository = recordingSettingsRepository;
+        _audioInterfaceLoggerProvider = audioInterfaceLoggerProvider;
         _audioInterfaceProvider = audioInterfaceProvider;
     }
 
@@ -40,56 +45,33 @@ public class RecordController : IController
         var settings = await _recordingSettingsRepository.LoadAsync();
         _view.NotifyStarting(settings.RecordingSpan);
 
-        // 画面に入力レベルを通知する。
-        _view.StartNotifyMasterPeakValue(audioInterface);
+        var logger = _audioInterfaceLoggerProvider.ResolveLocal(audioInterface, recordName);
 
-        // 背景音源を再生する
-        var mediaPlayer = settings.IsEnableRemotePlaying
-            ? _mediaPlayerProvider.ResolveRemote()
-            : _mediaPlayerProvider.ResolveLocale();
-        await mediaPlayer.PlayLoopingAsync();
 
-        var localRecorder = _recorderProviderProvider.ResolveLocal();
-        var remoteRecorder = _recorderProviderProvider.ResolveRemote();
+        CancellationTokenSource source = new();
         try
         {
+            // 背景音源を再生する
+            var mediaPlayer = _mediaPlayerProvider.Resolve(settings.IsEnableRemotePlaying);
+            await mediaPlayer.PlayLoopingAsync(source.Token);
+
+            await logger.StartAsync(source.Token);
+            // 画面に入力レベルを通知する。
+            _view.StartNotify(logger, source.Token);
+
             if (settings.IsEnableRemoteRecording)
             {
-                await remoteRecorder.RecodeAsync(recordName);
+                var remoteLogger = _audioInterfaceLoggerProvider.ResolveRemote(recordName);
+                await remoteLogger.StartAsync(source.Token);
             }
-            await localRecorder.RecodeAsync(recordName);
 
             // 録音時間、待機する。
             _view.Wait(settings.RecordingSpan);
-
         }
         finally
         {
-            // 画面の入力レベル通知を停止する。
-            _view.StopNotifyMasterPeakValue();
-
-            if (settings.IsEnableRemoteRecording)
-            {
-                await remoteRecorder.StopQuietAsync();
-            }
-            await localRecorder.StopQuietAsync();
-            await mediaPlayer.StopAsync();
+            source.Cancel();
         }
 
-    }
-}
-
-public static class RecorderExtensions
-{
-    public static async Task StopQuietAsync(this IRecorder recorder)
-    {
-        try
-        {
-            await recorder.StopAsync();
-        }
-        catch
-        {
-            // ignore
-        }
     }
 }

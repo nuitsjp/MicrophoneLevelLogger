@@ -35,12 +35,7 @@ public class CalibrateOutputController : IController
 
         // 音声を再生する
         var recordingSettings = await _recordingSettingsRepository.LoadAsync();
-        var mediaPlayer =
-            recordingSettings.IsEnableRemotePlaying
-                ? _mediaPlayerProvider.ResolveRemote()
-                : _mediaPlayerProvider.ResolveLocale();
-        await mediaPlayer.PlayLoopingAsync();
-
+        var mediaPlayer =_mediaPlayerProvider.Resolve(recordingSettings.IsEnableRemotePlaying);
         try
         {
             // 計測を開始する
@@ -62,7 +57,9 @@ public class CalibrateOutputController : IController
     {
         while (audioInterface.DefaultOutputLevel < VolumeLevel.Maximum)
         {
-            await mediaPlayer.PlayLoopingAsync();
+            CancellationTokenSource source = new();
+            await mediaPlayer.PlayLoopingAsync(source.Token);
+            // ReSharper disable once MethodSupportsCancellation
             await Task.Delay(TimeSpan.FromSeconds(1));
             try
             {
@@ -74,6 +71,7 @@ public class CalibrateOutputController : IController
                 meter.StartMonitoring();
 
                 // 計測完了を待機する
+                // ReSharper disable once MethodSupportsCancellation
                 await Task.Delay(span);
 
                 // 計測結果を取得する
@@ -92,7 +90,7 @@ public class CalibrateOutputController : IController
             }
             finally
             {
-                await mediaPlayer.StopAsync();
+                source.Cancel();
             }
         }
     }

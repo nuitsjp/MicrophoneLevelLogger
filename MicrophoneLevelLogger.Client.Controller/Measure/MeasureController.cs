@@ -46,9 +46,10 @@ public class MeasureController : IController
         _view.StartNotifyMasterPeakValue(new AudioInterface(microphone));
 
         // 音声を再生する
+        CancellationTokenSource source = new();
         if (isPlayMedia)
         {
-            await _mediaPlayer.PlayLoopingAsync();
+            await _mediaPlayer.PlayLoopingAsync(source.Token);
         }
 
         // 計測を開始する
@@ -75,10 +76,7 @@ public class MeasureController : IController
             // リソースを停止・解放する。
             microphone.Deactivate();
             _view.StopNotifyMasterPeakValue();
-            if (isPlayMedia)
-            {
-                await _mediaPlayer.StopAsync();
-            }
+            source.Cancel();
         }
     }
 }

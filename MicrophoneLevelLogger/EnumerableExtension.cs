@@ -27,4 +27,11 @@ public static class EnumerableExtension
             return sortedList[itemIndex];
         }
     }
+
+    public static async Task ForEachAsync<T>(this IEnumerable<T> enumerable, Func<T, Task> action)
+    {
+        await Parallel.ForEachAsync(
+            enumerable,
+            async (item, _) => await action(item));
+    }
 }

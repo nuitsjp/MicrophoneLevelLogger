@@ -2,6 +2,5 @@
 
 public interface IMediaPlayer
 {
-    Task PlayLoopingAsync();
-    Task StopAsync();
+    Task PlayLoopingAsync(CancellationToken token);
 }

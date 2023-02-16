@@ -4,26 +4,16 @@ namespace MicrophoneLevelLogger;
 
 public class MediaPlayer : IMediaPlayer
 {
-    private SoundPlayer? _player;
-
-    public Task PlayLoopingAsync()
+    public Task PlayLoopingAsync(CancellationToken token)
     {
-        _player = new(Properties.Resources.吾輩は猫である);
-        _player.PlayLooping();
-        return Task.CompletedTask;
-    }
+        SoundPlayer player = new(Properties.Resources.吾輩は猫である);
+        player.PlayLooping();
 
-    public Task StopAsync()
-    {
-        lock (this)
+        token.Register(() =>
         {
-            if (_player is not null)
-            {
-                _player.Stop();
-                _player.Dispose();
-                _player = null;
-            }
-        }
+            player.Stop();
+            player.Dispose();
+        });
         return Task.CompletedTask;
     }
 }

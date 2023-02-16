@@ -85,7 +85,8 @@ public class CalibrateInputController : IController
         for (; VolumeLevel.Minimum < target.VolumeLevel; target.VolumeLevel -= step)
         {
             // 音声を再生する
-            await _mediaPlayer.PlayLoopingAsync();
+            CancellationTokenSource source = new();
+            await _mediaPlayer.PlayLoopingAsync(source.Token);
             try
             {
                 // レコーディング開始
@@ -128,7 +129,7 @@ public class CalibrateInputController : IController
             }
             finally
             {
-                await _mediaPlayer.StopAsync();
+                source.Cancel();
             }
 
         }

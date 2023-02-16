@@ -9,13 +9,9 @@ public class MediaPlayerProvider : IMediaPlayerProvider
         _repository = repository;
     }
 
-    public IMediaPlayer ResolveLocale()
-    {
-        return new MediaPlayer();
-    }
+    public IMediaPlayer Resolve(bool isRemotePlay) =>
+        isRemotePlay
+            ? new RemoteMediaPlayer(_repository)
+            : new MediaPlayer();
 
-    public IMediaPlayer ResolveRemote()
-    {
-        return new RemoteMediaPlayer(_repository);
-    }
 }

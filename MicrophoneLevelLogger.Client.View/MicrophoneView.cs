@@ -1,5 +1,6 @@
 ﻿using FluentTextTable;
 using MicrophoneLevelLogger.Client.Controller;
+using static System.Windows.Forms.AxHost;
 
 namespace MicrophoneLevelLogger.Client.View;
 
@@ -53,6 +54,38 @@ public class MicrophoneView : IMicrophoneView
         _timer = null;
     }
 
+    public void StartNotify(IAudioInterfaceLogger audioInterfaceLogger, CancellationToken token)
+    {
+        Task.Run( async () =>
+        {
+
+            var microphones = audioInterfaceLogger.MicrophoneLoggers;
+
+            while (token.IsCancellationRequested is false)
+            {
+                lock (this)
+                {
+                    for (var i = 0; i < microphones.Count; i++)
+                    {
+                        var microphoneLogger = microphones[i];
+                        ConsoleEx.WriteLine($"{i + 1} ={microphoneLogger.Max.AsPrimitive():0.00} {GetBars(microphoneLogger.Max)}");
+                    }
+                    ConsoleEx.SetCursorPosition(0, ConsoleEx.CursorTop - microphones.Count);
+                }
+
+                try
+                {
+                    // サンプリング間隔待機する。
+                    await Task.Delay(SamplingRate, token);
+                }
+                catch (TaskCanceledException)
+                {
+                }
+
+            }
+        }, token);
+    }
+
     private void OnElapsed(object? state)
     {
         var microphones = (IAudioInterface)state!;
@@ -67,7 +100,18 @@ public class MicrophoneView : IMicrophoneView
         }
     }
 
-    private static readonly double MaxBarValue = IMicrophone.MinDecibel * -1;
+    private static readonly double MaxBarValue = Decibel.Min.AsPrimitive() * -1;
+
+    private static string GetBars(Decibel decibel, int barCount = 35)
+    {
+        var value =
+            Decibel.Max < decibel
+                ? MaxBarValue
+                : decibel.AsPrimitive() + MaxBarValue;
+        var barsOn = (int)(value / MaxBarValue * barCount);
+        var barsOff = barCount - barsOn;
+        return new string('#', barsOn) + new string('-', barsOff);
+    }
 
     private static string GetBars(double decibel, int barCount = 35)
     {

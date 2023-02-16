@@ -2,7 +2,5 @@
 
 public interface IMediaPlayerProvider
 {
-    IMediaPlayer ResolveLocale();
-
-    IMediaPlayer ResolveRemote();
+    IMediaPlayer Resolve(bool isRemotePlay);
 }

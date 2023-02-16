@@ -1,17 +1,25 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System.Buffers;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Runtime.CompilerServices;
 using MMDeviceEnumerator = NAudio.CoreAudioApi.MMDeviceEnumerator;
 
 namespace MicrophoneLevelLogger;
 
 public class Microphone : IMicrophone
 {
-    private readonly WaveInEvent _waveInEvent;
+    private const double MaxSignal = 3.886626914120802;
+    private const double Ratio = MaxSignal / short.MinValue * -1;
+
     private double[]? _lastBuffer;
+    private readonly WaveInEvent _waveInEvent;
     private WaveFileWriter? _waveFileWriter;
 
     private readonly List<double> _masterPeakBuffer = new();
+
+    private List<IObserver<WaveInput>> _observers = new();
 
     public Microphone(string id, string name, int deviceNumber)
     {
@@ -27,10 +35,8 @@ public class Microphone : IMicrophone
         };
         _waveInEvent.DataAvailable += WaveInEventOnDataAvailable;
         _waveInEvent.RecordingStopped += WaveInEventOnRecordingStopped;
+        LatestWaveInput = new(this, Array.Empty<byte>(), 0, new[] { new DecibelByFrequency(0, IMicrophone.MinDecibel) });
     }
-
-    private const double MaxSignal = 3.886626914120802;
-    private const double Ratio = MaxSignal / short.MinValue * -1;
 
     private void WaveInEventOnDataAvailable(object? sender, WaveInEventArgs e)
     {
@@ -75,8 +81,10 @@ public class Microphone : IMicrophone
         {
             var weighted = AWeighting.Instance.Filter(decibelByFrequencies);
 
-            LatestWaveInput = new(weighted);
-            DataAvailable?.Invoke(this, LatestWaveInput);
+            var waveInput = new WaveInput(this, e.Buffer, e.BytesRecorded, weighted);
+            LatestWaveInput = waveInput;
+
+            _observers.ForEach(x => x.OnNext(waveInput));
 
             _masterPeakBuffer.Add(LatestWaveInput.MaximumDecibel);
         }
@@ -112,13 +120,12 @@ public class Microphone : IMicrophone
         }
     }
 
-
-    public event EventHandler<WaveInput>? DataAvailable;
-
     public string Id { get; }
     public string Name { get; }
     public int DeviceNumber { get; }
-    public WaveInput LatestWaveInput { get; private set; } = WaveInput.Empty;
+    public WaveInput LatestWaveInput { get; private set; }
+
+    public WaveFormat WaveFormat => _waveInEvent.WaveFormat;
 
     public VolumeLevel VolumeLevel
     {
@@ -172,6 +179,35 @@ public class Microphone : IMicrophone
     {
         StopRecording();
         _waveInEvent.StopRecording();
+    }
+
+    public IDisposable Subscribe(IObserver<WaveInput> observer)
+    {
+        ObserverDisposer observerDisposer = new (this, observer); 
+        _observers.Add(observer);
+        return observerDisposer;
+    }
+
+    private class ObserverDisposer : IDisposable
+    {
+        private readonly Microphone _microphone;
+        private readonly IObserver<WaveInput> _observer;
+
+        public ObserverDisposer(
+            Microphone microphone, 
+            IObserver<WaveInput> observer)
+        {
+            _microphone = microphone;
+            _observer = observer;
+        }
+
+        public void Dispose()
+        {
+
+            var temp = _microphone._observers.ToList();
+            temp.Remove(_observer);
+            _microphone._observers = temp;
+        }
     }
 
     public override string ToString() => Name;
