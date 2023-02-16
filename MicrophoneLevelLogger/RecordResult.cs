@@ -2,19 +2,17 @@
 
 public class RecordResult
 {
-    public RecordResult(int no, IMasterPeakValues masterPeakValues)
+    public RecordResult(int no, IMicrophoneLogger microphoneLogger)
     {
         No = no;
-        Name = masterPeakValues.Microphone.Name;
-        Min = masterPeakValues.PeakValues.Any() ? masterPeakValues.PeakValues.Min() : IMicrophone.MinDecibel;
-        Avg = masterPeakValues.PeakValues.Any() ? masterPeakValues.PeakValues.Average() : IMicrophone.MinDecibel;
-        Median = masterPeakValues.PeakValues.Any() ? masterPeakValues.PeakValues.Median() : IMicrophone.MinDecibel;
-        Max = masterPeakValues.PeakValues.Any() ? masterPeakValues.PeakValues.Max() : IMicrophone.MinDecibel;
+        Name = microphoneLogger.Microphone.Name;
+        Min = microphoneLogger.Min;
+        Avg = microphoneLogger.Avg;
+        Max = microphoneLogger.Max;
     }
     public int No { get; }
     public string Name { get; }
-    public double Min { get; }
-    public double Avg { get; }
-    public double Median { get; }
-    public double Max { get; }
+    public Decibel Min { get; }
+    public Decibel Avg { get; }
+    public Decibel Max { get; }
 }

@@ -55,14 +55,14 @@ public class Recorder : IRecorder
         _audioInterface.DeactivateMicrophones();
 
         // 最小値、平均値、最大値をテキストファイルに出力する。
-        var results = peakValues
-            .Select((x, index) => new RecordResult(index + 1, x))
-            .ToList();
-        using var writer =
-            new CsvWriter(
-                File.CreateText(Path.Combine(_saveDirectory, "summary.csv")),
-                new CultureInfo("ja-JP", false));
-        writer.WriteRecords(results);
+        //var results = peakValues
+        //    .Select((x, index) => new RecordResult(index + 1, x))
+        //    .ToList();
+        //using var writer =
+        //    new CsvWriter(
+        //        File.CreateText(Path.Combine(_saveDirectory, "summary.csv")),
+        //        new CultureInfo("ja-JP", false));
+        //writer.WriteRecords(results);
 
         return Task.CompletedTask;
     }

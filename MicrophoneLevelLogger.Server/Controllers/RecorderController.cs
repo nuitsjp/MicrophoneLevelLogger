@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MicrophoneLevelLogger.Client.Controller.Record;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MicrophoneLevelLogger.Server.Controllers;
 
@@ -6,24 +7,40 @@ namespace MicrophoneLevelLogger.Server.Controllers;
 [Route("[controller]")]
 public class RecorderController : ControllerBase
 {
-    private readonly IRecorder _recorder;
+    private static CancellationTokenSource _cancellationTokenSource = new();
+    private readonly IAudioInterfaceProvider _audioInterfaceProvider;
+    private readonly IAudioInterfaceLoggerProvider _audioInterfaceLoggerProvider;
+    private readonly IRecordView _view;
 
-    public RecorderController(IRecorder recorder)
+    public RecorderController(
+        IAudioInterfaceProvider audioInterfaceProvider, 
+        IAudioInterfaceLoggerProvider audioInterfaceLoggerProvider, 
+        IRecordView view)
     {
-        _recorder = recorder;
+        _audioInterfaceProvider = audioInterfaceProvider;
+        _audioInterfaceLoggerProvider = audioInterfaceLoggerProvider;
+        _view = view;
     }
 
+    [HttpGet("Recode")]
+    public Task RecodeAsync() => RecodeAsync(string.Empty);
+
     [HttpGet("Recode/{recordName}")]
-    public Task RecodeAsync(string recordName)
+    public async Task RecodeAsync(string recordName)
     {
         Console.WriteLine($"Recorder#Record name:{recordName}");
-        return _recorder.RecodeAsync(recordName);
+        var audioInterface = _audioInterfaceProvider.Resolve();
+        var logger = _audioInterfaceLoggerProvider.ResolveLocal(audioInterface, recordName);
+        _cancellationTokenSource = new();
+        await logger.StartAsync(_cancellationTokenSource.Token);
+        _view.StartNotify(logger, _cancellationTokenSource.Token);
     }
 
     [HttpGet("Stop")]
     public Task StopAsync()
     {
         Console.WriteLine("Recorder#Stop");
-        return _recorder.StopAsync();
+        _cancellationTokenSource.Cancel();
+        return Task.CompletedTask;
     }
 }

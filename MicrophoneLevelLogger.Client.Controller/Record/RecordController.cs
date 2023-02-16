@@ -67,6 +67,11 @@ public class RecordController : IController
 
             // 録音時間、待機する。
             _view.Wait(settings.RecordingSpan);
+
+            var results = logger.MicrophoneLoggers
+                .Select((x, index) => new RecordResult(index + 1, x))
+                .ToList();
+            _view.NotifyResult(results);
         }
         finally
         {

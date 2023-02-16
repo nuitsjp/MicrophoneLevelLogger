@@ -8,7 +8,7 @@ public class PlayerController : ControllerBase
 {
     private readonly IMediaPlayer _mediaPlayer;
 
-    private CancellationTokenSource _cancellationTokenSource = new();
+    private static CancellationTokenSource _cancellationTokenSource = new();
 
     public PlayerController(IMediaPlayer mediaPlayer)
     {
@@ -26,6 +26,7 @@ public class PlayerController : ControllerBase
     [HttpGet("Stop")]
     public Task StopAsync()
     {
+        Console.WriteLine("Player#Stop");
         _cancellationTokenSource.Cancel();
         return Task.CompletedTask;
     }
