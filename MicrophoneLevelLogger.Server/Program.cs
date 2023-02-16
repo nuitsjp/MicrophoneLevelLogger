@@ -13,7 +13,6 @@ builder.Services.AddTransient<IAudioInterfaceProvider, AudioInterfaceProvider>()
 builder.Services.AddTransient<IAudioInterfaceLoggerProvider, AudioInterfaceLoggerProvider>();
 builder.Services.AddTransient<IRecordingSettingsRepository, RecordingSettingsRepository>();
 builder.Services.AddSingleton<IMediaPlayer, MediaPlayer>();
-builder.Services.AddSingleton<IRecorder, Recorder>();
 builder.Services.AddTransient<IRecordView, RecordView>();
 
 var app = builder.Build();
