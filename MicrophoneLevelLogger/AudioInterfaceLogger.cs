@@ -14,14 +14,20 @@ public class AudioInterfaceLogger : IAudioInterfaceLogger
     public AudioInterfaceLogger(
         IAudioInterface audioInterface, 
         string? recordName = null)
+        : this(recordName, audioInterface.Microphones.ToArray())
+    {
+    }
+
+    public AudioInterfaceLogger(
+        string? recordName = null,
+        params IMicrophone[] microphones)
     {
         _saveDirectory =
             recordName is not null
                 ? new DirectoryInfo(Path.Join(RootDirectory.FullName, $"{DateTime.Now:yyyy-mm-dd_hhMMss}_{recordName}"))
                 : null;
         _saveDirectory?.Create();
-        MicrophoneLoggers = audioInterface
-            .Microphones
+        MicrophoneLoggers = microphones
             .Select(x => (IMicrophoneLogger)new MicrophoneLogger(x, _saveDirectory))
             .ToList();
         _maxDecibelLogger = _saveDirectory is not null

@@ -80,7 +80,7 @@ public class CalibrateInputController : IController
 
         // ターゲット側の入力レベルを少しずつ下げていきながら
         // リファレンスと同程度の音量になるように調整していく。
-        var high = 1d;
+        Decibel high = Decibel.Max;
 
         for (; VolumeLevel.Minimum < target.VolumeLevel; target.VolumeLevel -= step)
         {
@@ -120,7 +120,7 @@ public class CalibrateInputController : IController
                     return;
                 }
 
-                var diff = Math.Floor(Math.Abs(referenceLevel) - Math.Abs(targetLevel));
+                var diff = Math.Floor(Math.Abs(referenceLevel.AsPrimitive()) - Math.Abs(targetLevel.AsPrimitive()));
                 step = new((float)(diff / 100));
                 // 差がごく小さい場合、stepが0になってしまうので最小は0.01になるように調整する
                 step = step == new VolumeLevel(0f) ? new(0.01f) : step;

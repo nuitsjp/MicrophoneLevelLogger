@@ -6,17 +6,19 @@ public class MeasureController : IController
     private readonly IAudioInterfaceProvider _provider;
     private readonly IMediaPlayer _mediaPlayer;
     private readonly IAudioInterfaceInputLevelsRepository _repository;
+    private readonly IAudioInterfaceLoggerProvider _loggerProvider;
 
     public MeasureController(
         IMeasureView view,
         IAudioInterfaceProvider provider,
         IMediaPlayer mediaPlayer, 
-        IAudioInterfaceInputLevelsRepository repository)
+        IAudioInterfaceInputLevelsRepository repository, IAudioInterfaceLoggerProvider loggerProvider)
     {
         _view = view;
         _provider = provider;
         _mediaPlayer = mediaPlayer;
         _repository = repository;
+        _loggerProvider = loggerProvider;
     }
 
     public string Name => "Measure              : 指定マイクの入力音量を計測する。";
@@ -26,7 +28,6 @@ public class MeasureController : IController
         // マイクを選択し、有効化する
         var audioInterface = _provider.Resolve();
         var microphone = _view.SelectMicrophone(audioInterface);
-        await microphone.ActivateAsync();
 
         // 計測時間を入力する
         var span = TimeSpan.FromSeconds(_view.InputSpan());
@@ -53,23 +54,30 @@ public class MeasureController : IController
         }
 
         // 計測を開始する
-        var meter = new InputLevelMeter(microphone);
-        meter.StartMonitoring();
+        var logger = _loggerProvider.ResolveLocal(microphone);
+        await logger.StartAsync(source.Token);
         try
         {
             // 計測完了を待機する
             _view.Wait(span);
 
-            // 計測結果を取得する
-            var microphoneInputLevel = meter.StopMonitoring();
-
             // 計測結果リストを更新する
             AudioInterfaceInputLevels inputLevels = await _repository.LoadAsync();
-            inputLevels.Update(microphoneInputLevel);
+            foreach (var microphoneLogger in logger.MicrophoneLoggers)
+            {
+                inputLevels.Update(
+                    new MicrophoneInputLevel(
+                        microphoneLogger.Microphone.Id,
+                        microphoneLogger.Microphone.Name,
+                        microphoneLogger.Min,
+                        microphoneLogger.Avg,
+                        microphoneLogger.Max
+                    ));
+            }
             await _repository.SaveAsync(inputLevels);
 
             // 結果を通知する
-            _view.NotifyResult(inputLevels);
+            _view.NotifyResult(logger);
         }
         finally
         {

@@ -15,7 +15,6 @@ public class Microphone : IMicrophone
 
     private double[]? _lastBuffer;
     private readonly WaveInEvent _waveInEvent;
-    private WaveFileWriter? _waveFileWriter;
 
     private readonly List<double> _masterPeakBuffer = new();
 
@@ -40,12 +39,6 @@ public class Microphone : IMicrophone
 
     private void WaveInEventOnDataAvailable(object? sender, WaveInEventArgs e)
     {
-        lock (this)
-        {
-            // レコーディング中であればファイルに保存する
-            _waveFileWriter?.Write(e.Buffer, 0, e.BytesRecorded);
-        }
-
         var bytesPerSample = _waveInEvent.WaveFormat.BitsPerSample / 8;
         var samplesRecorded = e.BytesRecorded / bytesPerSample;
 
@@ -97,22 +90,10 @@ public class Microphone : IMicrophone
 
     private void WaveInEventOnRecordingStopped(object? sender, StoppedEventArgs e)
     {
-        FinalizeWaveFile();
-    }
-
-    private void FinalizeWaveFile()
-    {
-        lock (this)
-        {
-            _waveFileWriter?.Flush();
-            _waveFileWriter?.Dispose();
-            _waveFileWriter = null;
-        }
     }
 
     public void Dispose()
     {
-        FinalizeWaveFile();
         if (_lastBuffer is not null)
         {
             ArrayPool<double>.Shared.Return(_lastBuffer, true);
@@ -156,10 +137,6 @@ public class Microphone : IMicrophone
     public void StartRecording(string path)
     {
         _masterPeakBuffer.Clear();
-        lock (this)
-        {
-            _waveFileWriter = new(Path.Combine(path, Name + ".wav"), _waveInEvent.WaveFormat);
-        }
     }
 
 
@@ -170,8 +147,6 @@ public class Microphone : IMicrophone
 
     public IMasterPeakValues StopRecording()
     {
-        FinalizeWaveFile();
-
         return new MasterPeakValues(this, _masterPeakBuffer.ToList());
     }
 

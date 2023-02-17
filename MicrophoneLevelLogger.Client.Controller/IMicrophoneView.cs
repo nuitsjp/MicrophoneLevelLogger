@@ -6,4 +6,5 @@ public interface IMicrophoneView
     void StartNotifyMasterPeakValue(IAudioInterface audioInterface);
     void StopNotifyMasterPeakValue();
     void StartNotify(IAudioInterfaceLogger audioInterfaceLogger, CancellationToken token);
+    public void NotifyResult(IAudioInterfaceLogger logger);
 }

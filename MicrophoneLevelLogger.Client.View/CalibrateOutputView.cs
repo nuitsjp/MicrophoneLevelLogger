@@ -18,9 +18,9 @@ public class CalibrateOutputView : ICalibrateOutputView
     {
         return Prompt.Input<int>("計測時間[秒]を入力してください。", 30);
     }
-    public double InputDecibel()
+    public Decibel InputDecibel()
     {
-        return Prompt.Input<double>(
+        return new(Prompt.Input<double>(
             "調整する出力音量を入力してください（-84～0）",
             null,
             null,
@@ -28,20 +28,17 @@ public class CalibrateOutputView : ICalibrateOutputView
             {
                 o =>
                 {
-                    double decibel = (double) o;
-                    if (-84 <= decibel && decibel <= 0)
-                    {
-                        return ValidationResult.Success!;
-                    }
-
-                    return new ValidationResult("入力音量は-84～0の間で入力してください。");
+                    var decibel = (double) o;
+                    return Decibel.Validate(decibel) 
+                        ? ValidationResult.Success! 
+                        : new ValidationResult("入力音量は-84～0の間で入力してください。");
                 }
-            });
+            }));
     }
 
-    public void DisplayOutputVolume(double volume)
+    public void DisplayOutputVolume(Decibel volume)
     {
-        ConsoleEx.WriteLine($" -> 音量 : {volume:0.00}");
+        ConsoleEx.WriteLine($" -> 音量 : {volume.AsPrimitive():0.00}");
     }
 
 

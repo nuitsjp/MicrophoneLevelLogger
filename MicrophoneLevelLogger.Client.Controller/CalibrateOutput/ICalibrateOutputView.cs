@@ -4,7 +4,7 @@ public interface ICalibrateOutputView
 {
     IMicrophone SelectMicrophone(IAudioInterface audioInterface);
     int InputSpan();
-    double InputDecibel();
-    void DisplayOutputVolume(double volume);
+    Decibel InputDecibel();
+    void DisplayOutputVolume(Decibel volume);
     void DisplayDefaultOutputLevel(VolumeLevel level);
 }

@@ -52,7 +52,7 @@ public class CalibrateOutputController : IController
         IAudioInterface audioInterface, 
         IMediaPlayer mediaPlayer, 
         IMicrophone microphone, 
-        double specifyVolume,
+        Decibel specifyVolume,
         TimeSpan span)
     {
         while (audioInterface.DefaultOutputLevel < VolumeLevel.Maximum)
@@ -83,7 +83,7 @@ public class CalibrateOutputController : IController
                     break;
                 }
 
-                var diff = (int)(Math.Ceiling(specifyVolume - microphoneInputLevel.Avg) * 2.5);
+                var diff = (int)(Math.Ceiling((specifyVolume - microphoneInputLevel.Avg).AsPrimitive()) * 2.5);
                 diff = diff == 0 ? 1 : diff;
 
                 audioInterface.DefaultOutputLevel += new VolumeLevel(diff / 100f);

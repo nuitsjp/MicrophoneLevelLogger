@@ -86,6 +86,27 @@ public class MicrophoneView : IMicrophoneView
         }, token);
     }
 
+    public void NotifyResult(IAudioInterfaceLogger logger)
+    {
+        lock (this)
+        {
+            Build
+                .TextTable<RecordResult>(builder =>
+                {
+                    builder.Borders.InsideHorizontal.AsDisable();
+                    builder.Columns.Add(x => x.No);
+                    builder.Columns.Add(x => x.Name);
+                    builder.Columns.Add(x => x.Min).FormatAs("{0:#.00}");
+                    builder.Columns.Add(x => x.Avg).FormatAs("{0:#.00}");
+                    builder.Columns.Add(x => x.Max).FormatAs("{0:#.00}");
+                })
+                .WriteLine(
+                    logger.MicrophoneLoggers
+                        .Select((x, index) => new RecordResult(index, x)));
+        }
+    }
+
+
     private void OnElapsed(object? state)
     {
         var microphones = (IAudioInterface)state!;

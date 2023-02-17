@@ -32,7 +32,7 @@ public class CalibrateInputView : MicrophoneView, ICalibrateInputView
         }
     }
 
-    public void NotifyProgress(IMicrophone reference, double referenceDecibel, IMicrophone target, double targetDecibel)
+    public void NotifyProgress(IMicrophone reference, Decibel referenceDecibel, IMicrophone target, Decibel targetDecibel)
     {
         Build
             .TextTable<MicrophoneMasterVolumeLevelScalar>(builder =>
@@ -45,8 +45,8 @@ public class CalibrateInputView : MicrophoneView, ICalibrateInputView
             })
             .WriteLine(new []
             {
-                new MicrophoneMasterVolumeLevelScalar("リファレンス", reference.Name, reference.VolumeLevel.AsPrimitive(), referenceDecibel),
-                new MicrophoneMasterVolumeLevelScalar("ターゲット", target.Name, target.VolumeLevel.AsPrimitive(), targetDecibel)
+                new MicrophoneMasterVolumeLevelScalar("リファレンス", reference.Name, reference.VolumeLevel.AsPrimitive(), referenceDecibel.AsPrimitive()),
+                new MicrophoneMasterVolumeLevelScalar("ターゲット", target.Name, target.VolumeLevel.AsPrimitive(), targetDecibel.AsPrimitive())
             });
     }
 

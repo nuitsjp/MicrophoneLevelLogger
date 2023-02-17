@@ -12,6 +12,9 @@ public class AudioInterfaceLoggerProvider : IAudioInterfaceLoggerProvider
     public IAudioInterfaceLogger ResolveLocal(IAudioInterface audioInterface, string? recordName)
         => new AudioInterfaceLogger(audioInterface, recordName);
 
+    public IAudioInterfaceLogger ResolveLocal(params IMicrophone[] microphones)
+        => new AudioInterfaceLogger(null, microphones);
+
     public IAudioInterfaceLogger ResolveRemote(string? recordName)
         => new RemoteAudioInterfaceLogger(recordName, _repository);
 }

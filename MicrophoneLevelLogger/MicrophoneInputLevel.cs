@@ -5,24 +5,21 @@ public class MicrophoneInputLevel
     public MicrophoneInputLevel(
         string id,
         string name,
-        double min,
-        double avg,
-        double median,
-        double max)
+        Decibel min,
+        Decibel avg,
+        Decibel max)
     {
         Id = id;
         Name = name;
         Min = min;
         Avg = avg;
-        Median = median;
         Max = max;
     }
 
     public string Id { get; }
     public string Name { get; }
-    public double Min { get; }
-    public double Avg { get; }
-    public double Median { get; }
-    public double Max { get; }
+    public Decibel Min { get; }
+    public Decibel Avg { get; }
+    public Decibel Max { get; }
 
 }

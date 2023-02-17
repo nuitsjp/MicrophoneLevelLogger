@@ -16,7 +16,6 @@ public class DisplayMeasurementsView : IDisplayMeasurementsView
                     builder.Columns.Add(x => x.Name);
                     builder.Columns.Add(x => x.Min).FormatAs("{0:#.00}");
                     builder.Columns.Add(x => x.Avg).FormatAs("{0:#.00}");
-                    builder.Columns.Add(x => x.Median).FormatAs("{0:#.00}");
                     builder.Columns.Add(x => x.Max).FormatAs("{0:#.00}");
                 })
                 .WriteLine(audioInterfaceInputLevels.Microphones);

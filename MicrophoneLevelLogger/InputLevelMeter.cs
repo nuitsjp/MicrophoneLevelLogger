@@ -39,10 +39,9 @@ public class InputLevelMeter
             return new MicrophoneInputLevel(
                 _microphone.Id,
                 _microphone.Name,
-                _maximumDecibels.Min(),
-                _maximumDecibels.Average(),
-                _maximumDecibels.Median(),
-                _maximumDecibels.Max());
+                new(_maximumDecibels.Min()),
+                new(_maximumDecibels.Average()),
+                new(_maximumDecibels.Max()));
         }
     }
 }
