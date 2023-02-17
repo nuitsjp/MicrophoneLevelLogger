@@ -1,6 +1,6 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
 
-public interface ICalibrateOutputView
+public interface ICalibrateOutputView : IMicrophoneView
 {
     IMicrophone SelectMicrophone(IAudioInterface audioInterface);
     int InputSpan();

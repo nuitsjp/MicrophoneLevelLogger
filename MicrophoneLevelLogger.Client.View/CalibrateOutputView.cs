@@ -4,7 +4,7 @@ using Sharprompt;
 
 namespace MicrophoneLevelLogger.Client.View;
 
-public class CalibrateOutputView : ICalibrateOutputView
+public class CalibrateOutputView : MicrophoneView, ICalibrateOutputView
 {
     public IMicrophone SelectMicrophone(IAudioInterface audioInterface)
     {

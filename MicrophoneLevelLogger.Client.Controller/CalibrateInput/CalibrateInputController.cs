@@ -89,7 +89,7 @@ public class CalibrateInputController : IController
                 await _mediaPlayer.PlayLoopingAsync(source.Token);
                 await logger.StartAsync(source.Token);
 
-                await _view.WaitAsync(TimeSpan.FromSeconds(5));
+                _view.Wait(TimeSpan.FromSeconds(5));
             }
             finally
             {

@@ -106,10 +106,9 @@ public class MicrophoneView : IMicrophoneView
         }
     }
 
-    public Task WaitAsync(TimeSpan timeSpan)
+    public void Wait(TimeSpan timeSpan)
     {
         ConsoleEx.Wait(timeSpan);
-        return Task.CompletedTask;
     }
 
 

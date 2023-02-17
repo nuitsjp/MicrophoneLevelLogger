@@ -1,22 +1,29 @@
-﻿namespace MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
+﻿using System.Diagnostics.Metrics;
+using System.Security.Cryptography;
+using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
+
+namespace MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
 
 public class CalibrateOutputController : IController
 {
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ICalibrateOutputView _view;
     private readonly IMediaPlayerProvider _mediaPlayerProvider;
+    private readonly IAudioInterfaceLoggerProvider _audioInterfaceLoggerProvider;
     private readonly IRecordingSettingsRepository _recordingSettingsRepository;
 
     public CalibrateOutputController(
         IAudioInterfaceProvider audioInterfaceProvider, 
         ICalibrateOutputView view, 
         IMediaPlayerProvider mediaPlayerProvider, 
-        IRecordingSettingsRepository recordingSettingsRepository)
+        IRecordingSettingsRepository recordingSettingsRepository, 
+        IAudioInterfaceLoggerProvider audioInterfaceLoggerProvider)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
         _mediaPlayerProvider = mediaPlayerProvider;
         _recordingSettingsRepository = recordingSettingsRepository;
+        _audioInterfaceLoggerProvider = audioInterfaceLoggerProvider;
     }
 
     public string Name => "Calibrate output     : スピーカーの出力レベルを調整する。";
@@ -25,7 +32,6 @@ public class CalibrateOutputController : IController
         // マイクを選択し、有効化する
         var audioInterface = _audioInterfaceProvider.Resolve();
         var microphone = _view.SelectMicrophone(audioInterface);
-        await microphone.ActivateAsync();
 
         // 計測時間を入力する
         var span = _view.InputSpan();
@@ -36,16 +42,8 @@ public class CalibrateOutputController : IController
         // 音声を再生する
         var recordingSettings = await _recordingSettingsRepository.LoadAsync();
         var mediaPlayer =_mediaPlayerProvider.Resolve(recordingSettings.IsEnableRemotePlaying);
-        try
-        {
-            // 計測を開始する
-            await Calibrate(audioInterface, mediaPlayer, microphone, specifyVolume, TimeSpan.FromSeconds(span));
-        }
-        finally
-        {
-            // リソースを停止・解放する。
-            microphone.Deactivate();
-        }
+        // 計測を開始する
+        await Calibrate(audioInterface, mediaPlayer, microphone, specifyVolume, TimeSpan.FromSeconds(span));
     }
 
     private async Task Calibrate(
@@ -57,40 +55,50 @@ public class CalibrateOutputController : IController
     {
         while (audioInterface.DefaultOutputLevel < VolumeLevel.Maximum)
         {
+            var logger = _audioInterfaceLoggerProvider.ResolveLocal(microphone);
+
+            // 音源を再生する。
             CancellationTokenSource source = new();
             await mediaPlayer.PlayLoopingAsync(source.Token);
-            // ReSharper disable once MethodSupportsCancellation
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            // 無音部が発生するため、冒頭部を聞き飛ばす。
+            await Task.Delay(TimeSpan.FromSeconds(1), source.Token);
             try
             {
                 // ボリュームを表示する
                 _view.DisplayDefaultOutputLevel(audioInterface.DefaultOutputLevel);
 
                 // 計測を開始する
-                var meter = new InputLevelMeter(microphone);
-                meter.StartMonitoring();
+                await logger.StartAsync(source.Token);
 
                 // 計測完了を待機する
-                // ReSharper disable once MethodSupportsCancellation
-                await Task.Delay(span);
-
-                // 計測結果を取得する
-                var microphoneInputLevel = meter.StopMonitoring();
-                _view.DisplayOutputVolume(microphoneInputLevel.Avg);
-
-                if (specifyVolume < microphoneInputLevel.Avg)
-                {
-                    break;
-                }
-
-                var diff = (int)(Math.Ceiling((specifyVolume - microphoneInputLevel.Avg).AsPrimitive()) * 2.5);
-                diff = diff == 0 ? 1 : diff;
-
-                audioInterface.DefaultOutputLevel += new VolumeLevel(diff / 100f);
+                _view.Wait(span);
             }
             finally
             {
                 source.Cancel();
+            }
+
+            // 計測結果を取得する
+            var decibel = logger.MicrophoneLoggers.Single().Avg;
+            _view.DisplayOutputVolume(decibel);
+
+            if (specifyVolume < decibel)
+            {
+                break;
+            }
+
+            var diff = (int)(Math.Ceiling((specifyVolume - decibel).AsPrimitive()) * 2.5);
+            // 最低でも1は上げる
+            diff = diff == 0 ? 1 : diff;
+
+            if (1 < audioInterface.DefaultOutputLevel.AsPrimitive() * 100 + diff)
+            {
+                // 最大値を超えてしまう場合、最大値に設定する
+                audioInterface.DefaultOutputLevel = VolumeLevel.Maximum;
+            }
+            else
+            {
+                audioInterface.DefaultOutputLevel += new VolumeLevel(diff / 100f);
             }
         }
     }
