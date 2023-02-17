@@ -32,7 +32,6 @@ public class Microphone : IMicrophone
         };
         _waveInEvent.DataAvailable += WaveInEventOnDataAvailable;
         _waveInEvent.RecordingStopped += WaveInEventOnRecordingStopped;
-        LatestWaveInput = new(this, Array.Empty<byte>(), 0, new[] { new DecibelByFrequency(0, IMicrophone.MinDecibel) });
     }
 
     private void WaveInEventOnDataAvailable(object? sender, WaveInEventArgs e)
@@ -53,28 +52,10 @@ public class Microphone : IMicrophone
             _lastBuffer[indent + i] = BitConverter.ToInt16(e.Buffer, i * bytesPerSample) * Ratio;
         }
 
-        var window = new FftSharp.Windows.Hanning();
-        var windowed = window.Apply(_lastBuffer);
-        var power = FftSharp.Transform.FFTpower(windowed);
-        var frequencies = FftSharp.Transform.FFTfreq(_waveInEvent.WaveFormat.SampleRate, power.Length);
-        var decibelByFrequencies = new DecibelByFrequency[power.Length];
-        for (var i = 0; i < power.Length; i++)
-        {
-            decibelByFrequencies[i] = new DecibelByFrequency(
-                frequencies[i],
-                power[i] < IMicrophone.MinDecibel
-                    ? IMicrophone.MinDecibel
-                    : power[i]
-            );
-        }
 
         try
         {
-            var weighted = AWeighting.Instance.Filter(decibelByFrequencies);
-
-            var waveInput = new WaveInput(this, e.Buffer, e.BytesRecorded, weighted);
-            LatestWaveInput = waveInput;
-
+            var waveInput = new WaveInput(this, e.Buffer, e.BytesRecorded);
             _observers.ForEach(x => x.OnNext(waveInput));
         }
         catch (Exception exception)
@@ -100,7 +81,6 @@ public class Microphone : IMicrophone
     public string Id { get; }
     public string Name { get; }
     public int DeviceNumber { get; }
-    public WaveInput LatestWaveInput { get; private set; }
 
     public WaveFormat WaveFormat => _waveInEvent.WaveFormat;
 

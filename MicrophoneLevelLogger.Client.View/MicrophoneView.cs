@@ -11,8 +11,6 @@ public class MicrophoneView : IMicrophoneView
     /// </summary>
     private static readonly TimeSpan SamplingRate = TimeSpan.FromMilliseconds(50);
 
-    private Timer? _timer;
-
     public void NotifyMicrophonesInformation(IAudioInterface audioInterface)
     {
         var infos = audioInterface
@@ -41,17 +39,6 @@ public class MicrophoneView : IMicrophoneView
         public int No { get; }
         public string Name { get; }
         public VolumeLevel InputLevel { get; }
-    }
-    public void StartNotifyMasterPeakValue(IAudioInterface audioInterface)
-    {
-        _timer = new Timer(OnElapsed, audioInterface, TimeSpan.Zero, SamplingRate);
-    }
-
-    public void StopNotifyMasterPeakValue()
-    {
-        _timer?.Change(Timeout.Infinite, Timeout.Infinite);
-        _timer?.Dispose();
-        _timer = null;
     }
 
     public void StartNotify(IAudioInterfaceLogger audioInterfaceLogger, CancellationToken token)
@@ -109,21 +96,6 @@ public class MicrophoneView : IMicrophoneView
     public void Wait(TimeSpan timeSpan)
     {
         ConsoleEx.Wait(timeSpan);
-    }
-
-
-    private void OnElapsed(object? state)
-    {
-        var microphones = (IAudioInterface)state!;
-        lock (this)
-        {
-            for (var i = 0; i < microphones.Microphones.Count; i++)
-            {
-                var waveInput = microphones.Microphones[i].LatestWaveInput;
-                ConsoleEx.WriteLine($"{i + 1} ={waveInput.MaximumDecibel:0.00} {GetBars(waveInput.MaximumDecibel)}");
-            }
-            ConsoleEx.SetCursorPosition(0, ConsoleEx.CursorTop - microphones.Microphones.Count);
-        }
     }
 
     private static readonly double MaxBarValue = Decibel.Min.AsPrimitive() * -1;

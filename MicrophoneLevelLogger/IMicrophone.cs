@@ -11,7 +11,6 @@ public interface IMicrophone : IObservable<WaveInput>, IDisposable
     string Id { get; }
     string Name { get; }
     int DeviceNumber { get; }
-    WaveInput LatestWaveInput { get; }
     VolumeLevel VolumeLevel { get; set; }
     WaveFormat WaveFormat { get; }
     Task ActivateAsync();
