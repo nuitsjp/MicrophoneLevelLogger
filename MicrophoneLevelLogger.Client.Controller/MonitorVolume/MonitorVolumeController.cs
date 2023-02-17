@@ -3,11 +3,16 @@
 public class MonitorVolumeController : IController
 {
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
+    private readonly IAudioInterfaceLoggerProvider _audioInterfaceLoggerProvider;
     private readonly IMonitorVolumeView _view;
 
-    public MonitorVolumeController(IAudioInterfaceProvider audioInterfaceProvider, IMonitorVolumeView view)
+    public MonitorVolumeController(
+        IAudioInterfaceProvider audioInterfaceProvider, 
+        IMonitorVolumeView view, 
+        IAudioInterfaceLoggerProvider audioInterfaceLoggerProvider)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
+        _audioInterfaceLoggerProvider = audioInterfaceLoggerProvider;
         _view = view;
     }
 
@@ -16,22 +21,22 @@ public class MonitorVolumeController : IController
     public Task ExecuteAsync()
     {
         using var audioInterface = _audioInterfaceProvider.Resolve();
+        using var logger = _audioInterfaceLoggerProvider.ResolveLocal(audioInterface, null);
 
-        audioInterface.ActivateMicrophones();
+        CancellationTokenSource source = new();
+        logger.StartAsync(source.Token);
         try
         {
             _view.NotifyDetailMessage();
-            _view.StartNotifyMasterPeakValue(audioInterface);
+            _view.StartNotify(logger, source.Token);
 
             _view.WaitToBeStopped();
-
-            _view.StopNotifyMasterPeakValue();
 
             return Task.CompletedTask;
         }
         finally
         {
-            audioInterface.DeactivateMicrophones();
+            source.Cancel();
         }
     }
 }

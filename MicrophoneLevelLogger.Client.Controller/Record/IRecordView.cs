@@ -4,5 +4,4 @@ public interface IRecordView : IMicrophoneView
 {
     public string InputRecordName();
     public void NotifyStarting(TimeSpan timeSpan);
-    void Wait(TimeSpan timeout);
 }
