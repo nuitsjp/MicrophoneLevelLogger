@@ -7,4 +7,5 @@ public interface IMicrophoneView
     void StopNotifyMasterPeakValue();
     void StartNotify(IAudioInterfaceLogger audioInterfaceLogger, CancellationToken token);
     public void NotifyResult(IAudioInterfaceLogger logger);
+    Task WaitAsync(TimeSpan timeSpan);
 }

@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace MicrophoneLevelLogger.Client.View;
 
@@ -13,13 +14,29 @@ public class ConsoleEx
 
     public static void Wait(TimeSpan timeout)
     {
-        Task.Run(() =>
+        var completed = false;
+        Task.Delay(timeout).ContinueWith(_ =>
         {
-            Thread.Sleep((TimeSpan)timeout);
-            IntPtr stdin = GetStdHandle(StdHandle.Stdin);
-            CloseHandle(stdin);
+            // 読み込みが未完了の場合だけ中断する。
+            // ReSharper disable once AccessToModifiedClosure
+            if (!completed)
+            {
+                var handle = GetStdHandle(StdHandle.Stdin);
+                CancelIoEx(handle, IntPtr.Zero);
+            }
         });
-        Console.ReadLine();
+
+        try
+        {
+            Console.ReadLine();
+            completed = true;
+        }
+        catch (InvalidOperationException)
+        {
+        }
+        catch (OperationCanceledException)
+        {
+        }
     }
 
     public static void WriteLine(string line = "", ConsoleColor? foreground = null, ConsoleColor? background = null)
@@ -48,7 +65,7 @@ public class ConsoleEx
 
     private enum StdHandle { Stdin = -10, Stdout = -11, Stderr = -12 };
     [DllImport("kernel32.dll")]
-    private static extern IntPtr GetStdHandle(StdHandle std);
+    private static extern IntPtr GetStdHandle(StdHandle stdHandle);
     [DllImport("kernel32.dll")]
-    private static extern bool CloseHandle(IntPtr hdl);
+    private static extern bool CancelIoEx(IntPtr handle, IntPtr lpOverlapped);
 }

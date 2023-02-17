@@ -10,18 +10,21 @@ public class CalibrateInputController : IController
     private readonly ICalibrateInputView _view;
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly IMediaPlayer _mediaPlayer;
+    private readonly IAudioInterfaceLoggerProvider _audioInterfaceLoggerProvider;
     private readonly IAudioInterfaceCalibrationValuesRepository _audioInterfaceCalibrationValuesRepository;
 
     public CalibrateInputController(
         ICalibrateInputView view,
         IAudioInterfaceProvider audioInterfaceProvider,
         IMediaPlayer mediaPlayer, 
-        IAudioInterfaceCalibrationValuesRepository audioInterfaceCalibrationValuesRepository)
+        IAudioInterfaceCalibrationValuesRepository audioInterfaceCalibrationValuesRepository, 
+        IAudioInterfaceLoggerProvider audioInterfaceLoggerProvider)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
         _mediaPlayer = mediaPlayer;
         _audioInterfaceCalibrationValuesRepository = audioInterfaceCalibrationValuesRepository;
+        _audioInterfaceLoggerProvider = audioInterfaceLoggerProvider;
     }
 
     /// <summary>
@@ -45,9 +48,6 @@ public class CalibrateInputController : IController
 
         try
         {
-            // マイクを有効化する
-            audioInterface.ActivateMicrophones();
-
             // マイクレベルを順番にキャリブレーションする
             await Calibrate(reference, target);
 
@@ -73,65 +73,58 @@ public class CalibrateInputController : IController
         // ボリューム調整していくステップ
         VolumeLevel step = new(0.01f);
 
-        Console.WriteLine(target);
-
         // ターゲットの入力レベルをMaxにする
         target.VolumeLevel = VolumeLevel.Maximum;
 
         // ターゲット側の入力レベルを少しずつ下げていきながら
         // リファレンスと同程度の音量になるように調整していく。
         Decibel high = Decibel.Max;
-
         for (; VolumeLevel.Minimum < target.VolumeLevel; target.VolumeLevel -= step)
         {
-            // 音声を再生する
             CancellationTokenSource source = new();
-            await _mediaPlayer.PlayLoopingAsync(source.Token);
+            var logger = _audioInterfaceLoggerProvider.ResolveLocal(reference, target);
             try
             {
-                // レコーディング開始
-                var referenceMeter = new InputLevelMeter(reference);
-                var targetMeter = new InputLevelMeter(target);
-                referenceMeter.StartMonitoring();
-                targetMeter.StartMonitoring();
+                // 音声を再生と、レコーディングを開始する。
+                await _mediaPlayer.PlayLoopingAsync(source.Token);
+                await logger.StartAsync(source.Token);
 
-                Thread.Sleep(TimeSpan.FromSeconds(5));
-
-                // レコーディング停止
-                var referenceLevel = referenceMeter.StopMonitoring().Avg;
-                var targetLevel = targetMeter.StopMonitoring().Avg;
-
-                _view.NotifyProgress(reference, referenceLevel, target, targetLevel);
-
-                if (targetLevel <= referenceLevel)
-                {
-                    // キャリブレーション対象のレベルがリファレンスより小さくなったら調整を終了する
-
-                    // リファレンスより小さくなった際の値と、リファレンスより大きかった際の値を比較する
-                    // 小さくなった際の方が誤差が小さかった場合、
-                    if (!(referenceLevel - targetLevel < high - referenceLevel)) return;
-
-                    // 大きかった時(high)の方が誤差が小さかった場合、入力レベルをステップ分戻す
-                    if (target.VolumeLevel < VolumeLevel.Maximum)
-                    {
-                        target.VolumeLevel += step;
-                    }
-
-                    return;
-                }
-
-                var diff = Math.Floor(Math.Abs(referenceLevel.AsPrimitive()) - Math.Abs(targetLevel.AsPrimitive()));
-                step = new((float)(diff / 100));
-                // 差がごく小さい場合、stepが0になってしまうので最小は0.01になるように調整する
-                step = step == new VolumeLevel(0f) ? new(0.01f) : step;
-
-                high = targetLevel;
+                await _view.WaitAsync(TimeSpan.FromSeconds(5));
             }
             finally
             {
                 source.Cancel();
             }
 
+            // レコーディング停止
+            var referenceLevel = logger.GetLogger(reference).Avg;
+            var targetLevel = logger.GetLogger(target).Avg;
+
+            _view.NotifyProgress(reference, referenceLevel, target, targetLevel);
+
+            if (targetLevel <= referenceLevel)
+            {
+                // キャリブレーション対象のレベルがリファレンスより小さくなったら調整を終了する
+
+                // リファレンスより小さくなった際の値と、リファレンスより大きかった際の値を比較する
+                // 小さくなった際の方が誤差が小さかった場合、
+                if (!(referenceLevel - targetLevel < high - referenceLevel)) return;
+
+                // 大きかった時(high)の方が誤差が小さかった場合、入力レベルをステップ分戻す
+                if (target.VolumeLevel < VolumeLevel.Maximum)
+                {
+                    target.VolumeLevel += step;
+                }
+
+                return;
+            }
+
+            var diff = Math.Floor(Math.Abs(referenceLevel.AsPrimitive()) - Math.Abs(targetLevel.AsPrimitive()));
+            step = new((float)(diff / 100));
+            // 差がごく小さい場合、stepが0になってしまうので最小は0.01になるように調整する
+            step = step == new VolumeLevel(0f) ? new(0.01f) : step;
+
+            high = targetLevel;
         }
     }
 }

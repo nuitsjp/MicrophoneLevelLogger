@@ -35,6 +35,9 @@ public class RemoteAudioInterfaceLogger : IAudioInterfaceLogger
         });
     }
 
+    public IMicrophoneLogger GetLogger(IMicrophone microphone) => throw new NotImplementedException();
+
+
     public void Dispose()
     {
         GC.SuppressFinalize(this);

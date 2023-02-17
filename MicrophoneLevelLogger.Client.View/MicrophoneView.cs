@@ -106,6 +106,12 @@ public class MicrophoneView : IMicrophoneView
         }
     }
 
+    public Task WaitAsync(TimeSpan timeSpan)
+    {
+        ConsoleEx.Wait(timeSpan);
+        return Task.CompletedTask;
+    }
+
 
     private void OnElapsed(object? state)
     {

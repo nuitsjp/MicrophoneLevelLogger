@@ -66,6 +66,9 @@ public class AudioInterfaceLogger : IAudioInterfaceLogger
         });
     }
 
+    public IMicrophoneLogger GetLogger(IMicrophone microphone) =>
+        MicrophoneLoggers.Single(x => x.Microphone.Id == microphone.Id);
+
     private async Task LoggingAsync(CancellationToken token)
     {
         // CSVのヘッダーを出力する。
