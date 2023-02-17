@@ -81,22 +81,6 @@ public class AudioInterface : IAudioInterface
         Task.WaitAll(tasks.ToArray());
     }
 
-    public void StartRecording(string path)
-    {
-        foreach (var microphone in Microphones)
-        {
-            microphone.StartRecording(path);
-        }
-    }
-
-    public IEnumerable<IMasterPeakValues> StopRecording()
-    {
-        foreach (var microphone in Microphones)
-        {
-            yield return microphone.StopRecording();
-        }
-    }
-
     public void DeactivateMicrophones()
     {
         foreach (var microphone in Microphones)

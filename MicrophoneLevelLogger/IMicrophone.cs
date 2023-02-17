@@ -15,7 +15,5 @@ public interface IMicrophone : IObservable<WaveInput>, IDisposable
     VolumeLevel VolumeLevel { get; set; }
     WaveFormat WaveFormat { get; }
     Task ActivateAsync();
-    void StartRecording(string path);
-    IMasterPeakValues StopRecording();
     void Deactivate();
 }

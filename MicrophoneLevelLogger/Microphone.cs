@@ -16,8 +16,6 @@ public class Microphone : IMicrophone
     private double[]? _lastBuffer;
     private readonly WaveInEvent _waveInEvent;
 
-    private readonly List<double> _masterPeakBuffer = new();
-
     private List<IObserver<WaveInput>> _observers = new();
 
     public Microphone(string id, string name, int deviceNumber)
@@ -78,8 +76,6 @@ public class Microphone : IMicrophone
             LatestWaveInput = waveInput;
 
             _observers.ForEach(x => x.OnNext(waveInput));
-
-            _masterPeakBuffer.Add(LatestWaveInput.MaximumDecibel);
         }
         catch (Exception exception)
         {
@@ -134,25 +130,8 @@ public class Microphone : IMicrophone
         return Task.CompletedTask;
     }
 
-    public void StartRecording(string path)
-    {
-        _masterPeakBuffer.Clear();
-    }
-
-
-    private void OnElapsed(object? state)
-    {
-        _masterPeakBuffer.Add(LatestWaveInput.MaximumDecibel);
-    }
-
-    public IMasterPeakValues StopRecording()
-    {
-        return new MasterPeakValues(this, _masterPeakBuffer.ToList());
-    }
-
     public void Deactivate()
     {
-        StopRecording();
         _waveInEvent.StopRecording();
     }
 
