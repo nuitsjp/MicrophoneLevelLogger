@@ -2,32 +2,13 @@
 
 public static class EnumerableExtension
 {
-    public static double Median(this IEnumerable<double>? source)
+    public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
     {
-        // ReSharper disable once PossibleMultipleEnumeration
-        if (source is null || !source.Any())
+        foreach (var item in enumerable)
         {
-            throw new InvalidOperationException("Cannot compute median for a null or empty set.");
-        }
-
-        var sortedList =
-            // ReSharper disable once PossibleMultipleEnumeration
-            source.OrderBy(number => number).ToList();
-
-        int itemIndex = sortedList.Count / 2;
-
-        if (sortedList.Count % 2 == 0)
-        {
-            // Even number of items.
-            return (sortedList[itemIndex] + sortedList[itemIndex - 1]) / 2;
-        }
-        else
-        {
-            // Odd number of items.
-            return sortedList[itemIndex];
+            action(item);
         }
     }
-
     public static async Task ForEachAsync<T>(this IEnumerable<T> enumerable, Func<T, Task> action)
     {
         await Parallel.ForEachAsync(
