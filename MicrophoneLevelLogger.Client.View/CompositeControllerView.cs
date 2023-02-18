@@ -8,7 +8,7 @@ public class CompositeControllerView : ICompositeControllerView
     public bool TrySelectController(IList<IController> controllers, out IController controller)
     {
         var items = controllers.Select(x => x.Name).ToList();
-        items.Add("Exit");
+        items.Add("Return               : 戻る。");
         var selected = Prompt.Select("詳細コマンドを選択してください。", items);
         var selectedController = controllers.SingleOrDefault(x => x.Name == selected);
         if (selectedController is not null)
