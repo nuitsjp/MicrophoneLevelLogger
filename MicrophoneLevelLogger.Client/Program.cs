@@ -4,7 +4,6 @@ using MicrophoneLevelLogger.Client.Controller;
 using MicrophoneLevelLogger.Client.Controller.CalibrateInput;
 using MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
 using MicrophoneLevelLogger.Client.Controller.DeleteCalibrates;
-using MicrophoneLevelLogger.Client.Controller.DeleteInputLevels;
 using MicrophoneLevelLogger.Client.Controller.DeleteRecord;
 using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
 using MicrophoneLevelLogger.Client.Controller.DisplayMicrophones;
@@ -37,7 +36,6 @@ var host = Host.CreateDefaultBuilder((string[])args)
         // Repository
         /////////////////////////////////////////////////////////////////////////
         services.AddTransient<IAudioInterfaceCalibrationValuesRepository, AudioInterfaceCalibrationValuesRepository>();
-        services.AddTransient<IAudioInterfaceInputLevelsRepository, AudioInterfaceInputLevelsRepository>();
         services.AddTransient<IRecordingSettingsRepository, RecordingSettingsRepository>();
         services.AddTransient<IRecordSummaryRepository, RecordSummaryRepository>();
 
@@ -55,9 +53,6 @@ var host = Host.CreateDefaultBuilder((string[])args)
 
         services.AddTransient<DeleteCalibratesController>();
         services.AddTransient<IDeleteCalibrateView, DeleteCalibrateView>();
-
-        services.AddTransient<DeleteInputLevelsController>();
-        services.AddTransient<IDeleteInputLevelsView, DeleteInputLevelsView>();
 
         services.AddTransient<DeleteRecordController>();
         services.AddTransient<IDeleteRecordView, DeleteRecordView>();

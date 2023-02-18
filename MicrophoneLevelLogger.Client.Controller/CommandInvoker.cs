@@ -1,7 +1,6 @@
 ﻿using MicrophoneLevelLogger.Client.Controller.CalibrateInput;
 using MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
 using MicrophoneLevelLogger.Client.Controller.DeleteCalibrates;
-using MicrophoneLevelLogger.Client.Controller.DeleteInputLevels;
 using MicrophoneLevelLogger.Client.Controller.DeleteRecord;
 using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
 using MicrophoneLevelLogger.Client.Controller.DisplayMicrophones;
@@ -25,7 +24,6 @@ public class CommandInvoker : ICommandInvoker
     private readonly MonitorVolumeController _monitorVolumeController;
     private readonly SetMaxInputLevelController _setMaxInputLevelController;
     private readonly DeleteRecordController _deleteRecordController;
-    private readonly DeleteInputLevelsController _deleteInputLevelsController;
     private readonly RecordingSettingsController _recordingSettingsController;
     private readonly DeleteCalibratesController _deleteCalibratesController;
     private readonly DisplayCalibratesController _displayCalibratesController;
@@ -42,7 +40,6 @@ public class CommandInvoker : ICommandInvoker
         SetMaxInputLevelController setMaxInputLevelController, 
         MonitorVolumeController monitorVolumeController, 
         DeleteRecordController deleteRecordController, 
-        DeleteInputLevelsController deleteInputLevelsController, 
         RecordingSettingsController recordingSettingsController, 
         DeleteCalibratesController deleteCalibratesController, 
         DisplayCalibratesController displayCalibratesController, 
@@ -58,7 +55,6 @@ public class CommandInvoker : ICommandInvoker
         _setMaxInputLevelController = setMaxInputLevelController;
         _monitorVolumeController = monitorVolumeController;
         _deleteRecordController = deleteRecordController;
-        _deleteInputLevelsController = deleteInputLevelsController;
         _recordingSettingsController = recordingSettingsController;
         _deleteCalibratesController = deleteCalibratesController;
         _displayCalibratesController = displayCalibratesController;
@@ -87,7 +83,6 @@ public class CommandInvoker : ICommandInvoker
                 _recordController,
                 _displayRecordsController,
                 _recordingSettingsController,
-                _deleteInputLevelsController,
                 _deleteCalibratesController,
                 _deleteRecordController,
                 _borderController,
