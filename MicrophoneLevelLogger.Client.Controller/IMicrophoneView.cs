@@ -3,7 +3,7 @@
 public interface IMicrophoneView
 {
     void NotifyMicrophonesInformation(IAudioInterface audioInterface);
-    void StartNotify(IAudioInterfaceLogger audioInterfaceLogger, CancellationToken token);
-    public void NotifyResult(IAudioInterfaceLogger logger);
+    void StartNotify(IRecorder recorder, CancellationToken token);
+    public void NotifyResult(IRecorder logger);
     void Wait(TimeSpan timeSpan);
 }

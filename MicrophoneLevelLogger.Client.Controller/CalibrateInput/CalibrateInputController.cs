@@ -10,7 +10,7 @@ public class CalibrateInputController : IController
     private readonly ICalibrateInputView _view;
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly IMediaPlayer _mediaPlayer;
-    private readonly IAudioInterfaceLoggerProvider _audioInterfaceLoggerProvider;
+    private readonly IRecorderProvider _recorderProvider;
     private readonly IAudioInterfaceCalibrationValuesRepository _audioInterfaceCalibrationValuesRepository;
 
     public CalibrateInputController(
@@ -18,13 +18,13 @@ public class CalibrateInputController : IController
         IAudioInterfaceProvider audioInterfaceProvider,
         IMediaPlayer mediaPlayer, 
         IAudioInterfaceCalibrationValuesRepository audioInterfaceCalibrationValuesRepository, 
-        IAudioInterfaceLoggerProvider audioInterfaceLoggerProvider)
+        IRecorderProvider recorderProvider)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
         _mediaPlayer = mediaPlayer;
         _audioInterfaceCalibrationValuesRepository = audioInterfaceCalibrationValuesRepository;
-        _audioInterfaceLoggerProvider = audioInterfaceLoggerProvider;
+        _recorderProvider = recorderProvider;
     }
 
     /// <summary>
@@ -82,12 +82,12 @@ public class CalibrateInputController : IController
         for (; VolumeLevel.Minimum < target.VolumeLevel; target.VolumeLevel -= step)
         {
             CancellationTokenSource source = new();
-            var logger = _audioInterfaceLoggerProvider.ResolveLocal(reference, target);
+            var recorder = _recorderProvider.ResolveLocal(reference, target);
             try
             {
                 // 音声を再生と、レコーディングを開始する。
                 await _mediaPlayer.PlayLoopingAsync(source.Token);
-                await logger.StartAsync(source.Token);
+                await recorder.StartAsync(source.Token);
 
                 _view.Wait(TimeSpan.FromSeconds(5));
             }
@@ -97,8 +97,8 @@ public class CalibrateInputController : IController
             }
 
             // レコーディング停止
-            var referenceLevel = logger.GetLogger(reference).Avg;
-            var targetLevel = logger.GetLogger(target).Avg;
+            var referenceLevel = recorder.GetLogger(reference).Avg;
+            var targetLevel = recorder.GetLogger(target).Avg;
 
             _view.NotifyProgress(reference, referenceLevel, target, targetLevel);
 

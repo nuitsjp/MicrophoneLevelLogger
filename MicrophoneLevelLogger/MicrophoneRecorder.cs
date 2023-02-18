@@ -2,12 +2,12 @@
 
 namespace MicrophoneLevelLogger;
 
-public class MicrophoneLogger : IMicrophoneLogger
+public class MicrophoneRecorder : IMicrophoneRecorder
 {
     private readonly Stream _waveWriter;
     private readonly Fft _fft;
 
-    public MicrophoneLogger(IMicrophone microphone, DirectoryInfo? directoryInfo)
+    public MicrophoneRecorder(IMicrophone microphone, DirectoryInfo? directoryInfo)
     {
         Microphone = microphone;
 

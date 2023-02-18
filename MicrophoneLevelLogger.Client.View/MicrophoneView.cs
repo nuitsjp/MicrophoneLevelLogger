@@ -41,12 +41,12 @@ public class MicrophoneView : IMicrophoneView
         public VolumeLevel InputLevel { get; }
     }
 
-    public void StartNotify(IAudioInterfaceLogger audioInterfaceLogger, CancellationToken token)
+    public void StartNotify(IRecorder recorder, CancellationToken token)
     {
         Task.Run( async () =>
         {
 
-            var microphones = audioInterfaceLogger.MicrophoneLoggers;
+            var microphones = recorder.MicrophoneRecorders;
 
             while (token.IsCancellationRequested is false)
             {
@@ -73,7 +73,7 @@ public class MicrophoneView : IMicrophoneView
         }, token);
     }
 
-    public void NotifyResult(IAudioInterfaceLogger logger)
+    public void NotifyResult(IRecorder logger)
     {
         lock (this)
         {
@@ -88,7 +88,7 @@ public class MicrophoneView : IMicrophoneView
                     builder.Columns.Add(x => x.Max).FormatAs("{0:#.00}");
                 })
                 .WriteLine(
-                    logger.MicrophoneLoggers
+                    logger.MicrophoneRecorders
                         .Select((x, index) => new RecordResult(index, x)));
         }
     }

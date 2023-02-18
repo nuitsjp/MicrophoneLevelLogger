@@ -32,7 +32,7 @@ var host = Host.CreateDefaultBuilder((string[])args)
         services.AddTransient<IAudioInterfaceProvider, AudioInterfaceProvider>();
         services.AddTransient<IMediaPlayerProvider, MediaPlayerProvider>();
         services.AddTransient<IMediaPlayer, MediaPlayer>();
-        services.AddTransient<IAudioInterfaceLoggerProvider, AudioInterfaceLoggerProvider>();
+        services.AddTransient<IRecorderProvider, RecorderProvider>();
 
         /////////////////////////////////////////////////////////////////////////
         // Repository

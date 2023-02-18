@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace MicrophoneLevelLogger;
 
-public class RemoteAudioInterfaceLogger : IAudioInterfaceLogger
+public class RemoteRecorder : IRecorder
 {
     private static readonly HttpClient HttpClient = new();
 
@@ -11,13 +11,13 @@ public class RemoteAudioInterfaceLogger : IAudioInterfaceLogger
 
     private readonly IRecordingSettingsRepository _repository;
 
-    public RemoteAudioInterfaceLogger(string? recordName, IRecordingSettingsRepository repository)
+    public RemoteRecorder(string? recordName, IRecordingSettingsRepository repository)
     {
         _recordName = recordName;
         _repository = repository;
     }
 
-    public IReadOnlyList<IMicrophoneLogger> MicrophoneLoggers => throw new NotImplementedException();
+    public IReadOnlyList<IMicrophoneRecorder> MicrophoneRecorders => throw new NotImplementedException();
 
     public async Task StartAsync(CancellationToken token)
     {
@@ -35,7 +35,7 @@ public class RemoteAudioInterfaceLogger : IAudioInterfaceLogger
         });
     }
 
-    public IMicrophoneLogger GetLogger(IMicrophone microphone) => throw new NotImplementedException();
+    public IMicrophoneRecorder GetLogger(IMicrophone microphone) => throw new NotImplementedException();
 
 
     public void Dispose()

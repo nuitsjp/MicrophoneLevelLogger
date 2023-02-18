@@ -9,7 +9,7 @@ public class CalibrateOutputController : IController
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ICalibrateOutputView _view;
     private readonly IMediaPlayerProvider _mediaPlayerProvider;
-    private readonly IAudioInterfaceLoggerProvider _audioInterfaceLoggerProvider;
+    private readonly IRecorderProvider _recorderProvider;
     private readonly IRecordingSettingsRepository _recordingSettingsRepository;
 
     public CalibrateOutputController(
@@ -17,13 +17,13 @@ public class CalibrateOutputController : IController
         ICalibrateOutputView view, 
         IMediaPlayerProvider mediaPlayerProvider, 
         IRecordingSettingsRepository recordingSettingsRepository, 
-        IAudioInterfaceLoggerProvider audioInterfaceLoggerProvider)
+        IRecorderProvider recorderProvider)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
         _mediaPlayerProvider = mediaPlayerProvider;
         _recordingSettingsRepository = recordingSettingsRepository;
-        _audioInterfaceLoggerProvider = audioInterfaceLoggerProvider;
+        _recorderProvider = recorderProvider;
     }
 
     public string Name => "Calibrate output     : スピーカーの出力レベルを調整する。";
@@ -55,7 +55,7 @@ public class CalibrateOutputController : IController
     {
         while (audioInterface.DefaultOutputLevel < VolumeLevel.Maximum)
         {
-            var logger = _audioInterfaceLoggerProvider.ResolveLocal(microphone);
+            var recorder = _recorderProvider.ResolveLocal(microphone);
 
             // 音源を再生する。
             CancellationTokenSource source = new();
@@ -68,7 +68,7 @@ public class CalibrateOutputController : IController
                 _view.DisplayDefaultOutputLevel(audioInterface.DefaultOutputLevel);
 
                 // 計測を開始する
-                await logger.StartAsync(source.Token);
+                await recorder.StartAsync(source.Token);
 
                 // 計測完了を待機する
                 _view.Wait(span);
@@ -79,7 +79,7 @@ public class CalibrateOutputController : IController
             }
 
             // 計測結果を取得する
-            var decibel = logger.MicrophoneLoggers.Single().Avg;
+            var decibel = recorder.MicrophoneRecorders.Single().Avg;
             _view.DisplayOutputVolume(decibel);
 
             if (specifyVolume < decibel)

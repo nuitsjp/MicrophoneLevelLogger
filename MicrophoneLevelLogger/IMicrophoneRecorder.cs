@@ -1,6 +1,6 @@
 ﻿namespace MicrophoneLevelLogger;
 
-public interface IMicrophoneLogger : IDisposable
+public interface IMicrophoneRecorder : IDisposable
 {
     public IMicrophone Microphone { get; }
     public Decibel Max { get; }

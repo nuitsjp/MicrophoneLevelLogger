@@ -2,13 +2,13 @@
 
 public class RecordResult
 {
-    public RecordResult(int no, IMicrophoneLogger microphoneLogger)
+    public RecordResult(int no, IMicrophoneRecorder microphoneRecorder)
     {
         No = no;
-        Name = microphoneLogger.Microphone.Name;
-        Min = microphoneLogger.Min;
-        Avg = microphoneLogger.Avg;
-        Max = microphoneLogger.Max;
+        Name = microphoneRecorder.Microphone.Name;
+        Min = microphoneRecorder.Min;
+        Avg = microphoneRecorder.Avg;
+        Max = microphoneRecorder.Max;
     }
     public int No { get; }
     public string Name { get; }

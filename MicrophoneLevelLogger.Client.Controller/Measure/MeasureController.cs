@@ -6,13 +6,13 @@ public class MeasureController : IController
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly IMediaPlayer _mediaPlayer;
     private readonly IAudioInterfaceInputLevelsRepository _repository;
-    private readonly IAudioInterfaceLoggerProvider _loggerProvider;
+    private readonly IRecorderProvider _loggerProvider;
 
     public MeasureController(
         IMeasureView view,
         IAudioInterfaceProvider audioInterfaceProvider,
         IMediaPlayer mediaPlayer, 
-        IAudioInterfaceInputLevelsRepository repository, IAudioInterfaceLoggerProvider loggerProvider)
+        IAudioInterfaceInputLevelsRepository repository, IRecorderProvider loggerProvider)
     {
         _view = view;
         _audioInterfaceProvider = audioInterfaceProvider;
@@ -47,10 +47,10 @@ public class MeasureController : IController
         CancellationTokenSource source = new();
         try
         {
-            var logger = _loggerProvider.ResolveLocal(microphone);
+            var recorder = _loggerProvider.ResolveLocal(microphone);
 
             // 画面への通知を開始する
-            _view.StartNotify(logger, source.Token);
+            _view.StartNotify(recorder, source.Token);
 
             // 音声を再生する
             if (isPlayMedia)
@@ -59,13 +59,13 @@ public class MeasureController : IController
             }
 
             // 計測を開始する
-            await logger.StartAsync(source.Token);
+            await recorder.StartAsync(source.Token);
             // 計測完了を待機する
             _view.Wait(span);
 
             // 計測結果リストを更新する
             AudioInterfaceInputLevels inputLevels = await _repository.LoadAsync();
-            logger.MicrophoneLoggers
+            recorder.MicrophoneRecorders
                 .ForEach(microphoneLogger =>
                 {
                     inputLevels.Update(
@@ -80,7 +80,7 @@ public class MeasureController : IController
             await _repository.SaveAsync(inputLevels);
 
             // 結果を通知する
-            _view.NotifyResult(logger);
+            _view.NotifyResult(recorder);
         }
         finally
         {

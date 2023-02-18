@@ -5,20 +5,20 @@ using FftSharp.Windows;
 
 namespace MicrophoneLevelLogger;
 
-public class AudioInterfaceLogger : IAudioInterfaceLogger
+public class Recorder : IRecorder
 {
     private static readonly DirectoryInfo RootDirectory = new("Record");
     private readonly StreamWriter _maxDecibelLogger;
     private readonly DirectoryInfo? _saveDirectory;
 
-    public AudioInterfaceLogger(
+    public Recorder(
         IAudioInterface audioInterface, 
         string? recordName = null)
         : this(recordName, audioInterface.Microphones.ToArray())
     {
     }
 
-    public AudioInterfaceLogger(
+    public Recorder(
         string? recordName = null,
         params IMicrophone[] microphones)
     {
@@ -27,20 +27,20 @@ public class AudioInterfaceLogger : IAudioInterfaceLogger
                 ? new DirectoryInfo(Path.Join(RootDirectory.FullName, $"{DateTime.Now:yyyy-mm-dd_hhMMss}_{recordName}"))
                 : null;
         _saveDirectory?.Create();
-        MicrophoneLoggers = microphones
-            .Select(x => (IMicrophoneLogger)new MicrophoneLogger(x, _saveDirectory))
+        MicrophoneRecorders = microphones
+            .Select(x => (IMicrophoneRecorder)new MicrophoneRecorder(x, _saveDirectory))
             .ToList();
         _maxDecibelLogger = _saveDirectory is not null
             ? File.CreateText(Path.Combine(_saveDirectory.FullName, "detail.csv"))
             : StreamWriter.Null;
     }
 
-    public IReadOnlyList<IMicrophoneLogger> MicrophoneLoggers { get; }
+    public IReadOnlyList<IMicrophoneRecorder> MicrophoneRecorders { get; }
 
     public async Task StartAsync(CancellationToken token)
     {
         // すべてのマイクのログインぐを開始する。
-        await MicrophoneLoggers.ForEachAsync(x => x.StartAsync(token));
+        await MicrophoneRecorders.ForEachAsync(x => x.StartAsync(token));
 
         // 非同期でロギングを実施する。
         var task = Task.Run(async () => await LoggingAsync(token), token);
@@ -54,7 +54,7 @@ public class AudioInterfaceLogger : IAudioInterfaceLogger
             if (_saveDirectory is not null)
             {
                 // 最小値、平均値、最大値をテキストファイルに出力する。
-                var results = MicrophoneLoggers
+                var results = MicrophoneRecorders
                     .Select((x, index) => new RecordResult(index + 1, x))
                     .ToList();
                 using var writer =
@@ -66,8 +66,8 @@ public class AudioInterfaceLogger : IAudioInterfaceLogger
         });
     }
 
-    public IMicrophoneLogger GetLogger(IMicrophone microphone) =>
-        MicrophoneLoggers.Single(x => x.Microphone.Id == microphone.Id);
+    public IMicrophoneRecorder GetLogger(IMicrophone microphone) =>
+        MicrophoneRecorders.Single(x => x.Microphone.Id == microphone.Id);
 
     private async Task LoggingAsync(CancellationToken token)
     {
@@ -96,7 +96,7 @@ public class AudioInterfaceLogger : IAudioInterfaceLogger
     private async Task WriteRecordAsync()
     {
         await _maxDecibelLogger.WriteAsync($"{DateTime.Now:yyyy/MM/dd hh:mm:ss.fff}");
-        foreach (var microphoneLogger in MicrophoneLoggers)
+        foreach (var microphoneLogger in MicrophoneRecorders)
         {
             await _maxDecibelLogger.WriteAsync(",");
             _maxDecibelLogger.Write(microphoneLogger.Max);
@@ -108,7 +108,7 @@ public class AudioInterfaceLogger : IAudioInterfaceLogger
     private async Task WriteHeaderAsync()
     {
         await _maxDecibelLogger.WriteAsync("時刻");
-        foreach (var microphoneLogger in MicrophoneLoggers)
+        foreach (var microphoneLogger in MicrophoneRecorders)
         {
             await _maxDecibelLogger.WriteAsync(",");
             await _maxDecibelLogger.WriteAsync(microphoneLogger.Microphone.Name);
@@ -119,7 +119,7 @@ public class AudioInterfaceLogger : IAudioInterfaceLogger
 
     public void Dispose()
     {
-        foreach (var logger in MicrophoneLoggers)
+        foreach (var logger in MicrophoneRecorders)
         {
             logger.DisposeQuiet();
         }

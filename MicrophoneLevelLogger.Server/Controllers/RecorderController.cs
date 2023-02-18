@@ -9,16 +9,16 @@ public class RecorderController : ControllerBase
 {
     private static CancellationTokenSource _cancellationTokenSource = new();
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
-    private readonly IAudioInterfaceLoggerProvider _audioInterfaceLoggerProvider;
+    private readonly IRecorderProvider _recorderProvider;
     private readonly IRecordView _view;
 
     public RecorderController(
         IAudioInterfaceProvider audioInterfaceProvider, 
-        IAudioInterfaceLoggerProvider audioInterfaceLoggerProvider, 
+        IRecorderProvider recorderProvider, 
         IRecordView view)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
-        _audioInterfaceLoggerProvider = audioInterfaceLoggerProvider;
+        _recorderProvider = recorderProvider;
         _view = view;
     }
 
@@ -30,7 +30,7 @@ public class RecorderController : ControllerBase
     {
         Console.WriteLine($"Recorder#Record name:{recordName}");
         var audioInterface = _audioInterfaceProvider.Resolve();
-        var logger = _audioInterfaceLoggerProvider.ResolveLocal(audioInterface, recordName);
+        var logger = _recorderProvider.ResolveLocal(audioInterface, recordName);
         _cancellationTokenSource = new();
         await logger.StartAsync(_cancellationTokenSource.Token);
         _view.StartNotify(logger, _cancellationTokenSource.Token);
