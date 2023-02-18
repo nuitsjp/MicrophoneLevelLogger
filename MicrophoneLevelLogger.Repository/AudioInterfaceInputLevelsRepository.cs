@@ -8,14 +8,6 @@ public class AudioInterfaceInputLevelsRepository : IAudioInterfaceInputLevelsRep
 {
     private const string FileName = "AudioInterfaceInputLevels.json";
 
-    private static JsonSerializerOptions Options => new()
-    {
-        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = true
-    };
-
-
     public async Task<AudioInterfaceInputLevels> LoadAsync()
     {
         if (!File.Exists(FileName))
@@ -23,13 +15,13 @@ public class AudioInterfaceInputLevelsRepository : IAudioInterfaceInputLevelsRep
             await SaveAsync(new AudioInterfaceInputLevels());
         }
         await using var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read);
-        return (await JsonSerializer.DeserializeAsync<AudioInterfaceInputLevels>(stream, Options))!;
+        return (await JsonSerializer.DeserializeAsync<AudioInterfaceInputLevels>(stream, JsonEnvironments.Options))!;
     }
 
     public async Task SaveAsync(AudioInterfaceInputLevels audioInterfaceInputLevels)
     {
         await using var stream = new FileStream(FileName, FileMode.Create, FileAccess.Write);
-        await JsonSerializer.SerializeAsync(stream, audioInterfaceInputLevels, Options);
+        await JsonSerializer.SerializeAsync(stream, audioInterfaceInputLevels, JsonEnvironments.Options);
     }
 
     public void Remove()

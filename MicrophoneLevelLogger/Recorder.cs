@@ -1,6 +1,7 @@
 ﻿using System.CodeDom;
 using CsvHelper;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using FftSharp.Windows;
 
 namespace MicrophoneLevelLogger;
@@ -9,22 +10,24 @@ public class Recorder : IRecorder
 {
     private static readonly DirectoryInfo RootDirectory = new("Record");
     private readonly StreamWriter _maxDecibelLogger;
+    private readonly string? _recordName;
     private readonly DirectoryInfo? _saveDirectory;
+    private readonly IRecordSummaryRepository _recordSummaryRepository;
 
     public Recorder(
-        IAudioInterface audioInterface, 
-        string? recordName = null)
-        : this(recordName, audioInterface.Microphones.ToArray())
+        IAudioInterface audioInterface, IRecordSummaryRepository recordSummaryRepository, string? recordName = null)
+        : this(recordSummaryRepository, recordName, audioInterface.Microphones.ToArray())
     {
     }
 
-    public Recorder(
-        string? recordName = null,
+    public Recorder(IRecordSummaryRepository recordSummaryRepository, string? recordName = null,
         params IMicrophone[] microphones)
     {
+        _recordSummaryRepository = recordSummaryRepository;
+        _recordName = recordName;
         _saveDirectory =
             recordName is not null
-                ? new DirectoryInfo(Path.Join(RootDirectory.FullName, $"{DateTime.Now:yyyy-mm-dd_hhMMss}_{recordName}"))
+                ? new DirectoryInfo(Path.Join(RootDirectory.FullName, $"{DateTime.Now:yyyy-MM-dd_hhmmss}_{recordName}"))
                 : null;
         _saveDirectory?.Create();
         MicrophoneRecorders = microphones
@@ -39,6 +42,7 @@ public class Recorder : IRecorder
 
     public async Task StartAsync(CancellationToken token)
     {
+        var beginTime = DateTime.Now;
         // すべてのマイクのログインぐを開始する。
         await MicrophoneRecorders.ForEachAsync(x => x.StartAsync(token));
 
@@ -46,22 +50,38 @@ public class Recorder : IRecorder
         var task = Task.Run(async () => await LoggingAsync(token), token);
 
         // キャンセル処理ハンドラーを登録する。
-        token.Register(() =>
+        token.Register(async () =>
         {
             // ReSharper disable once MethodSupportsCancellation
-            task.Wait();
+            await task.WaitAsync(Timeout.InfiniteTimeSpan);
 
-            if (_saveDirectory is not null)
+            if (_recordName is not null)
             {
                 // 最小値、平均値、最大値をテキストファイルに出力する。
                 var results = MicrophoneRecorders
                     .Select((x, index) => new RecordResult(index + 1, x))
                     .ToList();
-                using var writer =
+                await using var writer =
                     new CsvWriter(
-                        File.CreateText(Path.Combine(_saveDirectory.FullName, "summary.csv")),
+                        File.CreateText(Path.Combine(_saveDirectory!.FullName, "summary.csv")),
                         new CultureInfo("ja-JP", false));
-                writer.WriteRecords(results);
+                // ReSharper disable once MethodSupportsCancellation
+                await writer.WriteRecordsAsync(results);
+
+                var summary =
+                    new RecordSummary(
+                        _recordName!,
+                        beginTime,
+                        DateTime.Now,
+                        MicrophoneRecorders.Select(x =>
+                            new MicrophoneRecordSummary(
+                                x.Microphone.Id,
+                                x.Microphone.Name,
+                                x.Min,
+                                x.Avg,
+                                x.Max))
+                    );
+                await _recordSummaryRepository.SaveAsync(summary, _saveDirectory);
             }
         });
     }

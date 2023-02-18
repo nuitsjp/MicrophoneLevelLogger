@@ -40,6 +40,7 @@ var host = Host.CreateDefaultBuilder((string[])args)
         services.AddTransient<IAudioInterfaceCalibrationValuesRepository, AudioInterfaceCalibrationValuesRepository>();
         services.AddTransient<IAudioInterfaceInputLevelsRepository, AudioInterfaceInputLevelsRepository>();
         services.AddTransient<IRecordingSettingsRepository, RecordingSettingsRepository>();
+        services.AddTransient<IRecordSummaryRepository, RecordSummaryRepository>();
 
         /////////////////////////////////////////////////////////////////////////
         // Controller & View

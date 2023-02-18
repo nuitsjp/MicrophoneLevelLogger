@@ -1,6 +1,4 @@
-﻿using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Unicode;
+﻿using System.Text.Json;
 
 namespace MicrophoneLevelLogger.Repository;
 
@@ -8,19 +6,12 @@ public class RecordingSettingsRepository : IRecordingSettingsRepository
 {
     private const string FileName = $"{nameof(RecordingSettings)}.json";
 
-    private static JsonSerializerOptions Options => new()
-    {
-        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = true
-    };
-
     public async Task<RecordingSettings> LoadAsync()
     {
         if (File.Exists(FileName))
         {
             await using var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read);
-            return (await JsonSerializer.DeserializeAsync<RecordingSettings>(stream, Options))!;
+            return (await JsonSerializer.DeserializeAsync<RecordingSettings>(stream, JsonEnvironments.Options))!;
         }
         else
         {
@@ -40,6 +31,6 @@ public class RecordingSettingsRepository : IRecordingSettingsRepository
             File.Delete(FileName);
         }
         await using var stream = new FileStream(FileName, FileMode.Create, FileAccess.Write);
-        await JsonSerializer.SerializeAsync(stream, settings, Options);
+        await JsonSerializer.SerializeAsync(stream, settings, JsonEnvironments.Options);
     }
 }
