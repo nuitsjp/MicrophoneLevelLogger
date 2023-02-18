@@ -2,5 +2,5 @@
 
 public interface ICompositeControllerView
 {
-    IController SelectController(IList<IController> controllers);
+    bool TrySelectController(IList<IController> controllers, out IController controller);
 }

@@ -17,19 +17,12 @@ public class CommandInvoker : ICommandInvoker
 {
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ICommandInvokerView _view;
-    private readonly ICompositeControllerView _compositeControllerView;
-    private readonly CalibrateOutputController _calibrateOutputController;
-    private readonly CalibrateInputController _calibrateInputController;
     private readonly RecordController _recordController;
     private readonly DisplayRecordsController _displayRecordsController;
     private readonly MonitorVolumeController _monitorVolumeController;
-    private readonly SetMaxInputLevelController _setMaxInputLevelController;
-    private readonly DeleteRecordController _deleteRecordController;
     private readonly RecordingSettingsController _recordingSettingsController;
-    private readonly DeleteCalibratesController _deleteCalibratesController;
-    private readonly DisplayCalibratesController _displayCalibratesController;
-    private readonly SetInputLevelController _setInputLevelController;
     private readonly DisplayMicrophonesController _displayMicrophonesController;
+    private readonly CompositeController _calibrateController;
     private readonly CompositeController _deleteController;
     private readonly ExitController _exitController = new();
     private readonly BorderController _borderController = new();
@@ -53,26 +46,27 @@ public class CommandInvoker : ICommandInvoker
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
-        _calibrateInputController = calibrateInputController;
         _recordController = recordController;
-        _setMaxInputLevelController = setMaxInputLevelController;
         _monitorVolumeController = monitorVolumeController;
-        _deleteRecordController = deleteRecordController;
         _recordingSettingsController = recordingSettingsController;
-        _deleteCalibratesController = deleteCalibratesController;
-        _displayCalibratesController = displayCalibratesController;
-        _calibrateOutputController = calibrateOutputController;
-        _setInputLevelController = setInputLevelController;
         _displayMicrophonesController = displayMicrophonesController;
         _displayRecordsController = displayRecordsController;
-        _compositeControllerView = compositeControllerView;
 
+        _calibrateController =
+            new CompositeController(
+                "Calibrate            : マイク・スピーカーを調整します。",
+                compositeControllerView,
+                setMaxInputLevelController,
+                setInputLevelController,
+                calibrateInputController,
+                displayCalibratesController,
+                calibrateOutputController);
         _deleteController =
             new CompositeController(
                 "Delete               : 各種情報を削除します。",
-                _compositeControllerView,
-                _deleteCalibratesController,
-                _deleteRecordController);
+                compositeControllerView,
+                deleteCalibratesController,
+                deleteRecordController);
     }
 
     public async Task InvokeAsync()
@@ -86,15 +80,11 @@ public class CommandInvoker : ICommandInvoker
             {
                 _displayMicrophonesController,
                 _monitorVolumeController,
-                _setMaxInputLevelController,
-                _calibrateInputController,
-                _calibrateOutputController,
-                _displayCalibratesController,
-                _setInputLevelController,
                 _recordController,
                 _displayRecordsController,
                 _recordingSettingsController,
                 _borderController,
+                _calibrateController,
                 _deleteController,
                 _exitController
             };
@@ -144,8 +134,10 @@ public class CommandInvoker : ICommandInvoker
         public string Name { get; }
         public async Task ExecuteAsync()
         {
-            var selected = _view.SelectController(_controllers);
-            await selected.ExecuteAsync();
+            if (_view.TrySelectController(_controllers, out var selected))
+            {
+                await selected.ExecuteAsync();
+            }
         }
     }
 

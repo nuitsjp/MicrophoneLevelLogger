@@ -5,9 +5,19 @@ namespace MicrophoneLevelLogger.Client.View;
 
 public class CompositeControllerView : ICompositeControllerView
 {
-    public IController SelectController(IList<IController> controllers)
+    public bool TrySelectController(IList<IController> controllers, out IController controller)
     {
-        var selected = Prompt.Select("詳細コマンドを選択してください。", controllers.Select(x => x.Name));
-        return controllers.Single(x => x.Name == selected);
+        var items = controllers.Select(x => x.Name).ToList();
+        items.Add("Exit");
+        var selected = Prompt.Select("詳細コマンドを選択してください。", items);
+        var selectedController = controllers.SingleOrDefault(x => x.Name == selected);
+        if (selectedController is not null)
+        {
+            controller = selectedController;
+            return true;
+        }
+
+        controller = default!;
+        return false;
     }
 }
