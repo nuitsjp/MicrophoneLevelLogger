@@ -17,6 +17,7 @@ public class CommandInvoker : ICommandInvoker
 {
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ICommandInvokerView _view;
+    private readonly ICompositeControllerView _compositeControllerView;
     private readonly CalibrateOutputController _calibrateOutputController;
     private readonly CalibrateInputController _calibrateInputController;
     private readonly RecordController _recordController;
@@ -29,6 +30,7 @@ public class CommandInvoker : ICommandInvoker
     private readonly DisplayCalibratesController _displayCalibratesController;
     private readonly SetInputLevelController _setInputLevelController;
     private readonly DisplayMicrophonesController _displayMicrophonesController;
+    private readonly CompositeController _deleteController;
     private readonly ExitController _exitController = new();
     private readonly BorderController _borderController = new();
 
@@ -46,7 +48,8 @@ public class CommandInvoker : ICommandInvoker
         CalibrateOutputController calibrateOutputController, 
         SetInputLevelController setInputLevelController, 
         DisplayMicrophonesController displayMicrophonesController, 
-        DisplayRecordsController displayRecordsController)
+        DisplayRecordsController displayRecordsController, 
+        ICompositeControllerView compositeControllerView)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
@@ -62,6 +65,14 @@ public class CommandInvoker : ICommandInvoker
         _setInputLevelController = setInputLevelController;
         _displayMicrophonesController = displayMicrophonesController;
         _displayRecordsController = displayRecordsController;
+        _compositeControllerView = compositeControllerView;
+
+        _deleteController =
+            new CompositeController(
+                "Delete               : 各種情報を削除します。",
+                _compositeControllerView,
+                _deleteCalibratesController,
+                _deleteRecordController);
     }
 
     public async Task InvokeAsync()
@@ -83,9 +94,8 @@ public class CommandInvoker : ICommandInvoker
                 _recordController,
                 _displayRecordsController,
                 _recordingSettingsController,
-                _deleteCalibratesController,
-                _deleteRecordController,
                 _borderController,
+                _deleteController,
                 _exitController
             };
             var selected = _view.SelectCommand(commands.Select(x => x.Name));
@@ -113,6 +123,29 @@ public class CommandInvoker : ICommandInvoker
         public Task ExecuteAsync()
         {
             throw new NotImplementedException();
+        }
+    }
+
+    private class CompositeController : IController
+    {
+        private readonly ICompositeControllerView _view;
+        private readonly List<IController> _controllers;
+
+        public CompositeController(
+            string name,
+            ICompositeControllerView view,
+            params IController[] controllers)
+        {
+            Name = name;
+            _view = view;
+            _controllers = controllers.ToList();
+        }
+
+        public string Name { get; }
+        public async Task ExecuteAsync()
+        {
+            var selected = _view.SelectController(_controllers);
+            await selected.ExecuteAsync();
         }
     }
 

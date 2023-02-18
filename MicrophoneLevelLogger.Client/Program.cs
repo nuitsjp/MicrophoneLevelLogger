@@ -44,6 +44,7 @@ var host = Host.CreateDefaultBuilder((string[])args)
         /////////////////////////////////////////////////////////////////////////
         services.AddTransient<ICommandInvoker, CommandInvoker>();
         services.AddTransient<ICommandInvokerView, CommandInvokerView>();
+        services.AddTransient<ICompositeControllerView, CompositeControllerView>();
 
         services.AddTransient<CalibrateInputController>();
         services.AddTransient<ICalibrateInputView, CalibrateInputView>();
