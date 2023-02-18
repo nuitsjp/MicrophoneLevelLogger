@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrophoneLevelLogger.Clien
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrophoneLevelLogger.Client.Controller", "MicrophoneLevelLogger.Client.Controller\MicrophoneLevelLogger.Client.Controller.csproj", "{19BE0E24-6D97-4677-B42D-18124BA1F112}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrophoneLevelLogger.Repository", "MicrophoneLevelLogger.Repository\MicrophoneLevelLogger.Repository.csproj", "{30CBB0D1-FF7C-4659-8161-0C043517CEBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrophoneLevelLogger.Repository", "MicrophoneLevelLogger.Repository\MicrophoneLevelLogger.Repository.csproj", "{30CBB0D1-FF7C-4659-8161-0C043517CEBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrophoneLevelLogger.Server", "MicrophoneLevelLogger.Server\MicrophoneLevelLogger.Server.csproj", "{EFB0B8E7-43D7-482A-AD22-4BC043775962}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrophoneLevelLogger.Server", "MicrophoneLevelLogger.Server\MicrophoneLevelLogger.Server.csproj", "{EFB0B8E7-43D7-482A-AD22-4BC043775962}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
