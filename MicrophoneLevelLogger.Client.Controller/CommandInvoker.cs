@@ -74,11 +74,11 @@ public class CommandInvoker : ICommandInvoker
 
     public async Task InvokeAsync()
     {
-        var microphones = _audioInterfaceProvider.Resolve();
-        _view.NotifyMicrophonesInformation(microphones);
-
         while (true)
         {
+            var microphones = _audioInterfaceProvider.Resolve();
+            _view.NotifyMicrophonesInformation(microphones);
+
             var commands = new IController[]
             {
                 _displayMicrophonesController,
