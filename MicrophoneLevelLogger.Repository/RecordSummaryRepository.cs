@@ -15,13 +15,16 @@ public class RecordSummaryRepository : IRecordSummaryRepository
         await JsonSerializer.SerializeAsync(stream, recordSummary, JsonEnvironments.Options);
     }
 
-    public async IAsyncEnumerable<RecordSummary> LoadAsync()
+    public async Task<IEnumerable<RecordSummary>> LoadAsync()
     {
-        var fileInfos = JsonEnvironments.RootDirectory.GetFiles(FileName, SearchOption.AllDirectories);
+        var fileInfos = JsonEnvironments.RecordDirectory.GetFiles(FileName, SearchOption.AllDirectories);
+        List<RecordSummary> summaries = new();
         foreach (var fileInfo in fileInfos)
         {
             await using var stream = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read);
-            yield return (await JsonSerializer.DeserializeAsync<RecordSummary>(stream, JsonEnvironments.Options))!;
+            summaries.Add((await JsonSerializer.DeserializeAsync<RecordSummary>(stream, JsonEnvironments.Options))!);
         }
+
+        return summaries;
     }
 }

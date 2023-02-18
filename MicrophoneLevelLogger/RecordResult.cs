@@ -10,6 +10,16 @@ public class RecordResult
         Avg = microphoneRecorder.Avg;
         Max = microphoneRecorder.Max;
     }
+
+    public RecordResult(int no, string name, Decibel min, Decibel avg, Decibel max)
+    {
+        No = no;
+        Name = name;
+        Min = min;
+        Avg = avg;
+        Max = max;
+    }
+
     public int No { get; }
     public string Name { get; }
     public Decibel Min { get; }

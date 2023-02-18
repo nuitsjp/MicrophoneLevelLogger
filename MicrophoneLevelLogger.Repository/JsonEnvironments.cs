@@ -6,7 +6,7 @@ namespace MicrophoneLevelLogger.Repository;
 
 public static class JsonEnvironments
 {
-    public static readonly DirectoryInfo RootDirectory = new("Root");
+    public static readonly DirectoryInfo RecordDirectory = new("Record");
 
     public static JsonSerializerOptions Options => new()
     {

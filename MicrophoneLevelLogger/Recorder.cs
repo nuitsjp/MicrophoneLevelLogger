@@ -27,7 +27,7 @@ public class Recorder : IRecorder
         _recordName = recordName;
         _saveDirectory =
             recordName is not null
-                ? new DirectoryInfo(Path.Join(RootDirectory.FullName, $"{DateTime.Now:yyyy-MM-dd_hhmmss}_{recordName}"))
+                ? new DirectoryInfo(Path.Join(RootDirectory.FullName, $"{DateTime.Now:yyyy-MM-dd_HHmmss}_{recordName}"))
                 : null;
         _saveDirectory?.Create();
         MicrophoneRecorders = microphones
@@ -79,7 +79,7 @@ public class Recorder : IRecorder
                                 x.Microphone.Name,
                                 x.Min,
                                 x.Avg,
-                                x.Max))
+                                x.Max)).ToList()
                     );
                 await _recordSummaryRepository.SaveAsync(summary, _saveDirectory);
             }

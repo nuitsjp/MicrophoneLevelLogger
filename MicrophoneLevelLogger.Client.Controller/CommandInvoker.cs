@@ -6,6 +6,7 @@ using MicrophoneLevelLogger.Client.Controller.DeleteRecord;
 using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
 using MicrophoneLevelLogger.Client.Controller.DisplayMeasurements;
 using MicrophoneLevelLogger.Client.Controller.DisplayMicrophones;
+using MicrophoneLevelLogger.Client.Controller.DisplayRecords;
 using MicrophoneLevelLogger.Client.Controller.Measure;
 using MicrophoneLevelLogger.Client.Controller.MonitorVolume;
 using MicrophoneLevelLogger.Client.Controller.Record;
@@ -22,6 +23,7 @@ public class CommandInvoker : ICommandInvoker
     private readonly CalibrateOutputController _calibrateOutputController;
     private readonly CalibrateInputController _calibrateInputController;
     private readonly RecordController _recordController;
+    private readonly DisplayRecordsController _displayRecordsController;
     private readonly MonitorVolumeController _monitorVolumeController;
     private readonly SetMaxInputLevelController _setMaxInputLevelController;
     private readonly DeleteRecordController _deleteRecordController;
@@ -52,7 +54,8 @@ public class CommandInvoker : ICommandInvoker
         DisplayCalibratesController displayCalibratesController, 
         CalibrateOutputController calibrateOutputController, 
         SetInputLevelController setInputLevelController, 
-        DisplayMicrophonesController displayMicrophonesController)
+        DisplayMicrophonesController displayMicrophonesController, 
+        DisplayRecordsController displayRecordsController)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
@@ -70,6 +73,7 @@ public class CommandInvoker : ICommandInvoker
         _calibrateOutputController = calibrateOutputController;
         _setInputLevelController = setInputLevelController;
         _displayMicrophonesController = displayMicrophonesController;
+        _displayRecordsController = displayRecordsController;
     }
 
     public async Task InvokeAsync()
@@ -91,6 +95,7 @@ public class CommandInvoker : ICommandInvoker
                 _displayCalibratesController,
                 _setInputLevelController,
                 _recordController,
+                _displayRecordsController,
                 _recordingSettingsController,
                 _deleteInputLevelsController,
                 _deleteCalibratesController,
