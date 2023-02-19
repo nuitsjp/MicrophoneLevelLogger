@@ -3,7 +3,6 @@ using MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
 using MicrophoneLevelLogger.Client.Controller.DeleteCalibrates;
 using MicrophoneLevelLogger.Client.Controller.DeleteRecord;
 using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
-using MicrophoneLevelLogger.Client.Controller.DisplayMicrophones;
 using MicrophoneLevelLogger.Client.Controller.DisplayRecords;
 using MicrophoneLevelLogger.Client.Controller.MonitorVolume;
 using MicrophoneLevelLogger.Client.Controller.Record;
@@ -21,7 +20,6 @@ public class CommandInvoker : ICommandInvoker
     private readonly DisplayRecordsController _displayRecordsController;
     private readonly MonitorVolumeController _monitorVolumeController;
     private readonly RecordingSettingsController _recordingSettingsController;
-    private readonly DisplayMicrophonesController _displayMicrophonesController;
     private readonly CompositeController _calibrateController;
     private readonly CompositeController _deleteController;
     private readonly ExitController _exitController = new();
@@ -40,7 +38,6 @@ public class CommandInvoker : ICommandInvoker
         DisplayCalibratesController displayCalibratesController, 
         CalibrateOutputController calibrateOutputController, 
         SetInputLevelController setInputLevelController, 
-        DisplayMicrophonesController displayMicrophonesController, 
         DisplayRecordsController displayRecordsController, 
         ICompositeControllerView compositeControllerView)
     {
@@ -49,7 +46,6 @@ public class CommandInvoker : ICommandInvoker
         _recordController = recordController;
         _monitorVolumeController = monitorVolumeController;
         _recordingSettingsController = recordingSettingsController;
-        _displayMicrophonesController = displayMicrophonesController;
         _displayRecordsController = displayRecordsController;
 
         _calibrateController =
@@ -78,12 +74,12 @@ public class CommandInvoker : ICommandInvoker
 
             var commands = new IController[]
             {
-                _displayMicrophonesController,
                 _monitorVolumeController,
                 _recordController,
                 _displayRecordsController,
                 _recordingSettingsController,
                 _borderController,
+                new RedisplayMicrophoneController(),
                 _calibrateController,
                 _deleteController,
                 _exitController
@@ -115,6 +111,17 @@ public class CommandInvoker : ICommandInvoker
             throw new NotImplementedException();
         }
     }
+
+    private class RedisplayMicrophoneController : IController
+    {
+        public string Name => "Display microphone   : マイクの情報を再表示します。";
+
+        public Task ExecuteAsync()
+        {
+            return Task.CompletedTask;
+        }
+    }
+
 
     private class CompositeController : IController
     {

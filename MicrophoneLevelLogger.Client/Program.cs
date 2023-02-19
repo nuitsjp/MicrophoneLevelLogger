@@ -6,7 +6,6 @@ using MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
 using MicrophoneLevelLogger.Client.Controller.DeleteCalibrates;
 using MicrophoneLevelLogger.Client.Controller.DeleteRecord;
 using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
-using MicrophoneLevelLogger.Client.Controller.DisplayMicrophones;
 using MicrophoneLevelLogger.Client.Controller.DisplayRecords;
 using MicrophoneLevelLogger.Client.Controller.MonitorVolume;
 using MicrophoneLevelLogger.Client.Controller.Record;
@@ -46,6 +45,8 @@ var host = Host.CreateDefaultBuilder((string[])args)
         services.AddTransient<ICommandInvokerView, CommandInvokerView>();
         services.AddTransient<ICompositeControllerView, CompositeControllerView>();
 
+        services.AddTransient<IMicrophoneView, MicrophoneView>();
+
         services.AddTransient<CalibrateInputController>();
         services.AddTransient<ICalibrateInputView, CalibrateInputView>();
 
@@ -61,8 +62,6 @@ var host = Host.CreateDefaultBuilder((string[])args)
         services.AddTransient<DisplayCalibratesController>();
         services.AddTransient<IDisplayCalibratesView, DisplayCalibratesView>();
 
-        services.AddTransient<DisplayMicrophonesController>();
-        services.AddTransient<IMicrophoneView, MicrophoneView>();
 
         services.AddTransient<MonitorVolumeController>();
         services.AddTransient<IMonitorVolumeView, MonitorVolumeView>();
