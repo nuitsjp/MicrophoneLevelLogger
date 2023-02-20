@@ -24,7 +24,7 @@ public class AudioInterface : IAudioInterface
                 if (mmDevice is not null)
                 {
                     var microphoneId = new MicrophoneId(mmDevice.ID);
-                    if (settings.ExcludeMicrophones.Contains(microphoneId))
+                    if (settings.DisabledMicrophones.Contains(microphoneId))
                     {
                         break;
                     }

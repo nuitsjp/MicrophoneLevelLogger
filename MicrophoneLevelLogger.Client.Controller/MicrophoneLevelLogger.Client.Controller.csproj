@@ -14,7 +14,6 @@
     <Folder Include="DisplayRecords\" />
     <Folder Include="SetAlias\" />
     <Folder Include="RemoveAlias\" />
-    <Folder Include="ExcludeMicrophone\" />
   </ItemGroup>
 
 </Project>

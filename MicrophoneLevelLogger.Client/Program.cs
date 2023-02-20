@@ -5,6 +5,7 @@ using MicrophoneLevelLogger.Client.Controller.CalibrateInput;
 using MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
 using MicrophoneLevelLogger.Client.Controller.DeleteCalibrates;
 using MicrophoneLevelLogger.Client.Controller.DeleteRecord;
+using MicrophoneLevelLogger.Client.Controller.DisableMicrophone;
 using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
 using MicrophoneLevelLogger.Client.Controller.DisplayRecords;
 using MicrophoneLevelLogger.Client.Controller.ExcludeMicrophone;
@@ -87,8 +88,8 @@ var host = Host.CreateDefaultBuilder((string[])args)
         services.AddTransient<RemoveAliasController>();
         services.AddTransient<IRemoveAliasView, RemoveAliasView>();
 
-        services.AddTransient<ExcludeMicrophoneController>();
-        services.AddTransient<IExcludeMicrophoneView, ExcludeMicrophoneView>();
+        services.AddTransient<DisableMicrophoneController>();
+        services.AddTransient<IDisableMicrophoneView, DisableMicrophoneView>();
 
         services.AddTransient<SetMaxInputLevelController>();
     })

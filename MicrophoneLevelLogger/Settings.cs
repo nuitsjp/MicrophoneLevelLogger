@@ -5,7 +5,7 @@ namespace MicrophoneLevelLogger;
 public class Settings
 {
     private readonly List<Alias> _aliases;
-    private readonly List<MicrophoneId> _excludeMicrophones;
+    private readonly List<MicrophoneId> _disabledMicrophones;
 
     public Settings(
         string mediaPlayerHost,
@@ -22,7 +22,7 @@ public class Settings
         IsEnableRemotePlaying = isEnableRemotePlaying;
         IsEnableRemoteRecording = isEnableRemoteRecording;
         _aliases = aliases.ToList();
-        _excludeMicrophones = excludeMicrophones.ToList();
+        _disabledMicrophones = excludeMicrophones.ToList();
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ public class Settings
 
     public IReadOnlyList<Alias> Aliases => _aliases;
 
-    public IReadOnlyList<MicrophoneId> ExcludeMicrophones => _excludeMicrophones;
+    public IReadOnlyList<MicrophoneId> DisabledMicrophones => _disabledMicrophones;
 
     public void UpdateAlias(Alias alias)
     {
@@ -61,12 +61,12 @@ public class Settings
         _aliases.Remove(alias);
     }
 
-    public void ExcludeMicrophone(MicrophoneId id)
+    public void DisableMicrophone(MicrophoneId id)
     {
-        if (_excludeMicrophones.Contains(id))
+        if (_disabledMicrophones.Contains(id))
         {
             return;
         }
-        _excludeMicrophones.Add(id);
+        _disabledMicrophones.Add(id);
     }
 }

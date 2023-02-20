@@ -40,7 +40,7 @@ public class RecordingSettingsController : IController
                     isEnableRemotePlaying,
                     isEnableRemoteRecording,
                     settings.Aliases,
-                    settings.ExcludeMicrophones));
+                    settings.DisabledMicrophones));
 
             _view.ShowSettings(await _repository.LoadAsync());
         }
