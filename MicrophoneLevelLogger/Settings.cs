@@ -14,7 +14,7 @@ public class Settings
         bool isEnableRemotePlaying,
         bool isEnableRemoteRecording, 
         IReadOnlyList<Alias> aliases, 
-        IReadOnlyList<MicrophoneId> excludeMicrophones)
+        IReadOnlyList<MicrophoneId> disabledMicrophones)
     {
         MediaPlayerHost = mediaPlayerHost;
         RecorderHost = recorderHost;
@@ -22,7 +22,7 @@ public class Settings
         IsEnableRemotePlaying = isEnableRemotePlaying;
         IsEnableRemoteRecording = isEnableRemoteRecording;
         _aliases = aliases.ToList();
-        _disabledMicrophones = excludeMicrophones.ToList();
+        _disabledMicrophones = disabledMicrophones.ToList();
     }
 
     /// <summary>
