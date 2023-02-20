@@ -4,6 +4,11 @@ namespace MicrophoneLevelLogger;
 
 public static class EnumerableExtension
 {
+    public static bool Empty<TSource>(this IEnumerable<TSource> sources)
+    {
+        return sources.Any() is false;
+    }
+
     public static void Remove<TSource>(this IList<TSource> enumerable, Func<TSource, bool> func)
     {
         enumerable

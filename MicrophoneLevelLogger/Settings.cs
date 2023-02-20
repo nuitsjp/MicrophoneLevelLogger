@@ -49,4 +49,9 @@ public class Settings
         _aliases.Remove(x => x.Id == alias.Id);
         _aliases.Add(alias);
     }
+
+    public void RemoveAlias(Alias alias)
+    {
+        _aliases.Remove(alias);
+    }
 }
