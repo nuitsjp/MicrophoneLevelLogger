@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddTransient<IAudioInterfaceProvider, AudioInterfaceProvider>();
 builder.Services.AddTransient<IRecorderProvider, RecorderProvider>();
-builder.Services.AddTransient<IRecordingSettingsRepository, RecordingSettingsRepository>();
+builder.Services.AddTransient<ISettingsRepository, SettingsRepository>();
 builder.Services.AddSingleton<IMediaPlayer, MediaPlayer>();
 builder.Services.AddTransient<IRecordView, RecordView>();
 

@@ -3,16 +3,16 @@
 public class RemoteMediaPlayer : IMediaPlayer
 {
     private static readonly HttpClient HttpClient = new();
-    private readonly IRecordingSettingsRepository _repository;
+    private readonly ISettingsRepository _repository;
 
-    public RemoteMediaPlayer(IRecordingSettingsRepository repository)
+    public RemoteMediaPlayer(ISettingsRepository repository)
     {
         _repository = repository;
     }
 
     public async Task PlayLoopingAsync(CancellationToken token)
     {
-        RecordingSettings settings = await _repository.LoadAsync();
+        Settings settings = await _repository.LoadAsync();
         await HttpClient.GetAsync($"http://{settings.MediaPlayerHost}:5000/Player/Play", token);
         token.Register(() =>
         {

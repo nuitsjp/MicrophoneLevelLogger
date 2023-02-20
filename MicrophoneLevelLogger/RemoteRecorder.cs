@@ -9,9 +9,9 @@ public class RemoteRecorder : IRecorder
 
     private readonly string? _recordName;
 
-    private readonly IRecordingSettingsRepository _repository;
+    private readonly ISettingsRepository _repository;
 
-    public RemoteRecorder(string? recordName, IRecordingSettingsRepository repository)
+    public RemoteRecorder(string? recordName, ISettingsRepository repository)
     {
         _recordName = recordName;
         _repository = repository;
@@ -21,7 +21,7 @@ public class RemoteRecorder : IRecorder
 
     public async Task StartAsync(CancellationToken token)
     {
-        RecordingSettings settings = await _repository.LoadAsync();
+        Settings settings = await _repository.LoadAsync();
         await HttpClient.GetAsync($"http://{settings.RecorderHost}:5000/Recorder/Recode/{_recordName}", token);
 
         token.Register(() =>

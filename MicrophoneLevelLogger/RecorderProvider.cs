@@ -2,10 +2,10 @@
 
 public class RecorderProvider : IRecorderProvider
 {
-    private readonly IRecordingSettingsRepository _repository;
+    private readonly ISettingsRepository _repository;
     private readonly IRecordSummaryRepository _recordSummaryRepository;
 
-    public RecorderProvider(IRecordingSettingsRepository repository, IRecordSummaryRepository recordSummaryRepository)
+    public RecorderProvider(ISettingsRepository repository, IRecordSummaryRepository recordSummaryRepository)
     {
         _repository = repository;
         _recordSummaryRepository = recordSummaryRepository;

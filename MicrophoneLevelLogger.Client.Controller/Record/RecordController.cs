@@ -13,18 +13,18 @@ public class RecordController : IController
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly IRecorderProvider _recorderProvider;
     private readonly IMediaPlayerProvider _mediaPlayerProvider;
-    private readonly IRecordingSettingsRepository _recordingSettingsRepository;
+    private readonly ISettingsRepository _settingsRepository;
 
     public RecordController(
         IAudioInterfaceProvider audioInterfaceProvider,
         IRecordView view,
         IMediaPlayerProvider mediaPlayerProvider, 
-        IRecordingSettingsRepository recordingSettingsRepository, 
+        ISettingsRepository settingsRepository, 
         IRecorderProvider recorderProvider)
     {
         _view = view;
         _mediaPlayerProvider = mediaPlayerProvider;
-        _recordingSettingsRepository = recordingSettingsRepository;
+        _settingsRepository = settingsRepository;
         _recorderProvider = recorderProvider;
         _audioInterfaceProvider = audioInterfaceProvider;
     }
@@ -43,7 +43,7 @@ public class RecordController : IController
         CancellationTokenSource source = new();
 
         // 開始を通知する。
-        var settings = await _recordingSettingsRepository.LoadAsync();
+        var settings = await _settingsRepository.LoadAsync();
         _view.NotifyStarting(settings.RecordingSpan);
 
         // 画面に入力レベルを通知する。

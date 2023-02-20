@@ -5,7 +5,7 @@ namespace MicrophoneLevelLogger.Client.View;
 
 public class RecordingSettingsView : IRecordingSettingsView
 {
-    public void ShowSettings(RecordingSettings settings)
+    public void ShowSettings(Settings settings)
     {
         lock (this)
         {

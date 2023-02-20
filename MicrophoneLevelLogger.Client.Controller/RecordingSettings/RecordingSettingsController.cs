@@ -3,11 +3,11 @@
 public class RecordingSettingsController : IController
 {
     private readonly IRecordingSettingsView _view;
-    private readonly IRecordingSettingsRepository _repository;
+    private readonly ISettingsRepository _repository;
 
     public RecordingSettingsController(
         IRecordingSettingsView view, 
-        IRecordingSettingsRepository repository)
+        ISettingsRepository repository)
     {
         _view = view;
         _repository = repository;
@@ -33,7 +33,7 @@ public class RecordingSettingsController : IController
                 : "localhost";
 
             await _repository.SaveAsync(
-                new MicrophoneLevelLogger.RecordingSettings(
+                new MicrophoneLevelLogger.Settings(
                     mediaPlayerHost,
                     recorderHost,
                     TimeSpan.FromSeconds(recordingSpan),

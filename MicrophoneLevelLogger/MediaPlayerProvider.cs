@@ -2,9 +2,9 @@
 
 public class MediaPlayerProvider : IMediaPlayerProvider
 {
-    private readonly IRecordingSettingsRepository _repository;
+    private readonly ISettingsRepository _repository;
 
-    public MediaPlayerProvider(IRecordingSettingsRepository repository)
+    public MediaPlayerProvider(ISettingsRepository repository)
     {
         _repository = repository;
     }

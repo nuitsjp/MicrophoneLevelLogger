@@ -2,9 +2,9 @@
 
 namespace MicrophoneLevelLogger;
 
-public class RecordingSettings
+public class Settings
 {
-    public RecordingSettings(
+    public Settings(
         string mediaPlayerHost,
         string recorderHost,
         TimeSpan recordingSpan,

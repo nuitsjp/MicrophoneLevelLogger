@@ -10,19 +10,19 @@ public class CalibrateOutputController : IController
     private readonly ICalibrateOutputView _view;
     private readonly IMediaPlayerProvider _mediaPlayerProvider;
     private readonly IRecorderProvider _recorderProvider;
-    private readonly IRecordingSettingsRepository _recordingSettingsRepository;
+    private readonly ISettingsRepository _settingsRepository;
 
     public CalibrateOutputController(
         IAudioInterfaceProvider audioInterfaceProvider, 
         ICalibrateOutputView view, 
         IMediaPlayerProvider mediaPlayerProvider, 
-        IRecordingSettingsRepository recordingSettingsRepository, 
+        ISettingsRepository settingsRepository, 
         IRecorderProvider recorderProvider)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
         _mediaPlayerProvider = mediaPlayerProvider;
-        _recordingSettingsRepository = recordingSettingsRepository;
+        _settingsRepository = settingsRepository;
         _recorderProvider = recorderProvider;
     }
 
@@ -40,7 +40,7 @@ public class CalibrateOutputController : IController
         var specifyVolume = _view.InputDecibel();
 
         // 音声を再生する
-        var recordingSettings = await _recordingSettingsRepository.LoadAsync();
+        var recordingSettings = await _settingsRepository.LoadAsync();
         var mediaPlayer =_mediaPlayerProvider.Resolve(recordingSettings.IsEnableRemotePlaying);
         // 計測を開始する
         await Calibrate(audioInterface, mediaPlayer, microphone, specifyVolume, TimeSpan.FromSeconds(span));

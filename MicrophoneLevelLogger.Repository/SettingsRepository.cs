@@ -2,20 +2,20 @@
 
 namespace MicrophoneLevelLogger.Repository;
 
-public class RecordingSettingsRepository : IRecordingSettingsRepository
+public class SettingsRepository : ISettingsRepository
 {
-    private const string FileName = $"{nameof(RecordingSettings)}.json";
+    private const string FileName = $"{nameof(Settings)}.json";
 
-    public async Task<RecordingSettings> LoadAsync()
+    public async Task<Settings> LoadAsync()
     {
         if (File.Exists(FileName))
         {
             await using var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read);
-            return (await JsonSerializer.DeserializeAsync<RecordingSettings>(stream, JsonEnvironments.Options))!;
+            return (await JsonSerializer.DeserializeAsync<Settings>(stream, JsonEnvironments.Options))!;
         }
         else
         {
-            return new RecordingSettings(
+            return new Settings(
                 "localhost",
                 "localhost",
                 TimeSpan.FromSeconds(30),
@@ -24,7 +24,7 @@ public class RecordingSettingsRepository : IRecordingSettingsRepository
         }
     }
 
-    public async Task SaveAsync(RecordingSettings settings)
+    public async Task SaveAsync(Settings settings)
     {
         if (File.Exists(FileName))
         {
