@@ -5,7 +5,8 @@ namespace MicrophoneLevelLogger;
 
 public class AudioInterface : IAudioInterface
 {
-    public AudioInterface()
+
+    public AudioInterface(Settings settings)
     {
         using var enumerator = new MMDeviceEnumerator();
         var mmDevices = enumerator
@@ -22,7 +23,12 @@ public class AudioInterface : IAudioInterface
                 var mmDevice = mmDevices.SingleOrDefault(x => x.FriendlyName.StartsWith(name));
                 if (mmDevice is not null)
                 {
-                    devices.Add(new Microphone(mmDevice.ID, mmDevice.FriendlyName, i));
+                    var alias = settings.Aliases.SingleOrDefault(x => x.Id == mmDevice.ID)?.Name ?? mmDevice.FriendlyName;
+                    devices.Add(
+                        new Microphone(
+                            mmDevice.ID,
+                            alias, 
+                            mmDevice.FriendlyName, i));
                 }
 
             }
@@ -56,6 +62,7 @@ public class AudioInterface : IAudioInterface
                 // ignore
             }
         }
+        GC.SuppressFinalize(this);
     }
 
     public VolumeLevel DefaultOutputLevel

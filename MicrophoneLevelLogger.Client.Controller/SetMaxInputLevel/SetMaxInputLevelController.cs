@@ -11,13 +11,12 @@ public class SetMaxInputLevelController : IController
 
     public string Name => "Set Maximum          : マイクを入力レベルを最大に変更する。";
 
-    public Task ExecuteAsync()
+    public async Task ExecuteAsync()
     {
-        foreach (var microphone in _audioInterfaceProvider.Resolve().Microphones)
+        var audioInterface = await _audioInterfaceProvider.ResolveAsync();
+        foreach (var microphone in audioInterface.Microphones)
         {
             microphone.VolumeLevel = VolumeLevel.Maximum;
         }
-
-        return Task.CompletedTask;
     }
 }

@@ -37,7 +37,7 @@ public class RecordController : IController
         // 録音名を入力する。
         string recordName = _view.InputRecordName();
 
-        var audioInterface = _audioInterfaceProvider.Resolve();
+        var audioInterface = await _audioInterfaceProvider.ResolveAsync();
         var recorder = _recorderProvider.ResolveLocal(audioInterface, recordName);
 
         CancellationTokenSource source = new();

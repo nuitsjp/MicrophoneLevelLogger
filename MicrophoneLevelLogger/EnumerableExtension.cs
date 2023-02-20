@@ -1,7 +1,17 @@
-﻿namespace MicrophoneLevelLogger;
+﻿using Microsoft.AspNetCore.Http.Features;
+
+namespace MicrophoneLevelLogger;
 
 public static class EnumerableExtension
 {
+    public static void Remove<TSource>(this IList<TSource> enumerable, Func<TSource, bool> func)
+    {
+        enumerable
+            .Where(func)
+            .ToList()
+            .ForEach(x => enumerable.Remove(x));
+    }
+
     public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
     {
         foreach (var item in enumerable)

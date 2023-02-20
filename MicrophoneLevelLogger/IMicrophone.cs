@@ -10,6 +10,7 @@ public interface IMicrophone : IObservable<WaveInput>, IDisposable
 
     string Id { get; }
     string Name { get; }
+    string SystemName { get; }
     int DeviceNumber { get; }
     VolumeLevel VolumeLevel { get; set; }
     WaveFormat WaveFormat { get; }

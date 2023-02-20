@@ -38,7 +38,8 @@ public class RecordingSettingsController : IController
                     recorderHost,
                     TimeSpan.FromSeconds(recordingSpan),
                     isEnableRemotePlaying,
-                    isEnableRemoteRecording));
+                    isEnableRemoteRecording,
+                    settings.Aliases));
 
             _view.ShowSettings(await _repository.LoadAsync());
         }

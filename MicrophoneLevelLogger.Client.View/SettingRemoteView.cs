@@ -26,7 +26,7 @@ public class RecordingSettingsView : IRecordingSettingsView
 
     public int InputRecodingSpan()
     {
-        return Prompt.Input<int>("録音時間[秒]を入力してください。");
+        return Prompt.Input<int>("録音時間[秒]を入力してください。", 30);
     }
 
     public bool ConfirmEnableRemotePlaying()

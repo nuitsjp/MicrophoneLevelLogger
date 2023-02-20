@@ -20,7 +20,8 @@ public class SettingsRepository : ISettingsRepository
                 "localhost",
                 TimeSpan.FromSeconds(30),
                 false,
-                false);
+                false,
+                new List<Alias>());
         }
     }
 

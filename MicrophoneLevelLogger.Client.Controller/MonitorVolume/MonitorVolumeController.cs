@@ -18,21 +18,19 @@ public class MonitorVolumeController : IController
 
     public string Name => "Monitor volume       : マイクの入力をモニターする。データの保存は行わない。";
 
-    public Task ExecuteAsync()
+    public async Task ExecuteAsync()
     {
-        using var audioInterface = _audioInterfaceProvider.Resolve();
+        using var audioInterface = await _audioInterfaceProvider.ResolveAsync();
         using var logger = _recorderProvider.ResolveLocal(audioInterface, null);
 
         CancellationTokenSource source = new();
-        logger.StartAsync(source.Token);
+        await logger.StartAsync(source.Token);
         try
         {
             _view.NotifyDetailMessage();
             _view.StartNotify(logger, source.Token);
 
             _view.WaitToBeStopped();
-
-            return Task.CompletedTask;
         }
         finally
         {

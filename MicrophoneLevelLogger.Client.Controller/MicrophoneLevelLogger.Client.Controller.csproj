@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="DisplayRecords\" />
+    <Folder Include="SetAlias\" />
   </ItemGroup>
 
 </Project>

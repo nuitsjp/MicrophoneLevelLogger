@@ -29,7 +29,7 @@ public class RecorderController : ControllerBase
     public async Task RecodeAsync(string recordName)
     {
         Console.WriteLine($"Recorder#Record name:{recordName}");
-        var audioInterface = _audioInterfaceProvider.Resolve();
+        var audioInterface = await _audioInterfaceProvider.ResolveAsync();
         var logger = _recorderProvider.ResolveLocal(audioInterface, recordName);
         _cancellationTokenSource = new();
         await logger.StartAsync(_cancellationTokenSource.Token);

@@ -7,6 +7,7 @@ using MicrophoneLevelLogger.Client.Controller.DisplayRecords;
 using MicrophoneLevelLogger.Client.Controller.MonitorVolume;
 using MicrophoneLevelLogger.Client.Controller.Record;
 using MicrophoneLevelLogger.Client.Controller.RecordingSettings;
+using MicrophoneLevelLogger.Client.Controller.SetAlias;
 using MicrophoneLevelLogger.Client.Controller.SetInputLevel;
 using MicrophoneLevelLogger.Client.Controller.SetMaxInputLevel;
 
@@ -20,6 +21,7 @@ public class CommandInvoker : ICommandInvoker
     private readonly DisplayRecordsController _displayRecordsController;
     private readonly MonitorVolumeController _monitorVolumeController;
     private readonly RecordingSettingsController _recordingSettingsController;
+    private readonly CompositeController _settingsController;
     private readonly CompositeController _calibrateController;
     private readonly CompositeController _deleteController;
     private readonly ExitController _exitController = new();
@@ -39,6 +41,7 @@ public class CommandInvoker : ICommandInvoker
         CalibrateOutputController calibrateOutputController, 
         SetInputLevelController setInputLevelController, 
         DisplayRecordsController displayRecordsController, 
+        SetAliasController setAliasController,
         ICompositeControllerView compositeControllerView)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
@@ -47,6 +50,12 @@ public class CommandInvoker : ICommandInvoker
         _monitorVolumeController = monitorVolumeController;
         _recordingSettingsController = recordingSettingsController;
         _displayRecordsController = displayRecordsController;
+
+        _settingsController =
+            new CompositeController(
+                "Settings             : 各種設定を変更します。",
+                compositeControllerView,
+                setAliasController);
 
         _calibrateController =
             new CompositeController(
@@ -69,7 +78,7 @@ public class CommandInvoker : ICommandInvoker
     {
         while (true)
         {
-            var microphones = _audioInterfaceProvider.Resolve();
+            var microphones = await _audioInterfaceProvider.ResolveAsync();
             _view.NotifyMicrophonesInformation(microphones);
 
             var commands = new IController[]
@@ -80,6 +89,7 @@ public class CommandInvoker : ICommandInvoker
                 _recordingSettingsController,
                 _borderController,
                 new RedisplayMicrophoneController(),
+                _settingsController,
                 _calibrateController,
                 _deleteController,
                 _exitController
@@ -141,9 +151,16 @@ public class CommandInvoker : ICommandInvoker
         public string Name { get; }
         public async Task ExecuteAsync()
         {
-            if (_view.TrySelectController(_controllers, out var selected))
+            while (true)
             {
-                await selected.ExecuteAsync();
+                if (_view.TrySelectController(_controllers, out var selected))
+                {
+                    await selected.ExecuteAsync();
+                }
+                else
+                {
+                    break;
+                }
             }
         }
     }

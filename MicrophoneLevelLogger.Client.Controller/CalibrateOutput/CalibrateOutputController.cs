@@ -30,7 +30,7 @@ public class CalibrateOutputController : IController
     public async Task ExecuteAsync()
     {
         // マイクを選択し、有効化する
-        var audioInterface = _audioInterfaceProvider.Resolve();
+        var audioInterface = await _audioInterfaceProvider.ResolveAsync();
         var microphone = _view.SelectMicrophone(audioInterface);
 
         // 計測時間を入力する
