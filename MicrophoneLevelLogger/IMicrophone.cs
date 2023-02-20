@@ -8,7 +8,7 @@ public interface IMicrophone : IObservable<WaveInput>, IDisposable
 
     public const int SamplingMilliseconds = 125;
 
-    string Id { get; }
+    MicrophoneId Id { get; }
     string Name { get; }
     string SystemName { get; }
     int DeviceNumber { get; }

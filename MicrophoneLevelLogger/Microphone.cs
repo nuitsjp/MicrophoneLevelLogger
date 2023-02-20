@@ -18,7 +18,7 @@ public class Microphone : IMicrophone
 
     private List<IObserver<WaveInput>> _observers = new();
 
-    public Microphone(string id, string name, string systemName, int deviceNumber)
+    public Microphone(MicrophoneId id, string name, string systemName, int deviceNumber)
     {
         Id = id;
         Name = name;
@@ -79,7 +79,7 @@ public class Microphone : IMicrophone
         }
     }
 
-    public string Id { get; }
+    public MicrophoneId Id { get; }
     public string Name { get; }
     public string SystemName { get; }
     public int DeviceNumber { get; }
@@ -103,7 +103,7 @@ public class Microphone : IMicrophone
     private MMDevice GetMmDevice()
     {
         using var enumerator = new MMDeviceEnumerator();
-        return enumerator.GetDevice(Id);
+        return enumerator.GetDevice(Id.AsPrimitive());
     }
 
     public Task ActivateAsync()

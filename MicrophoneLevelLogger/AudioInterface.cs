@@ -23,10 +23,15 @@ public class AudioInterface : IAudioInterface
                 var mmDevice = mmDevices.SingleOrDefault(x => x.FriendlyName.StartsWith(name));
                 if (mmDevice is not null)
                 {
-                    var alias = settings.Aliases.SingleOrDefault(x => x.Id == mmDevice.ID)?.Name ?? mmDevice.FriendlyName;
+                    var microphoneId = new MicrophoneId(mmDevice.ID);
+                    if (settings.ExcludeMicrophones.Contains(microphoneId))
+                    {
+                        break;
+                    }
+                    var alias = settings.Aliases.SingleOrDefault(x => x.Id == microphoneId)?.Name ?? mmDevice.FriendlyName;
                     devices.Add(
                         new Microphone(
-                            mmDevice.ID,
+                            microphoneId,
                             alias, 
                             mmDevice.FriendlyName, i));
                 }

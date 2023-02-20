@@ -21,7 +21,8 @@ public class SettingsRepository : ISettingsRepository
                 TimeSpan.FromSeconds(30),
                 false,
                 false,
-                new List<Alias>());
+                new List<Alias>(),
+                new List<MicrophoneId>());
         }
     }
 

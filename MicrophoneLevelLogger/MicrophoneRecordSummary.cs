@@ -3,7 +3,7 @@
 public class MicrophoneRecordSummary
 {
     public MicrophoneRecordSummary(
-        string id, 
+        MicrophoneId id, 
         string name, 
         Decibel min, 
         Decibel avg, 
@@ -16,7 +16,7 @@ public class MicrophoneRecordSummary
         Max = max;
     }
 
-    public string Id { get; }
+    public MicrophoneId Id { get; }
     public string Name { get; }
     public Decibel Min { get; }
     public Decibel Avg { get; }

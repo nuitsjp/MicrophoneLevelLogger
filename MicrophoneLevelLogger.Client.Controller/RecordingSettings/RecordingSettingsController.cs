@@ -33,13 +33,14 @@ public class RecordingSettingsController : IController
                 : "localhost";
 
             await _repository.SaveAsync(
-                new MicrophoneLevelLogger.Settings(
+                new Settings(
                     mediaPlayerHost,
                     recorderHost,
                     TimeSpan.FromSeconds(recordingSpan),
                     isEnableRemotePlaying,
                     isEnableRemoteRecording,
-                    settings.Aliases));
+                    settings.Aliases,
+                    settings.ExcludeMicrophones));
 
             _view.ShowSettings(await _repository.LoadAsync());
         }

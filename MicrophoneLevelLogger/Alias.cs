@@ -5,7 +5,7 @@
 /// </summary>
 public class Alias
 {
-    public Alias(string id, string systemName, string name)
+    public Alias(MicrophoneId id, string systemName, string name)
     {
         Id = id;
         SystemName = systemName;
@@ -15,7 +15,7 @@ public class Alias
     /// <summary>
     /// マイクのID
     /// </summary>
-    public string Id { get; }
+    public MicrophoneId Id { get; }
     /// <summary>
     /// マイクのOS上の名称
     /// </summary>

@@ -3,7 +3,7 @@
 public class MicrophoneCalibrationValue
 {
     public MicrophoneCalibrationValue(
-        string id,
+        MicrophoneId id,
         string name,
         VolumeLevel volumeLevel)
     {
@@ -12,7 +12,7 @@ public class MicrophoneCalibrationValue
         VolumeLevel = volumeLevel;
     }
 
-    public string Id { get; }
+    public MicrophoneId Id { get; }
     public string Name { get; }
     public VolumeLevel VolumeLevel { get; }
 }
