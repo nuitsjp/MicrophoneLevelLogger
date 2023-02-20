@@ -8,7 +8,7 @@ public class RecordSummary
         string name,
         DateTime begin, 
         DateTime end,
-        List<MicrophoneRecordSummary> microphones)
+        IReadOnlyList<MicrophoneRecordSummary> microphones)
     {
         Name = name;
         Begin = begin;
@@ -19,5 +19,5 @@ public class RecordSummary
     public string Name { get; }
     public DateTime Begin { get; }
     public DateTime End { get; }
-    public List<MicrophoneRecordSummary> Microphones => _microphones;
+    public IReadOnlyList<MicrophoneRecordSummary> Microphones => _microphones;
 }
