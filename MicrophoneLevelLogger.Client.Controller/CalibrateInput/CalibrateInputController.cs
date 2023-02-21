@@ -46,26 +46,17 @@ public class CalibrateInputController : IController
         // 調整対象のマイクを選択する
         var target = _view.SelectTarget(audioInterface, reference);
 
-        try
-        {
-            // マイクレベルを順番にキャリブレーションする
-            await Calibrate(reference, target);
+        // マイクレベルを順番にキャリブレーションする
+        await Calibrate(reference, target);
 
-            // キャリブレート結果を保存する
-            MicrophoneCalibrationValue value = new(target.Id, target.Name, target.VolumeLevel);
-            AudioInterfaceCalibrationValues values = await _audioInterfaceCalibrationValuesRepository.LoadAsync();
-            values.Update(value);
-            await _audioInterfaceCalibrationValuesRepository.SaveAsync(values);
+        // キャリブレート結果を保存する
+        MicrophoneCalibrationValue value = new(target.Id, target.Name, target.VolumeLevel);
+        AudioInterfaceCalibrationValues values = await _audioInterfaceCalibrationValuesRepository.LoadAsync();
+        values.Update(value);
+        await _audioInterfaceCalibrationValuesRepository.SaveAsync(values);
 
-            // 結果を表示する
-            _view.NotifyCalibrated(values, target);
-
-
-        }
-        finally
-        {
-            audioInterface.DeactivateMicrophones();
-        }
+        // 結果を表示する
+        _view.NotifyCalibrated(values, target);
     }
 
     private async Task Calibrate(IMicrophone reference, IMicrophone target)

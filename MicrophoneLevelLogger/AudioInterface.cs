@@ -96,12 +96,4 @@ public class AudioInterface : IAudioInterface
             .Select(x => x.ActivateAsync());
         Task.WaitAll(tasks.ToArray());
     }
-
-    public void DeactivateMicrophones()
-    {
-        foreach (var microphone in GetMicrophones())
-        {
-            microphone.Deactivate();
-        }
-    }
 }
