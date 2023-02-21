@@ -9,20 +9,17 @@ public class CalibrateInputController : IController
 
     private readonly ICalibrateInputView _view;
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
-    private readonly IMediaPlayer _mediaPlayer;
     private readonly IRecorderProvider _recorderProvider;
     private readonly IAudioInterfaceCalibrationValuesRepository _audioInterfaceCalibrationValuesRepository;
 
     public CalibrateInputController(
         ICalibrateInputView view,
         IAudioInterfaceProvider audioInterfaceProvider,
-        IMediaPlayer mediaPlayer, 
         IAudioInterfaceCalibrationValuesRepository audioInterfaceCalibrationValuesRepository, 
         IRecorderProvider recorderProvider)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _view = view;
-        _mediaPlayer = mediaPlayer;
         _audioInterfaceCalibrationValuesRepository = audioInterfaceCalibrationValuesRepository;
         _recorderProvider = recorderProvider;
     }
@@ -47,7 +44,8 @@ public class CalibrateInputController : IController
         var target = _view.SelectTarget(audioInterface, reference);
 
         // マイクレベルを順番にキャリブレーションする
-        await Calibrate(reference, target);
+        using var mediaPlayer = audioInterface.GetMediaPlayer(false);
+        await Calibrate(reference, target, mediaPlayer);
 
         // キャリブレート結果を保存する
         MicrophoneCalibrationValue value = new(target.Id, target.Name, target.VolumeLevel);
@@ -59,7 +57,7 @@ public class CalibrateInputController : IController
         _view.NotifyCalibrated(values, target);
     }
 
-    private async Task Calibrate(IMicrophone reference, IMicrophone target)
+    private async Task Calibrate(IMicrophone reference, IMicrophone target, IMediaPlayer mediaPlayer)
     {
         // ボリューム調整していくステップ
         VolumeLevel step = new(0.01f);
@@ -77,7 +75,7 @@ public class CalibrateInputController : IController
             try
             {
                 // 音声を再生と、レコーディングを開始する。
-                await _mediaPlayer.PlayLoopingAsync(source.Token);
+                await mediaPlayer.PlayLoopingAsync(source.Token);
                 await recorder.StartAsync(source.Token);
 
                 _view.Wait(TimeSpan.FromSeconds(5));

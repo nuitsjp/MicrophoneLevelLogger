@@ -31,8 +31,6 @@ var host = Host.CreateDefaultBuilder((string[])args)
         // Domain
         /////////////////////////////////////////////////////////////////////////
         services.AddTransient<IAudioInterfaceProvider, AudioInterfaceProvider>();
-        services.AddTransient<IMediaPlayerProvider, MediaPlayerProvider>();
-        services.AddTransient<IMediaPlayer, MediaPlayer>();
         services.AddTransient<IRecorderProvider, RecorderProvider>();
 
         /////////////////////////////////////////////////////////////////////////

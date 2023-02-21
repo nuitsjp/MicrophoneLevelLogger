@@ -24,4 +24,8 @@ public class RemoteMediaPlayer : IMediaPlayer
                 .Wait();
         });
     }
+
+    public void Dispose()
+    {
+    }
 }

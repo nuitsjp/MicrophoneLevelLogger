@@ -1,6 +1,6 @@
 ﻿namespace MicrophoneLevelLogger;
 
-public interface IMediaPlayer
+public interface IMediaPlayer : IDisposable
 {
     Task PlayLoopingAsync(CancellationToken token);
 }

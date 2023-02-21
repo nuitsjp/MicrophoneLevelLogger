@@ -95,11 +95,13 @@ public class AudioInterface : IAudioInterface
 
     public IMediaPlayer GetMediaPlayer(bool isRemotePlay)
     {
-        if (isRemotePlay is false)
+        if (isRemotePlay)
         {
             return new RemoteMediaPlayer(_settingsRepository);
         }
-        throw new NotImplementedException();
+        using var emurator = new MMDeviceEnumerator();
+        var mmDevices = emurator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+        return new MediaPlayer(mmDevices);
     }
 
     public void ActivateMicrophones()

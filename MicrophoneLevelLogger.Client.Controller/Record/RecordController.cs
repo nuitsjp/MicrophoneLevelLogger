@@ -12,18 +12,15 @@ public class RecordController : IController
     private readonly IRecordView _view;
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly IRecorderProvider _recorderProvider;
-    private readonly IMediaPlayerProvider _mediaPlayerProvider;
     private readonly ISettingsRepository _settingsRepository;
 
     public RecordController(
         IAudioInterfaceProvider audioInterfaceProvider,
         IRecordView view,
-        IMediaPlayerProvider mediaPlayerProvider, 
         ISettingsRepository settingsRepository, 
         IRecorderProvider recorderProvider)
     {
         _view = view;
-        _mediaPlayerProvider = mediaPlayerProvider;
         _settingsRepository = settingsRepository;
         _recorderProvider = recorderProvider;
         _audioInterfaceProvider = audioInterfaceProvider;
@@ -52,7 +49,7 @@ public class RecordController : IController
         try
         {
             // 背景音源を再生する
-            var mediaPlayer = _mediaPlayerProvider.Resolve(settings.IsEnableRemotePlaying);
+            var mediaPlayer = audioInterface.GetMediaPlayer(settings.IsEnableRemotePlaying);
             await mediaPlayer.PlayLoopingAsync(source.Token);
 
 
