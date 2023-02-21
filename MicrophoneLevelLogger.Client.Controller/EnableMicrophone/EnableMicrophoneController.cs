@@ -1,13 +1,13 @@
-﻿namespace MicrophoneLevelLogger.Client.Controller.DisableMicrophone;
+﻿namespace MicrophoneLevelLogger.Client.Controller.EnableMicrophone;
 
-public class DisableMicrophoneController : IController
+public class EnableMicrophoneController : IController
 {
-    private readonly IDisableMicrophoneView _view;
+    private readonly IEnableMicrophoneView _view;
     private readonly IAudioInterfaceProvider _provider;
     private readonly ISettingsRepository _repository;
 
-    public DisableMicrophoneController(
-        IDisableMicrophoneView view, 
+    public EnableMicrophoneController(
+        IEnableMicrophoneView view, 
         IAudioInterfaceProvider provider, 
         ISettingsRepository repository)
     {
@@ -16,19 +16,17 @@ public class DisableMicrophoneController : IController
         _repository = repository;
     }
 
-    public string Name => "Disable microphone   : 任意のマイクを無効化する。";
-
+    public string Name => "Enable microphone    : 任意のマイクを有効化する。";
     public async Task ExecuteAsync()
     {
         var audioInterface = await _provider.ResolveAsync();
-        if (_view.TrySelectMicrophone(audioInterface, out var microphone))
+        var settings = await _repository.LoadAsync();
+        if (_view.TrySelectMicrophone(audioInterface, settings, out var microphone))
         {
-            var settings = await _repository.LoadAsync();
-            settings.DisableMicrophone(microphone.Id);
+            settings.EnableMicrophone(microphone.Id);
             await _repository.SaveAsync(settings);
 
             _view.NotifyMicrophonesInformation(await _provider.ResolveAsync());
         }
-
     }
 }

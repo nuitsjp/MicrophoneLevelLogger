@@ -5,7 +5,7 @@ using MicrophoneLevelLogger.Client.Controller.DeleteRecord;
 using MicrophoneLevelLogger.Client.Controller.DisableMicrophone;
 using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
 using MicrophoneLevelLogger.Client.Controller.DisplayRecords;
-using MicrophoneLevelLogger.Client.Controller.ExcludeMicrophone;
+using MicrophoneLevelLogger.Client.Controller.EnableMicrophone;
 using MicrophoneLevelLogger.Client.Controller.MonitorVolume;
 using MicrophoneLevelLogger.Client.Controller.Record;
 using MicrophoneLevelLogger.Client.Controller.RecordingSettings;
@@ -47,6 +47,7 @@ public class CommandInvoker : ICommandInvoker
         SetAliasController setAliasController,
         RemoveAliasController removeAliasController,
         DisableMicrophoneController disableMicrophoneController,
+        EnableMicrophoneController enableMicrophoneController,
         ICompositeControllerView compositeControllerView)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
@@ -62,7 +63,8 @@ public class CommandInvoker : ICommandInvoker
                 compositeControllerView,
                 setAliasController,
                 removeAliasController,
-                disableMicrophoneController);
+                disableMicrophoneController,
+                enableMicrophoneController);
 
         _calibrateController =
             new CompositeController(

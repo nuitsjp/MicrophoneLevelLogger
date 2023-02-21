@@ -45,22 +45,38 @@ public class Settings
     /// リモート録音ホスト
     /// </summary>
     public string RecorderHost { get; }
-
+    /// <summary>
+    /// マイクの別名
+    /// </summary>
     public IReadOnlyList<Alias> Aliases => _aliases;
-
+    /// <summary>
+    /// 無効化されたマイク
+    /// </summary>
     public IReadOnlyList<MicrophoneId> DisabledMicrophones => _disabledMicrophones;
 
+    /// <summary>
+    /// 別名を更新する
+    /// </summary>
+    /// <param name="alias"></param>
     public void UpdateAlias(Alias alias)
     {
         _aliases.Remove(x => x.Id == alias.Id);
         _aliases.Add(alias);
     }
 
+    /// <summary>
+    /// 別名を削除する
+    /// </summary>
+    /// <param name="alias"></param>
     public void RemoveAlias(Alias alias)
     {
         _aliases.Remove(alias);
     }
 
+    /// <summary>
+    /// マイクを無効化する
+    /// </summary>
+    /// <param name="id"></param>
     public void DisableMicrophone(MicrophoneId id)
     {
         if (_disabledMicrophones.Contains(id))
@@ -69,4 +85,17 @@ public class Settings
         }
         _disabledMicrophones.Add(id);
     }
+
+    /// <summary>
+    /// マイクを有効化する
+    /// </summary>
+    /// <param name="id"></param>
+    public void EnableMicrophone(MicrophoneId id)
+    {
+        if (_disabledMicrophones.Contains(id))
+        {
+            _disabledMicrophones.Remove(id);
+        }
+    }
+
 }

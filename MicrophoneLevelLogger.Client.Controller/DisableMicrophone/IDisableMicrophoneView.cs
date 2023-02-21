@@ -1,6 +1,6 @@
-﻿namespace MicrophoneLevelLogger.Client.Controller.ExcludeMicrophone;
+﻿namespace MicrophoneLevelLogger.Client.Controller.DisableMicrophone;
 
-public interface IDisableMicrophoneView
+public interface IDisableMicrophoneView : IMicrophoneView
 {
     bool TrySelectMicrophone(IAudioInterface audioInterface, out IMicrophone microphone);
 }

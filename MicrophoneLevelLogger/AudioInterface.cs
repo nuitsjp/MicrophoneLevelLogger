@@ -5,14 +5,29 @@ namespace MicrophoneLevelLogger;
 
 public class AudioInterface : IAudioInterface
 {
-
+    private readonly Settings _settings;
     public AudioInterface(Settings settings)
+    {
+        _settings = settings;
+        AllMicrophones = LoadAllMicrophones(settings).ToList();
+        Microphones = AllMicrophones
+            .Where(x => settings.DisabledMicrophones.NotContains(x.Id))
+            .ToList();
+    }
+
+    public AudioInterface(Settings settings, params IMicrophone[] microphones)
+    {
+        _settings = settings;
+        Microphones = microphones.ToList();
+        AllMicrophones = LoadAllMicrophones(settings).ToList();
+    }
+
+    private IEnumerable<Microphone> LoadAllMicrophones(Settings settings)
     {
         using var enumerator = new MMDeviceEnumerator();
         var mmDevices = enumerator
-                .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
-                .ToArray();
-        List<IMicrophone> devices = new();
+            .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
+            .ToArray();
         try
         {
             for (int i = 0; i < WaveIn.DeviceCount; i++)
@@ -24,21 +39,13 @@ public class AudioInterface : IAudioInterface
                 if (mmDevice is not null)
                 {
                     var microphoneId = new MicrophoneId(mmDevice.ID);
-                    if (settings.DisabledMicrophones.Contains(microphoneId))
-                    {
-                        break;
-                    }
                     var alias = settings.Aliases.SingleOrDefault(x => x.Id == microphoneId)?.Name ?? mmDevice.FriendlyName;
-                    devices.Add(
-                        new Microphone(
-                            microphoneId,
-                            alias, 
-                            mmDevice.FriendlyName, i));
+                    yield return new Microphone(
+                        microphoneId,
+                        alias,
+                        mmDevice.FriendlyName, i);
                 }
-
             }
-
-            Microphones = devices;
         }
         finally
         {
@@ -47,11 +54,7 @@ public class AudioInterface : IAudioInterface
                 mmDevice.DisposeQuiet();
             }
         }
-    }
 
-    public AudioInterface(params IMicrophone[] microphones)
-    {
-        Microphones = microphones.ToList();
     }
 
     public void Dispose()
@@ -86,6 +89,8 @@ public class AudioInterface : IAudioInterface
         }
     }
     public IReadOnlyList<IMicrophone> Microphones { get; }
+    public IReadOnlyList<IMicrophone> AllMicrophones { get; }
+
     public void ActivateMicrophones()
     {
         var tasks = Microphones
