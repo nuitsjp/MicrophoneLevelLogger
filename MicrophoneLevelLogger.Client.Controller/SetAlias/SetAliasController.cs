@@ -20,7 +20,7 @@ public class SetAliasController : IController
 
     public async Task ExecuteAsync()
     {
-        var audioInterface = await _provider.ResolveAsync();
+        var audioInterface = _provider.Resolve();
 
         var microphone = _view.SelectMicrophone(audioInterface);
         var name = _view.InputAlias(microphone);

@@ -26,6 +26,26 @@ public class SettingsRepository : ISettingsRepository
         }
     }
 
+    public Settings Load()
+    {
+        if (File.Exists(FileName))
+        {
+            using var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read);
+            return JsonSerializer.Deserialize<Settings>(stream, JsonEnvironments.Options)!;
+        }
+        else
+        {
+            return new Settings(
+                "localhost",
+                "localhost",
+                TimeSpan.FromSeconds(30),
+                false,
+                false,
+                new List<Alias>(),
+                new List<MicrophoneId>());
+        }
+    }
+
     public async Task SaveAsync(Settings settings)
     {
         if (File.Exists(FileName))

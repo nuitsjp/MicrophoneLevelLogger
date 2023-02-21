@@ -2,5 +2,5 @@
 
 public interface IAudioInterfaceProvider
 {
-    Task<IAudioInterface> ResolveAsync();
+    IAudioInterface Resolve();
 }

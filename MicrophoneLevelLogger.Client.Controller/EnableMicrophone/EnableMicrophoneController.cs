@@ -19,14 +19,14 @@ public class EnableMicrophoneController : IController
     public string Name => "Enable microphone    : 任意のマイクを有効化する。";
     public async Task ExecuteAsync()
     {
-        var audioInterface = await _provider.ResolveAsync();
+        var audioInterface = _provider.Resolve();
         var settings = await _repository.LoadAsync();
         if (_view.TrySelectMicrophone(audioInterface, settings, out var microphone))
         {
             settings.EnableMicrophone(microphone.Id);
             await _repository.SaveAsync(settings);
 
-            _view.NotifyMicrophonesInformation(await _provider.ResolveAsync());
+            _view.NotifyMicrophonesInformation(_provider.Resolve());
         }
     }
 }

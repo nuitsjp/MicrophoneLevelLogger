@@ -5,14 +5,17 @@ namespace MicrophoneLevelLogger;
 
 public class AudioInterface : IAudioInterface
 {
+    private readonly ISettingsRepository _settingsRepository;
     private readonly IReadOnlyList<IMicrophone> _microphones;
-    public AudioInterface(Settings settings)
+    public AudioInterface(ISettingsRepository settingsRepository)
     {
-        _microphones = LoadAllMicrophones(settings).ToList();
+        _settingsRepository = settingsRepository;
+        _microphones = LoadAllMicrophones(_settingsRepository.Load()).ToList();
     }
 
-    public AudioInterface(Settings settings, params IMicrophone[] microphones)
+    public AudioInterface(ISettingsRepository settingsRepository, params IMicrophone[] microphones)
     {
+        _settingsRepository = settingsRepository;
         _microphones = microphones;
     }
 
@@ -89,6 +92,15 @@ public class AudioInterface : IAudioInterface
 
     public IEnumerable<IMicrophone> GetMicrophones(MicrophoneStatus status = MicrophoneStatus.Enable) =>
         _microphones.Where(x => status.HasFlag(x.Status));
+
+    public IMediaPlayer GetMediaPlayer(bool isRemotePlay)
+    {
+        if (isRemotePlay is false)
+        {
+            return new RemoteMediaPlayer(_settingsRepository);
+        }
+        throw new NotImplementedException();
+    }
 
     public void ActivateMicrophones()
     {

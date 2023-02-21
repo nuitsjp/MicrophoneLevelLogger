@@ -87,7 +87,7 @@ public class CommandInvoker : ICommandInvoker
     {
         while (true)
         {
-            var microphones = await _audioInterfaceProvider.ResolveAsync();
+            var microphones = _audioInterfaceProvider.Resolve();
             _view.NotifyMicrophonesInformation(microphones);
 
             var commands = new IController[]

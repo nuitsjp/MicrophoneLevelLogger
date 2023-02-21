@@ -9,9 +9,8 @@ public class AudioInterfaceProvider : IAudioInterfaceProvider
         _settingsRepository = settingsRepository;
     }
 
-    public async Task<IAudioInterface> ResolveAsync()
+    public IAudioInterface Resolve()
     {
-        var settings = await _settingsRepository.LoadAsync();
-        return new AudioInterface(settings);
+        return new AudioInterface(_settingsRepository);
     }
 }

@@ -14,13 +14,15 @@ public class SetInputLevelController : IController
     }
 
     public string Name => "Set input level      : 指定マイクを入力レベルを変更する。";
-    public async Task ExecuteAsync()
+    public Task ExecuteAsync()
     {
-        var audioInterface = await _audioInterfaceProvider.ResolveAsync();
+        var audioInterface = _audioInterfaceProvider.Resolve();
         var microphone = _view.SelectMicrophone(audioInterface);
         var inputLevel = _view.InputInputLevel();
         microphone.VolumeLevel = new(inputLevel);
 
         _view.NotifyMicrophonesInformation(audioInterface);
+
+        return Task.CompletedTask;
     }
 }

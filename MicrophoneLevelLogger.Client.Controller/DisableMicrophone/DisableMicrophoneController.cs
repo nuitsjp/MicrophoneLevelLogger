@@ -20,14 +20,14 @@ public class DisableMicrophoneController : IController
 
     public async Task ExecuteAsync()
     {
-        var audioInterface = await _provider.ResolveAsync();
+        var audioInterface = _provider.Resolve();
         if (_view.TrySelectMicrophone(audioInterface, out var microphone))
         {
             var settings = await _repository.LoadAsync();
             settings.DisableMicrophone(microphone.Id);
             await _repository.SaveAsync(settings);
 
-            _view.NotifyMicrophonesInformation(await _provider.ResolveAsync());
+            _view.NotifyMicrophonesInformation(_provider.Resolve());
         }
 
     }
