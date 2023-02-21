@@ -16,7 +16,7 @@ public class Recorder : IRecorder
 
     public Recorder(
         IAudioInterface audioInterface, IRecordSummaryRepository recordSummaryRepository, string? recordName = null)
-        : this(recordSummaryRepository, recordName, audioInterface.Microphones.ToArray())
+        : this(recordSummaryRepository, recordName, audioInterface.GetMicrophones().ToArray())
     {
     }
 

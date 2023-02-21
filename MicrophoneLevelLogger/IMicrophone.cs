@@ -12,8 +12,16 @@ public interface IMicrophone : IObservable<WaveInput>, IDisposable
     string Name { get; }
     string SystemName { get; }
     int DeviceNumber { get; }
+    MicrophoneStatus Status { get; }
     VolumeLevel VolumeLevel { get; set; }
     WaveFormat WaveFormat { get; }
     Task ActivateAsync();
     void Deactivate();
+}
+
+[Flags]
+public enum MicrophoneStatus
+{
+    Disable = 0x01,
+    Enable = 0x02
 }

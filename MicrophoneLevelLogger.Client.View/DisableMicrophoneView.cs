@@ -9,7 +9,8 @@ public class DisableMicrophoneView : MicrophoneView, IDisableMicrophoneView
     {
         const string cancel = "取りやめる";
 
-        var items = audioInterface.Microphones
+        var microphones = audioInterface.GetMicrophones().ToList();
+        var items = microphones
             .Select(x => x.Name)
             .ToList();
         items.Add(cancel);
@@ -21,7 +22,7 @@ public class DisableMicrophoneView : MicrophoneView, IDisableMicrophoneView
             return false;
         }
 
-        microphone = audioInterface.Microphones[items.IndexOf(selected)];
+        microphone = microphones[items.IndexOf(selected)];
         return true;
     }
 }

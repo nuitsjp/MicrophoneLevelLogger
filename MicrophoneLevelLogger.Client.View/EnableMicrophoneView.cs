@@ -9,7 +9,7 @@ public class EnableMicrophoneView : MicrophoneView, IEnableMicrophoneView
     {
         const string cancel = "取りやめる";
 
-        var items = audioInterface.AllMicrophones
+        var items = audioInterface.GetMicrophones(MicrophoneStatus.Enable | MicrophoneStatus.Disable)
             .Where(x => settings.DisabledMicrophones.Contains(x.Id))
             .Select(x => x.Name)
             .ToList();
@@ -22,7 +22,7 @@ public class EnableMicrophoneView : MicrophoneView, IEnableMicrophoneView
             return false;
         }
 
-        microphone = audioInterface.AllMicrophones.Single(x => x.Name == selected);
+        microphone = audioInterface.GetMicrophones(MicrophoneStatus.Enable | MicrophoneStatus.Disable).Single(x => x.Name == selected);
         return true;
 
     }

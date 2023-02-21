@@ -10,7 +10,7 @@ public class SetInputLevelView : MicrophoneView, ISetInputLevelView
     {
         return Prompt.Select(
             "マイクを選択してください。",
-            audioInterface.Microphones);
+            audioInterface.GetMicrophones());
     }
 
     public float InputInputLevel()

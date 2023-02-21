@@ -18,12 +18,13 @@ public class Microphone : IMicrophone
 
     private List<IObserver<WaveInput>> _observers = new();
 
-    public Microphone(MicrophoneId id, string name, string systemName, int deviceNumber)
+    public Microphone(MicrophoneId id, string name, string systemName, int deviceNumber, MicrophoneStatus status)
     {
         Id = id;
         Name = name;
         SystemName = systemName;
         DeviceNumber = deviceNumber;
+        Status = status;
 
         _waveInEvent = new WaveInEvent
         {
@@ -83,6 +84,7 @@ public class Microphone : IMicrophone
     public string Name { get; }
     public string SystemName { get; }
     public int DeviceNumber { get; }
+    public MicrophoneStatus Status { get; }
 
     public WaveFormat WaveFormat => _waveInEvent.WaveFormat;
 

@@ -14,7 +14,7 @@ public class MicrophoneView : IMicrophoneView
     public void NotifyMicrophonesInformation(IAudioInterface audioInterface)
     {
         var infos = audioInterface
-            .Microphones
+            .GetMicrophones()
             .Select((x, index) => new MicrophoneInfo(index + 1, x.Name, x.VolumeLevel))
             .ToList();
         Build

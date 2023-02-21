@@ -5,21 +5,15 @@ namespace MicrophoneLevelLogger;
 
 public class AudioInterface : IAudioInterface
 {
-    private readonly Settings _settings;
+    private readonly IReadOnlyList<IMicrophone> _microphones;
     public AudioInterface(Settings settings)
     {
-        _settings = settings;
-        AllMicrophones = LoadAllMicrophones(settings).ToList();
-        Microphones = AllMicrophones
-            .Where(x => settings.DisabledMicrophones.NotContains(x.Id))
-            .ToList();
+        _microphones = LoadAllMicrophones(settings).ToList();
     }
 
     public AudioInterface(Settings settings, params IMicrophone[] microphones)
     {
-        _settings = settings;
-        Microphones = microphones.ToList();
-        AllMicrophones = LoadAllMicrophones(settings).ToList();
+        _microphones = microphones;
     }
 
     private IEnumerable<Microphone> LoadAllMicrophones(Settings settings)
@@ -43,7 +37,11 @@ public class AudioInterface : IAudioInterface
                     yield return new Microphone(
                         microphoneId,
                         alias,
-                        mmDevice.FriendlyName, i);
+                        mmDevice.FriendlyName, 
+                        i,
+                        settings.DisabledMicrophones.NotContains(microphoneId) 
+                            ? MicrophoneStatus.Enable 
+                            : MicrophoneStatus.Disable);
                 }
             }
         }
@@ -59,7 +57,7 @@ public class AudioInterface : IAudioInterface
 
     public void Dispose()
     {
-        foreach (var microphone in Microphones)
+        foreach (var microphone in GetMicrophones())
         {
             try
             {
@@ -88,19 +86,20 @@ public class AudioInterface : IAudioInterface
             device.AudioEndpointVolume.MasterVolumeLevelScalar = value.AsPrimitive();
         }
     }
-    public IReadOnlyList<IMicrophone> Microphones { get; }
-    public IReadOnlyList<IMicrophone> AllMicrophones { get; }
+
+    public IEnumerable<IMicrophone> GetMicrophones(MicrophoneStatus status = MicrophoneStatus.Enable) =>
+        _microphones.Where(x => status.HasFlag(x.Status));
 
     public void ActivateMicrophones()
     {
-        var tasks = Microphones
+        var tasks = GetMicrophones()
             .Select(x => x.ActivateAsync());
         Task.WaitAll(tasks.ToArray());
     }
 
     public void DeactivateMicrophones()
     {
-        foreach (var microphone in Microphones)
+        foreach (var microphone in GetMicrophones())
         {
             microphone.Deactivate();
         }

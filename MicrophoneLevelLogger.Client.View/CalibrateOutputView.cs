@@ -10,7 +10,7 @@ public class CalibrateOutputView : MicrophoneView, ICalibrateOutputView
     {
         return Prompt.Select(
             "計測対象のマイクを選択してください。",
-            audioInterface.Microphones);
+            audioInterface.GetMicrophones());
     }
 
 

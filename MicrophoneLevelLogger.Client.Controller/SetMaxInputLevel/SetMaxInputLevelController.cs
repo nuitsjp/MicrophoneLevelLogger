@@ -14,7 +14,7 @@ public class SetMaxInputLevelController : IController
     public async Task ExecuteAsync()
     {
         var audioInterface = await _audioInterfaceProvider.ResolveAsync();
-        foreach (var microphone in audioInterface.Microphones)
+        foreach (var microphone in audioInterface.GetMicrophones())
         {
             microphone.VolumeLevel = VolumeLevel.Maximum;
         }

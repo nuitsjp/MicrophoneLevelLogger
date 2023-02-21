@@ -10,7 +10,7 @@ public class CalibrateInputView : MicrophoneView, ICalibrateInputView
     {
         return Prompt.Select(
             "リファレンスマイクを選択してください。",
-            audioInterface.Microphones);
+            audioInterface.GetMicrophones());
     }
 
     public IMicrophone SelectTarget(IAudioInterface audioInterface, IMicrophone reference)
@@ -20,7 +20,7 @@ public class CalibrateInputView : MicrophoneView, ICalibrateInputView
             var target =
                 Prompt.Select(
                     "キャリブレーション対象のマイクを選択してください。",
-                    audioInterface.Microphones);
+                    audioInterface.GetMicrophones());
 
             if (target.Id != reference.Id)
             {
@@ -71,9 +71,10 @@ public class CalibrateInputView : MicrophoneView, ICalibrateInputView
             ConsoleEx.WriteLine();
             ConsoleEx.WriteLine("マイクのキャリブレーションを完了しました。");
 
-            for (var i = 0; i < audioInterface.Microphones.Count; i++)
+            var microphones = audioInterface.GetMicrophones().ToList();
+            for (var i = 0; i < microphones.Count; i++)
             {
-                var microphone = audioInterface.Microphones[i];
+                var microphone = microphones[i];
                 ConsoleEx.WriteLine($"{i + 1} = {microphone.Name} 入力レベル：{microphone.VolumeLevel}");
             }
         }

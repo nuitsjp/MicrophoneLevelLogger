@@ -3,8 +3,7 @@
 public interface IAudioInterface : IDisposable
 {
     VolumeLevel DefaultOutputLevel { get; set; }
-    IReadOnlyList<IMicrophone> Microphones { get; }
-    IReadOnlyList<IMicrophone> AllMicrophones { get; }
+    IEnumerable<IMicrophone> GetMicrophones(MicrophoneStatus status = MicrophoneStatus.Enable);
     void ActivateMicrophones();
     void DeactivateMicrophones();
 
