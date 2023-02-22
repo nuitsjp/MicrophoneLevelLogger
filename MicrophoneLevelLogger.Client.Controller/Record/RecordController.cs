@@ -1,9 +1,4 @@
-﻿using CsvHelper;
-using FftSharp.Windows;
-using NAudio.Wave;
-using System.Xml.Linq;
-
-namespace MicrophoneLevelLogger.Client.Controller.Record;
+﻿namespace MicrophoneLevelLogger.Client.Controller.Record;
 
 public class RecordController : IController
 {

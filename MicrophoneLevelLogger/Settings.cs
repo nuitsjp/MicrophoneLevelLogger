@@ -1,6 +1,4 @@
-﻿using NAudio.MediaFoundation;
-
-namespace MicrophoneLevelLogger;
+﻿namespace MicrophoneLevelLogger;
 
 public class Settings
 {

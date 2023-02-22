@@ -1,8 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-using System.Security.Cryptography;
-using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
-
-namespace MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
+﻿namespace MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
 
 public class CalibrateOutputController : IController
 {

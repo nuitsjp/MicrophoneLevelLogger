@@ -1,8 +1,5 @@
-﻿using System.CodeDom;
-using CsvHelper;
+﻿using CsvHelper;
 using System.Globalization;
-using System.Runtime.CompilerServices;
-using FftSharp.Windows;
 
 namespace MicrophoneLevelLogger;
 
@@ -49,8 +46,7 @@ public class Recorder : IRecorder
         // 非同期でロギングを実施する。
         var task = Task.Run(async () => await LoggingAsync(token), token);
 
-        // キャンセル処理ハンドラーを登録する。
-        token.Register(async () =>
+        async void Cancel()
         {
             // ReSharper disable once MethodSupportsCancellation
             await task.WaitAsync(Timeout.InfiniteTimeSpan);
@@ -58,32 +54,19 @@ public class Recorder : IRecorder
             if (_recordName is not null)
             {
                 // 最小値、平均値、最大値をテキストファイルに出力する。
-                var results = MicrophoneRecorders
-                    .Select((x, index) => new RecordResult(index + 1, x))
+                var results = MicrophoneRecorders.Select((x, index) => new RecordResult(index + 1, x))
                     .ToList();
-                await using var writer =
-                    new CsvWriter(
-                        File.CreateText(Path.Combine(_saveDirectory!.FullName, "summary.csv")),
-                        new CultureInfo("ja-JP", false));
+                await using var writer = new CsvWriter(File.CreateText(Path.Combine(_saveDirectory!.FullName, "summary.csv")), new CultureInfo("ja-JP", false));
                 // ReSharper disable once MethodSupportsCancellation
                 await writer.WriteRecordsAsync(results);
 
-                var summary =
-                    new RecordSummary(
-                        _recordName!,
-                        beginTime,
-                        DateTime.Now,
-                        MicrophoneRecorders.Select(x =>
-                            new MicrophoneRecordSummary(
-                                x.Microphone.Id,
-                                x.Microphone.Name,
-                                x.Min,
-                                x.Avg,
-                                x.Max)).ToList()
-                    );
+                var summary = new RecordSummary(_recordName!, beginTime, DateTime.Now, MicrophoneRecorders.Select(x => new MicrophoneRecordSummary(x.Microphone.Id, x.Microphone.Name, x.Min, x.Avg, x.Max)).ToList());
                 await _recordSummaryRepository.SaveAsync(summary, _saveDirectory);
             }
-        });
+        }
+
+        // キャンセル処理ハンドラーを登録する。
+        token.Register(Cancel);
     }
 
     public IMicrophoneRecorder GetLogger(IMicrophone microphone) =>

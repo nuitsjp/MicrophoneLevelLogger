@@ -2,7 +2,7 @@
 
 public interface IRecordingSettingsView
 {
-    void ShowSettings(MicrophoneLevelLogger.Settings settings);
+    void ShowSettings(Settings settings);
 
     bool ConfirmModify();
     int InputRecodingSpan();

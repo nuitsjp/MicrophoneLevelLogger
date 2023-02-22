@@ -1,5 +1,6 @@
 ﻿using MicrophoneLevelLogger.Client.Controller.Record;
 using Microsoft.AspNetCore.Mvc;
+// ReSharper disable LocalizableElement
 
 namespace MicrophoneLevelLogger.Server.Controllers;
 

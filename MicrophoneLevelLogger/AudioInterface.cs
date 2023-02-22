@@ -1,5 +1,4 @@
-﻿using System.Data;
-using NAudio.CoreAudioApi;
+﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
 namespace MicrophoneLevelLogger;

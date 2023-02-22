@@ -1,9 +1,6 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System.Buffers;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Runtime.CompilerServices;
 using MMDeviceEnumerator = NAudio.CoreAudioApi.MMDeviceEnumerator;
 
 namespace MicrophoneLevelLogger;
@@ -23,7 +20,6 @@ public class Microphone : IMicrophone
         Id = id;
         Name = name;
         SystemName = systemName;
-        DeviceNumber = deviceNumber;
         Status = status;
 
         _waveInEvent = new WaveInEvent
@@ -83,7 +79,6 @@ public class Microphone : IMicrophone
     public MicrophoneId Id { get; }
     public string Name { get; }
     public string SystemName { get; }
-    public int DeviceNumber { get; }
     public MicrophoneStatus Status { get; }
 
     public WaveFormat WaveFormat => _waveInEvent.WaveFormat;

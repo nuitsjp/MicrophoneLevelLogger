@@ -8,7 +8,7 @@ public class SetAliasView : ISetAliasView
     public IMicrophone SelectMicrophone(IAudioInterface audioInterface)
     {
         var microphones = audioInterface.GetMicrophones().ToArray();
-        var selected = Prompt.Select<string>("マイクを選択してください。", microphones.Select(x => x.Name));
+        var selected = Prompt.Select("マイクを選択してください。", microphones.Select(x => x.Name));
         return microphones.Single(x => x.Name == selected);
     }
 

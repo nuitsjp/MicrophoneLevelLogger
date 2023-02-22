@@ -11,7 +11,6 @@ public interface IMicrophone : IObservable<WaveInput>, IDisposable
     MicrophoneId Id { get; }
     string Name { get; }
     string SystemName { get; }
-    int DeviceNumber { get; }
     MicrophoneStatus Status { get; }
     VolumeLevel VolumeLevel { get; set; }
     WaveFormat WaveFormat { get; }

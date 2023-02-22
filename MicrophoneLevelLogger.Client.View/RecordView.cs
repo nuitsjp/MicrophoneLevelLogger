@@ -1,5 +1,4 @@
-﻿using FluentTextTable;
-using MicrophoneLevelLogger.Client.Controller.Record;
+﻿using MicrophoneLevelLogger.Client.Controller.Record;
 using Sharprompt;
 
 namespace MicrophoneLevelLogger.Client.View;

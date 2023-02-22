@@ -9,6 +9,7 @@ public class RemoveAliasView : IRemoveAliasView
     {
         if (settings.Aliases.Empty())
         {
+            // ReSharper disable once LocalizableElement
             Console.WriteLine("別名は設定されていません。");
             alias = default!;
             return false;

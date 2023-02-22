@@ -1,6 +1,5 @@
 ﻿using FluentTextTable;
 using MicrophoneLevelLogger.Client.Controller;
-using static System.Windows.Forms.AxHost;
 
 namespace MicrophoneLevelLogger.Client.View;
 
@@ -24,6 +23,7 @@ public class MicrophoneView : IMicrophoneView
             })
             .WriteLine(infos);
 
+        // ReSharper disable once LocalizableElement
         Console.WriteLine($"スピーカー : {(await audioInterface.GetSpeakerAsync()).Name}");
 
         ConsoleEx.WriteLine();

@@ -8,8 +8,8 @@ var path = Prompt.Input<string>("データ保管パスを入力してくださ�
 
 var location =
     path.Split("\\").Last() == "Local"
-        ? LogAggregator.Location.Local
-        : LogAggregator.Location.Remote;
+        ? Location.Local
+        : Location.Remote;
 
 using var workbook = new XLWorkbook();
 
@@ -20,7 +20,7 @@ AddMax(workbook, summaries);
 
 workbook.SaveAs(Path.Combine(path, "summary.xlsx"));
 
-static List<Summary> AddSummaries(XLWorkbook xlWorkbook, string path, LogAggregator.Location location)
+static List<Summary> AddSummaries(XLWorkbook xlWorkbook, string path, Location location)
 {
     var children = Directory
         .GetDirectories(path)
@@ -61,24 +61,22 @@ static List<Summary> AddSummaries(XLWorkbook xlWorkbook, string path, LogAggrega
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
         var systemName =
-            location == LogAggregator.Location.Local
+            location == Location.Local
                 ? Microphone.FindByProductName(productName).SystemName
                 : "CABLE Output (VB-Audio Virtual Cable)";
 
         var csvSummary = csv.GetRecords<CsvSummary>().Single(x => x.Name.Contains(systemName));
-        var summary = new Summary()
-        {
-            Name = productName,
-            Direction = direction,
-            Min = csvSummary.Min,
-            Avg = csvSummary.Avg,
-            Median = csvSummary.Median,
-            Max = csvSummary.Max
-        };
+        var summary = new Summary(
+            productName,
+            direction,
+            csvSummary.Min,
+            csvSummary.Avg,
+            csvSummary.Median,
+            csvSummary.Max);
         list.Add(summary);
 
         summaryWorksheet.Cell(index + 2, 1).Value = productName;
-        summaryWorksheet.Cell(index + 2, 2).Value = direction;
+        summaryWorksheet.Cell(index + 2, 2).Value = direction.ToString();
         summaryWorksheet.Cell(index + 2, 3).Value = csvSummary.Min;
         summaryWorksheet.Cell(index + 2, 4).Value = csvSummary.Avg;
         summaryWorksheet.Cell(index + 2, 5).Value = csvSummary.Median;
@@ -108,7 +106,7 @@ static void AddMax(XLWorkbook workbook1, List<Summary> summaries)
         var index = item.Index;
 
         maxWorksheet.Cell(index + 2, 1).Value = maxAvg.Name;
-        maxWorksheet.Cell(index + 2, 2).Value = maxAvg.Direction;
+        maxWorksheet.Cell(index + 2, 2).Value = maxAvg.Direction.ToString();
         maxWorksheet.Cell(index + 2, 3).Value = maxAvg.Min;
         maxWorksheet.Cell(index + 2, 4).Value = maxAvg.Avg;
         maxWorksheet.Cell(index + 2, 5).Value = maxAvg.Median;
@@ -116,7 +114,7 @@ static void AddMax(XLWorkbook workbook1, List<Summary> summaries)
     }
 }
 
-static void AddDetail(XLWorkbook workbook, string path, LogAggregator.Location location)
+static void AddDetail(XLWorkbook workbook, string path, Location location)
 {
     var children = Directory
         .GetDirectories(path)
@@ -127,7 +125,6 @@ static void AddDetail(XLWorkbook workbook, string path, LogAggregator.Location l
 
     foreach (var child in children)
     {
-        var index = child.Index;
         var directoryInfo = child.DirectoryInfo;
         var productName = directoryInfo.Name.Substring(0, directoryInfo.Name.LastIndexOf('_'));
         productName =
@@ -146,7 +143,7 @@ static void AddDetail(XLWorkbook workbook, string path, LogAggregator.Location l
         };
 
         var systemName =
-            location == LogAggregator.Location.Local
+            location == Location.Local
                 ? Microphone.FindByProductName(productName).SystemName
                 : "CABLE Output (VB-Audio Virtual Cable)";
 

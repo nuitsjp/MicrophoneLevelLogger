@@ -2,11 +2,21 @@
 
 public class Summary
 {
-    public string Name { get; set; }
-    public Direction Direction { get; set; }
-    public double Min { get; set; }
-    public double Avg { get; set; }
-    public double Median { get; set; }
-    public double Max { get; set; }
+    public Summary(string name, Direction direction, double min, double avg, double median, double max)
+    {
+        Name = name;
+        Direction = direction;
+        Min = min;
+        Avg = avg;
+        Median = median;
+        Max = max;
+    }
+
+    public string Name { get; }
+    public Direction Direction { get; }
+    public double Min { get; }
+    public double Avg { get; }
+    public double Median { get; }
+    public double Max { get; }
 
 }

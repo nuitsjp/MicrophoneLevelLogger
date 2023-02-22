@@ -1,7 +1,7 @@
 ﻿using FluentTextTable;
 using MicrophoneLevelLogger.Client.Controller.DisplayRecords;
-using Microsoft.Extensions.Logging;
 using Sharprompt;
+// ReSharper disable LocalizableElement
 
 namespace MicrophoneLevelLogger.Client.View;
 

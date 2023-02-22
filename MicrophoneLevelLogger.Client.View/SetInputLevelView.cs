@@ -24,7 +24,7 @@ public class SetInputLevelView : MicrophoneView, ISetInputLevelView
                 o =>
                 {
                     var inputLevel = (float) o;
-                    if (0 <= inputLevel && inputLevel <= 1)
+                    if (inputLevel.Between(0, 1))
                     {
                         return ValidationResult.Success!;
                     }

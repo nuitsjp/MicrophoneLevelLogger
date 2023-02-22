@@ -15,14 +15,9 @@ public class CompositeControllerView : ICompositeControllerView
                 ? x.Name 
                 : $"{x.Name.PadRight(maxLength)} : {x.Description}")
             .ToList();
-        if (composite.Name.Any())
-        {
-            items.Add($"{"Return".PadRight(maxLength)} : 戻る。");
-        }
-        else
-        {
-            items.Add($"{"Exit".PadRight(maxLength)} : 終了する。");
-        }
+        items.Add(composite.Name.Any()
+            ? $"{"Return".PadRight(maxLength)} : 戻る。"
+            : $"{"Exit".PadRight(maxLength)} : 終了する。");
         Console.WriteLine();
         var selected = Prompt.Select("詳細コマンドを選択してください。", items);
         var selectedIndex = items.IndexOf(selected);

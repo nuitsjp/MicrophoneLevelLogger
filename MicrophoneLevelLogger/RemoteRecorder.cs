@@ -1,7 +1,4 @@
-﻿using System.Net.Http;
-using System.Xml.Linq;
-
-namespace MicrophoneLevelLogger;
+﻿namespace MicrophoneLevelLogger;
 
 public class RemoteRecorder : IRecorder
 {
