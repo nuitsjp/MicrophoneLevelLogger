@@ -11,7 +11,7 @@ public class DisplayAudioInterfaceController : IController
         _provider = provider;
     }
 
-    public string Name => "Display audio interface";
+    public string Name => "Display interface";
     public string Description => "マイクやスピーカーの情報を表示します。";
     public async Task ExecuteAsync()
     {

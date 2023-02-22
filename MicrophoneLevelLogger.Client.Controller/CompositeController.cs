@@ -32,7 +32,7 @@ public class CompositeController : IController
         return this;
     }
 
-    public async Task ExecuteAsync()
+    public virtual async Task ExecuteAsync()
     {
         while (true)
         {

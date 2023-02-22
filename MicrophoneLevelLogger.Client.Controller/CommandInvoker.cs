@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using MicrophoneLevelLogger.Client.Controller.CalibrateInput;
+﻿using MicrophoneLevelLogger.Client.Controller.CalibrateInput;
 using MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
 using MicrophoneLevelLogger.Client.Controller.DeleteCalibrates;
 using MicrophoneLevelLogger.Client.Controller.DeleteRecord;
@@ -16,20 +15,16 @@ using MicrophoneLevelLogger.Client.Controller.SelectSpeaker;
 using MicrophoneLevelLogger.Client.Controller.SetAlias;
 using MicrophoneLevelLogger.Client.Controller.SetInputLevel;
 using MicrophoneLevelLogger.Client.Controller.SetMaxInputLevel;
-using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace MicrophoneLevelLogger.Client.Controller;
 
 public class CommandInvoker : ICommandInvoker
 {
-    private readonly IAudioInterfaceProvider _audioInterfaceProvider;
-    private readonly ICommandInvokerView _view;
-
-    private readonly CompositeController _compositeController;
+    private readonly CompositeController _controller;
 
     public CommandInvoker(
         IAudioInterfaceProvider audioInterfaceProvider,
-        ICommandInvokerView view, 
+        IMicrophoneView microphoneView, 
         CalibrateInputController calibrateInputController, 
         RecordController recordController, 
         SetMaxInputLevelController setMaxInputLevelController, 
@@ -49,9 +44,7 @@ public class CommandInvoker : ICommandInvoker
         DisplayAudioInterfaceController displayAudioInterfaceController,
         ICompositeControllerView compositeControllerView)
     {
-        _audioInterfaceProvider = audioInterfaceProvider;
-        _view = view;
-        _compositeController = new CompositeController(compositeControllerView)
+        _controller = new RootController(microphoneView, compositeControllerView, audioInterfaceProvider)
             .AddController(monitorVolumeController)
             .AddController(recordController)
             .AddController(displayRecordsController)
@@ -94,9 +87,27 @@ public class CommandInvoker : ICommandInvoker
 
     public async Task InvokeAsync()
     {
-        var microphones = _audioInterfaceProvider.Resolve();
-        await _view.NotifyAudioInterfaceAsync(microphones);
+        await _controller.ExecuteAsync();
+    }
 
-        await _compositeController.ExecuteAsync();
+    private class RootController : CompositeController
+    {
+        private readonly IMicrophoneView _view;
+        private readonly IAudioInterfaceProvider _provider;
+
+        public RootController(
+            IMicrophoneView microphoneView,
+            ICompositeControllerView compositeControllerView, 
+            IAudioInterfaceProvider provider) : base(compositeControllerView)
+        {
+            _view = microphoneView;
+            _provider = provider;
+        }
+
+        public override async Task ExecuteAsync()
+        {
+            await _view.NotifyAudioInterfaceAsync(_provider.Resolve());
+            await base.ExecuteAsync();
+        }
     }
 }
