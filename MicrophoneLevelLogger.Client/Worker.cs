@@ -3,6 +3,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace MicrophoneLevelLogger.Client;
 
+/// <summary>
+/// Generic Host上で、コンソールアプリケーションとして動作させるためのワーカー
+/// </summary>
 public class Worker : BackgroundService
 {
     private readonly ICommandInvoker _commandInvoker;
