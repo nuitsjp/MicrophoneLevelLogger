@@ -5,6 +5,12 @@
 /// </summary>
 public class Alias
 {
+    /// <summary>
+    /// インスタンスを生成する。
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="systemName"></param>
+    /// <param name="name"></param>
     public Alias(MicrophoneId id, string systemName, string name)
     {
         Id = id;

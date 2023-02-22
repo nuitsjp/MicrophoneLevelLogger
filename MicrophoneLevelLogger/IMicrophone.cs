@@ -17,10 +17,3 @@ public interface IMicrophone : IObservable<WaveInput>, IDisposable
     Task ActivateAsync();
     void Deactivate();
 }
-
-[Flags]
-public enum MicrophoneStatus
-{
-    Disable = 0x01,
-    Enable = 0x02
-}
