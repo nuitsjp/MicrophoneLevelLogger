@@ -5,38 +5,34 @@ namespace MicrophoneLevelLogger;
 
 public class MediaPlayer : IMediaPlayer
 {
-    private readonly MMDevice _mmDevice;
-    private readonly IWavePlayer _wavePlayer;
-    private readonly WaveStream _waveStream = new LoopStream(new WaveFileReader(Properties.Resources.吾輩は猫である));
-
+    private readonly ISpeaker _speaker;
     public MediaPlayer(ISpeaker speaker)
     {
-        using var emurator = new MMDeviceEnumerator();
-        _mmDevice = emurator.GetDevice(speaker.Id.AsPrimitive());
-        _wavePlayer = new WasapiOut(_mmDevice, AudioClientShareMode.Shared, false, 0);
+        _speaker = speaker;
     }
 
     public Task PlayLoopingAsync(CancellationToken token)
     {
-        token.Register(Stop);
+        using var emurator = new MMDeviceEnumerator();
+        var mmDevice = emurator.GetDevice(_speaker.Id.AsPrimitive());
+        IWavePlayer wavePlayer = new WasapiOut(mmDevice, AudioClientShareMode.Shared, false, 0);
+
+        WaveStream waveStream = new LoopStream(new WaveFileReader(Properties.Resources.吾輩は猫である));
+
+        token.Register(() =>
+        {
+            wavePlayer.Stop();
+            wavePlayer.Dispose();
+
+            mmDevice.Dispose();
+            waveStream.Dispose();
+        });
 
         // 出力に入力を接続して再生開始
-        _wavePlayer.Init(_waveStream);
-        _wavePlayer.Play();
+        wavePlayer.Init(waveStream);
+        wavePlayer.Play();
 
         return Task.CompletedTask;
-    }
-
-    public void Stop()
-    {
-        _wavePlayer.Stop();
-    }
-
-    public void Dispose()
-    {
-        _mmDevice.Dispose();
-        _wavePlayer.Dispose();
-        _waveStream.Dispose();
     }
 
     public class LoopStream : WaveStream
