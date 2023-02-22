@@ -7,12 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Include="..\Resource\吾輩は猫である.wav" Link="吾輩は猫である.wav">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="CsvHelper" Version="30.0.1" />
 		<PackageReference Include="FftSharp" Version="1.1.6" />
 		<PackageReference Include="FluentTextTable" Version="1.0.0" />

@@ -8,7 +8,7 @@ public class MediaPlayer : IMediaPlayer
 {
     private readonly MMDevice _mmDevice;
     private readonly IWavePlayer _wavePlayer;
-    private readonly WaveStream _waveStream = new LoopStream(new AudioFileReader("吾輩は猫である.wav"));
+    private readonly WaveStream _waveStream = new LoopStream(new WaveFileReader(Properties.Resources.吾輩は猫である));
 
     public MediaPlayer(MMDevice mmDevice)
     {
