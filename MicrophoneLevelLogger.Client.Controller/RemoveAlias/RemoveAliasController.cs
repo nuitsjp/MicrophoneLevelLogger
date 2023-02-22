@@ -13,7 +13,9 @@ public class RemoveAliasController : IController
         _repository = repository;
     }
 
-    public string Name => "Remove Alias         : マイクの別名を削除する。";
+    public string Name => "Remove Alias";
+    public string Description => "マイクの別名を削除する。";
+
     public async Task ExecuteAsync()
     {
         var settings = await _repository.LoadAsync();

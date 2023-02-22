@@ -16,7 +16,8 @@ public class SetAliasController : IController
         _view = view;
     }
 
-    public string Name => "Set Alias            : マイクの別名を設定する。";
+    public string Name => "Set Alias";
+    public string Description => "マイクの別名を設定する。";
 
     public async Task ExecuteAsync()
     {

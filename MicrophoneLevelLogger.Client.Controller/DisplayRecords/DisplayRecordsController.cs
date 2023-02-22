@@ -13,7 +13,9 @@ public class DisplayRecordsController : IController
         _repository = repository;
     }
 
-    public string Name => "Display records      : 計測結果を表示する。";
+    public string Name => "Display records";
+    public string Description => "マイク入力レベルの調整結果を表示する。";
+
     public async Task ExecuteAsync()
     {
         var summaries = await _repository.LoadAsync();

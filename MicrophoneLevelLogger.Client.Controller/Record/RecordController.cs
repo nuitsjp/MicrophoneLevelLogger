@@ -26,7 +26,8 @@ public class RecordController : IController
         _audioInterfaceProvider = audioInterfaceProvider;
     }
 
-    public string Name => "Record               : マイクの入力をキャプチャーし保存する。";
+    public string Name => "Record";
+    public string Description => "マイクの入力をキャプチャーし保存する。";
 
 
     public async Task ExecuteAsync()

@@ -2,5 +2,5 @@
 
 public interface ICommandInvokerView : IMicrophoneView
 {
-    string SelectCommand(IEnumerable<string> commands);
+    bool TrySelectController(IList<IController> controllers, out IController controller);
 }

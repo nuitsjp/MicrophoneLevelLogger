@@ -13,7 +13,8 @@ public class DisplayCalibratesController : IController
         _audioInterfaceCalibrationValuesRepository = audioInterfaceCalibrationValuesRepository;
     }
 
-    public string Name => "Display calibrates   : マイク入力レベルの調整結果を表示する。";
+    public string Name => "Display calibrates";
+    public string Description => "マイク入力レベルの調整結果を表示する。";
 
 
     public async Task ExecuteAsync()

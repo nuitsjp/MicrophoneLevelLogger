@@ -16,7 +16,8 @@ public class DisableMicrophoneController : IController
         _repository = repository;
     }
 
-    public string Name => "Disable microphone   : 任意のマイクを無効化する。";
+    public string Name => "Disable microphone";
+    public string Description => "任意のマイクを無効化する。";
 
     public async Task ExecuteAsync()
     {

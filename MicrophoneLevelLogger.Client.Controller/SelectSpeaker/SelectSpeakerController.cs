@@ -16,7 +16,9 @@ public class SelectSpeakerController : IController
         _repository = repository;
     }
 
-    public string Name => "Select speaker       : マイクの入力レベルを調整する。";
+    public string Name => "Select speaker";
+    public string Description => "マイクの入力レベルを調整する。";
+
     public async Task ExecuteAsync()
     {
         var audioInterface = _provider.Resolve();

@@ -13,7 +13,8 @@ public class RecordingSettingsController : IController
         _repository = repository;
     }
 
-    public string Name => "Recoding Settings    : 録音設定を確認・変更する。";
+    public string Name => "Recoding Settings";
+    public string Description => "録音設定を確認・変更する。";
 
     public async Task ExecuteAsync()
     {

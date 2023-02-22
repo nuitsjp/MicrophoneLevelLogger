@@ -11,7 +11,8 @@ public class DeleteCalibratesController : IController
         _audioInterfaceCalibrationValuesRepository = audioInterfaceCalibrationValuesRepository;
     }
 
-    public string Name => "Delete calibrates    : マイク入力レベルの調整結果をすべて削除する。";
+    public string Name => "Delete calibrates";
+    public string Description => "マイク入力レベルの調整結果をすべて削除する。";
 
     public Task ExecuteAsync()
     {

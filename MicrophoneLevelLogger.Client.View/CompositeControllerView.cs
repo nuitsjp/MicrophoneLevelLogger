@@ -5,15 +5,30 @@ namespace MicrophoneLevelLogger.Client.View;
 
 public class CompositeControllerView : ICompositeControllerView
 {
-    public bool TrySelectController(IList<IController> controllers, out IController controller)
+    public bool TrySelectController(CompositeController composite, out IController controller)
     {
-        var items = controllers.Select(x => x.Name).ToList();
-        items.Add("Return               : 戻る。");
-        var selected = Prompt.Select("詳細コマンドを選択してください。", items);
-        var selectedController = controllers.SingleOrDefault(x => x.Name == selected);
-        if (selectedController is not null)
+        var maxLength = composite.Controllers
+            .Where(x => x is not BorderController)
+            .Max(x => x.Name.Length);
+        var items = composite.Controllers
+            .Select(x => x is BorderController 
+                ? x.Name 
+                : $"{x.Name.PadRight(maxLength)} : {x.Description}")
+            .ToList();
+        if (composite.Name.Any())
         {
-            controller = selectedController;
+            items.Add($"{"Return".PadRight(maxLength)} : 戻る。");
+        }
+        else
+        {
+            items.Add($"{"Exit".PadRight(maxLength)} : 終了する。");
+        }
+        Console.WriteLine();
+        var selected = Prompt.Select("詳細コマンドを選択してください。", items);
+        var selectedIndex = items.IndexOf(selected);
+        if (selectedIndex < composite.Controllers.Count)
+        {
+            controller = composite.Controllers[selectedIndex];
             return true;
         }
 

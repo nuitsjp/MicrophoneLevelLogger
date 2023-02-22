@@ -16,7 +16,8 @@ public class MonitorVolumeController : IController
         _view = view;
     }
 
-    public string Name => "Monitor volume       : マイクの入力をモニターする。データの保存は行わない。";
+    public string Name => "Monitor volume";
+    public string Description => "マイクの入力をモニターする。データの保存は行わない。";
 
     public async Task ExecuteAsync()
     {

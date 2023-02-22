@@ -11,7 +11,9 @@ public class DeleteRecordController : IController
         _view = view;
     }
 
-    public string Name => "Delete records       : Recodeで保存したデータをすべて削除する。";
+    public string Name => "Delete records";
+    public string Description => "Recodeで保存したデータをすべて削除する。";
+
     public Task ExecuteAsync()
     {
         if (_view.Confirm())

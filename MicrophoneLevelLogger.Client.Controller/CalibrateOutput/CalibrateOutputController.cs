@@ -23,7 +23,9 @@ public class CalibrateOutputController : IController
         _recorderProvider = recorderProvider;
     }
 
-    public string Name => "Calibrate output     : スピーカーの出力レベルを調整する。";
+    public string Name => "Calibrate output";
+    public string Description => "スピーカーの出力レベルを調整する。";
+
     public async Task ExecuteAsync()
     {
         // マイクを選択し、有効化する

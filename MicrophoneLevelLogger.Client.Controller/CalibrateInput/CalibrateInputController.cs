@@ -27,7 +27,9 @@ public class CalibrateInputController : IController
     /// <summary>
     /// コマンド名称を取得する。
     /// </summary>
-    public string Name => "Calibrate input      : マイクの入力レベルを調整する。";
+    public string Name => "Calibrate input";
+
+    public string Description => "マイクの入力レベルを調整する。";
 
     public async Task ExecuteAsync()
     {
