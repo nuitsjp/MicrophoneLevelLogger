@@ -3,18 +3,42 @@ using NAudio.Wave;
 
 namespace MicrophoneLevelLogger;
 
+/// <summary>
+/// 高速フーリエ変換
+/// </summary>
 public class Fft
 {
+    /// <summary>
+    /// このツールで利用するWaveフォーマットにおける最大値
+    /// </summary>
     private const double MaxSignal = 3.886626914120802;
+
+    /// <summary>
+    /// 音量計算の補正値（本当は間違っているかもしれない。自信がない）
+    /// </summary>
     private const double Ratio = MaxSignal / short.MinValue * -1;
 
+    /// <summary>
+    /// WaveFormat
+    /// </summary>
     private readonly WaveFormat _waveFormat;
     private double[]? _lastBuffer;
 
+    /// <summary>
+    /// インスタンスを生成する。
+    /// </summary>
+    /// <param name="waveFormat"></param>
     public Fft(WaveFormat waveFormat)
     {
         _waveFormat = waveFormat;
     }
+
+    /// <summary>
+    /// 高速フーリエ変換を実行する
+    /// </summary>
+    /// <param name="buffer"></param>
+    /// <param name="bytesRecorded"></param>
+    /// <returns></returns>
 
     public DecibelByFrequency[] Transform(byte[] buffer, int bytesRecorded)
     {
@@ -43,8 +67,8 @@ public class Fft
         {
             decibelByFrequencies[i] = new DecibelByFrequency(
                 frequencies[i],
-                power[i] < IMicrophone.MinDecibel
-                    ? IMicrophone.MinDecibel
+                power[i] < Decibel.Min.AsPrimitive()
+                    ? Decibel.Min.AsPrimitive()
                     : power[i]
             );
         }

@@ -1,7 +1,13 @@
 ﻿namespace MicrophoneLevelLogger;
 
+/// <summary>
+/// 周波数重み付け特性「A特性」
+/// </summary>
 public class AWeighting
 {
+    /// <summary>
+    /// シングルトンインスタンス
+    /// </summary>
     public static AWeighting Instance { get; } =
         new(
             new Weight[]
@@ -43,20 +49,32 @@ public class AWeighting
             }
         );
 
+    /// <summary>
+    /// インスタンスを生成する
+    /// </summary>
+    /// <param name="weights"></param>
     private AWeighting(Weight[] weights)
     {
         Weights = weights;
     }
 
+    /// <summary>
+    /// 帯域別の重み付け
+    /// </summary>
     public Weight[] Weights { get; }
 
+    /// <summary>
+    /// A特性で補正する。
+    /// </summary>
+    /// <param name="decibelByFrequencies"></param>
+    /// <returns></returns>
     public DecibelByFrequency[] Filter(DecibelByFrequency[] decibelByFrequencies)
     {
         var result = new DecibelByFrequency[Weights.Length];
 
         var weightIndex = 0;
         var currentWeight = Weights[weightIndex];
-        var maxDecibel = IMicrophone.MinDecibel;
+        var maxDecibel = Decibel.Min.AsPrimitive();
         foreach (var currentByFrequency in decibelByFrequencies)
         {
             if (currentByFrequency.Frequency <= currentWeight.Frequency)
@@ -78,7 +96,7 @@ public class AWeighting
                     break;
                 }
                 currentWeight = Weights[weightIndex];
-                maxDecibel = IMicrophone.MinDecibel;
+                maxDecibel = Decibel.Min.AsPrimitive();
             }
         }
 

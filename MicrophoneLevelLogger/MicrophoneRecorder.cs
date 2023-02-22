@@ -4,81 +4,94 @@ using System.IO;
 
 namespace MicrophoneLevelLogger;
 
+/// <summary>
+/// マイクのレコーダー
+/// </summary>
 public class MicrophoneRecorder : IMicrophoneRecorder
 {
-    private const double MaxSignal = 3.886626914120802;
-    private const double Ratio = MaxSignal / short.MinValue * -1;
-
+    /// <summary>
+    /// サンプリング間隔
+    /// </summary>
+    public static readonly TimeSpan SamplingSpan = TimeSpan.FromMilliseconds(125);
+    /// <summary>
+    /// 録音ファイルの保管ディレクトリ。nullの場合、保管しない。
+    /// </summary>
     private readonly DirectoryInfo? _directoryInfo;
 
+    /// <summary>
+    /// インスタンスを生成する。
+    /// </summary>
+    /// <param name="microphone"></param>
+    /// <param name="directoryInfo">録音ファイルの保管ディレクトリ。nullの場合、保管しない。</param>
     public MicrophoneRecorder(IMicrophone microphone, DirectoryInfo? directoryInfo)
     {
         Microphone = microphone;
         _directoryInfo = directoryInfo;
 
     }
-    public IMicrophone Microphone { get; }
 
+    /// <summary>
+    /// マイク
+    /// </summary>
+    public IMicrophone Microphone { get; }
+    /// <summary>
+    /// サンプリング間隔中の最大音量。
+    /// </summary>
     public Decibel Max { get; private set; } = Decibel.Min;
+    /// <summary>
+    /// サンプリング間隔中の平均音量
+    /// </summary>
     public Decibel Avg { get; private set; } = Decibel.Min;
+    /// <summary>
+    /// サンプリング間隔中の最小音量
+    /// </summary>
     public Decibel Min { get; private set; } = Decibel.Min;
 
+    /// <summary>
+    /// 録音を開始する。
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public Task StartAsync(CancellationToken token)
     {
         var waveInEvent = new WaveInEvent
         {
             DeviceNumber = Microphone.DeviceNumber.AsPrimitive(),
             WaveFormat = new WaveFormat(rate: 48_000, bits: 16, channels: 1),
-            BufferMilliseconds = IMicrophone.SamplingMilliseconds
+            BufferMilliseconds = (int)SamplingSpan.TotalMilliseconds
         };
         Fft fft = new(waveInEvent.WaveFormat);
         var waveWriter = _directoryInfo is not null
             ? new WaveFileWriter(Path.Join(_directoryInfo.FullName, $"{Microphone.Name}.wav"), waveInEvent.WaveFormat)
             : Stream.Null;
 
-        var bytesPerSample = waveInEvent.WaveFormat.BitsPerSample / 8;
-        double[]? buffer = null;
-
+        // マイクからの入力を受け取る。
         waveInEvent.DataAvailable += (sender, e) =>
         {
-            var samplesRecorded = e.BytesRecorded / bytesPerSample;
-
-            if (buffer is null)
-            {
-                buffer = ArrayPool<double>.Shared.Rent(samplesRecorded);
-                // Rentされるサイズは2の階上になる。このとき0埋めされていない場合があるため、クリアしておく
-                Array.Clear(buffer);
-            }
-
-            var indent = (buffer.Length - samplesRecorded) / 2;
-            for (var i = 0; i < samplesRecorded; i++)
-            {
-                buffer[indent + i] = BitConverter.ToInt16(e.Buffer, i * bytesPerSample) * Ratio;
-            }
-
-
+            // オリジナルの入力音源を保存する。
             waveWriter.Write(e.Buffer, 0, e.BytesRecorded);
+            // 高速フーリエ変換→A特性の適用
             var decibels =
                 AWeighting.Instance.Filter(
                     fft.Transform(e.Buffer, e.BytesRecorded));
+            // サンプリング間隔中の各値を記録する。
             Min = new Decibel(decibels.Min(x => x.Decibel));
             Avg = new Decibel(decibels.Average(x => x.Decibel));
             Max = new Decibel(decibels.Max(x => x.Decibel));
         };
 
-        waveInEvent.StartRecording();
-
-        void Callback()
+        // キャンセル処理を登録する。
+        token.Register(() =>
         {
+            // レコーディングを停止し、リソースを開放する。
             waveInEvent.StopRecording();
             waveInEvent.Dispose();
-
-            // ReSharper disable once MethodSupportsCancellation
             waveWriter.Flush();
             waveWriter.Dispose();
-        }
+        });
 
-        token.Register(Callback);
+        // レコーディングを開始する。
+        waveInEvent.StartRecording();
 
         return Task.CompletedTask;
     }

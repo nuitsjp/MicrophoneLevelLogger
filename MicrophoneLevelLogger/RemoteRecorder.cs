@@ -1,21 +1,46 @@
 ﻿namespace MicrophoneLevelLogger;
 
+/// <summary>
+/// リモートレコーダー
+/// </summary>
 public class RemoteRecorder : IRecorder
 {
+    /// <summary>
+    /// HTTPクライアント
+    /// </summary>
     private static readonly HttpClient HttpClient = new();
 
+    /// <summary>
+    /// 記録名
+    /// </summary>
     private readonly string? _recordName;
 
+    /// <summary>
+    /// Settingリポジトリー
+    /// </summary>
     private readonly ISettingsRepository _repository;
 
+    /// <summary>
+    /// インスタンスを生成する。
+    /// </summary>
+    /// <param name="recordName"></param>
+    /// <param name="repository"></param>
     public RemoteRecorder(string? recordName, ISettingsRepository repository)
     {
         _recordName = recordName;
         _repository = repository;
     }
 
+    /// <summary>
+    /// 未実装。
+    /// </summary>
     public IReadOnlyList<IMicrophoneRecorder> MicrophoneRecorders => throw new NotImplementedException();
 
+    /// <summary>
+    /// キャンセルするまで録音する。
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public async Task StartAsync(CancellationToken token)
     {
         Settings settings = await _repository.LoadAsync();
@@ -32,11 +57,11 @@ public class RemoteRecorder : IRecorder
         });
     }
 
+    /// <summary>
+    /// 未実装。
+    /// </summary>
+    /// <param name="microphone"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
     public IMicrophoneRecorder GetLogger(IMicrophone microphone) => throw new NotImplementedException();
-
-
-    public void Dispose()
-    {
-        GC.SuppressFinalize(this);
-    }
 }

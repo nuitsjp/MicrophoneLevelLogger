@@ -22,7 +22,7 @@ public class MonitorVolumeController : IController
     public async Task ExecuteAsync()
     {
         var audioInterface = _audioInterfaceProvider.Resolve();
-        using var logger = _recorderProvider.ResolveLocal(audioInterface, null);
+         var logger = _recorderProvider.ResolveLocal(audioInterface, null);
 
         CancellationTokenSource source = new();
         await logger.StartAsync(source.Token);

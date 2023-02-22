@@ -1,14 +1,32 @@
 ﻿namespace MicrophoneLevelLogger;
 
+/// <summary>
+/// リモートメディアプレイヤー
+/// </summary>
 public class RemoteMediaPlayer : IMediaPlayer
 {
+    /// <summary>
+    /// HTTPクライアント
+    /// </summary>
     private static readonly HttpClient HttpClient = new();
+    /// <summary>
+    /// リモートホスト
+    /// </summary>
     private readonly string _remoteHost;
+    /// <summary>
+    /// インスタンスを生成する。
+    /// </summary>
+    /// <param name="remoteHost"></param>
     public RemoteMediaPlayer(string remoteHost)
     {
         _remoteHost = remoteHost;
     }
 
+    /// <summary>
+    /// キャンセルするまでループ再生する。
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public async Task PlayLoopingAsync(CancellationToken token)
     {
         await HttpClient.GetAsync($"http://{_remoteHost}:5000/Player/Play", token);
@@ -21,9 +39,5 @@ public class RemoteMediaPlayer : IMediaPlayer
                 // ReSharper disable once MethodSupportsCancellation
                 .Wait();
         });
-    }
-
-    public void Dispose()
-    {
     }
 }

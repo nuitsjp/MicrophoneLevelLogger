@@ -1,24 +1,34 @@
 ﻿using NAudio.Wave;
-using UnitGenerator;
 
 namespace MicrophoneLevelLogger;
 
+/// <summary>
+/// マイク
+/// </summary>
 public interface IMicrophone
 {
-    public const double MinDecibel = -84;
-
-    public const int SamplingMilliseconds = 125;
-
+    /// <summary>
+    /// ID
+    /// </summary>
     MicrophoneId Id { get; }
+    /// <summary>
+    /// デバイス番号
+    /// </summary>
     DeviceNumber DeviceNumber { get; }
+    /// <summary>
+    /// 名称
+    /// </summary>
     string Name { get; }
+    /// <summary>
+    /// Windows上の名称
+    /// </summary>
     string SystemName { get; }
+    /// <summary>
+    /// ステータス
+    /// </summary>
     MicrophoneStatus Status { get; }
+    /// <summary>
+    /// 入力レベル
+    /// </summary>
     VolumeLevel VolumeLevel { get; set; }
-}
-
-[UnitOf(typeof(int))]
-public partial struct DeviceNumber
-{
-    
 }

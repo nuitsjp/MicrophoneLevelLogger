@@ -36,7 +36,7 @@ public class CalibrateOutputController : IController
 
         // 音声を再生する
         var recordingSettings = await _settingsRepository.LoadAsync();
-        using IMediaPlayer mediaPlayer = recordingSettings.IsEnableRemotePlaying
+        IMediaPlayer mediaPlayer = recordingSettings.IsEnableRemotePlaying
             ? new RemoteMediaPlayer(recordingSettings.MediaPlayerHost)
             : new MediaPlayer(await audioInterface.GetSpeakerAsync());
         // 計測を開始する

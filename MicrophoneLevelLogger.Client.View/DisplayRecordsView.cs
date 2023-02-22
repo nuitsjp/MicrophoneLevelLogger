@@ -53,7 +53,7 @@ public class DisplayRecordsView : IDisplayRecordsView
                     summary.Microphones
                         .Select((x, index) => 
                             new RecordResult(
-                                index, 
+                                index + 1, 
                                 x.Name,
                                 x.Min,
                                 x.Avg,

@@ -1,10 +1,30 @@
 ﻿namespace MicrophoneLevelLogger;
 
+/// <summary>
+/// MicrophoneLevelLoggerの各種設定
+/// </summary>
 public class Settings
 {
+    /// <summary>
+    /// マイクの別名
+    /// </summary>
     private readonly List<Alias> _aliases;
+    /// <summary>
+    /// 無効化されているマイク
+    /// </summary>
     private readonly List<MicrophoneId> _disabledMicrophones;
 
+    /// <summary>
+    /// インスタンスを生成する。
+    /// </summary>
+    /// <param name="mediaPlayerHost"></param>
+    /// <param name="recorderHost"></param>
+    /// <param name="recordingSpan"></param>
+    /// <param name="isEnableRemotePlaying"></param>
+    /// <param name="isEnableRemoteRecording"></param>
+    /// <param name="aliases"></param>
+    /// <param name="disabledMicrophones"></param>
+    /// <param name="selectedSpeakerId"></param>
     public Settings(
         string mediaPlayerHost,
         string recorderHost,
