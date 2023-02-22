@@ -50,7 +50,8 @@ public class CalibrateOutputController : IController
         Decibel specifyVolume,
         TimeSpan span)
     {
-        while (audioInterface.DefaultOutputLevel < VolumeLevel.Maximum)
+        var speaker = await audioInterface.GetSpeakerAsync();
+        while (speaker.VolumeLevel < VolumeLevel.Maximum)
         {
             var recorder = _recorderProvider.ResolveLocal(microphone);
 
@@ -62,7 +63,7 @@ public class CalibrateOutputController : IController
             try
             {
                 // ボリュームを表示する
-                _view.DisplayDefaultOutputLevel(audioInterface.DefaultOutputLevel);
+                _view.DisplayDefaultOutputLevel(speaker.VolumeLevel);
 
                 // 計測を開始する
                 await recorder.StartAsync(source.Token);
@@ -88,14 +89,14 @@ public class CalibrateOutputController : IController
             // 最低でも1は上げる
             diff = diff == 0 ? 1 : diff;
 
-            if (1 < audioInterface.DefaultOutputLevel.AsPrimitive() * 100 + diff)
+            if (1 < speaker.VolumeLevel.AsPrimitive() * 100 + diff)
             {
                 // 最大値を超えてしまう場合、最大値に設定する
-                audioInterface.DefaultOutputLevel = VolumeLevel.Maximum;
+                speaker.VolumeLevel = VolumeLevel.Maximum;
             }
             else
             {
-                audioInterface.DefaultOutputLevel += new VolumeLevel(diff / 100f);
+                speaker.VolumeLevel += new VolumeLevel(diff / 100f);
             }
         }
     }

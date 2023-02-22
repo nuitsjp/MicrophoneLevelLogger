@@ -74,22 +74,6 @@ public class AudioInterface : IAudioInterface
         GC.SuppressFinalize(this);
     }
 
-    public VolumeLevel DefaultOutputLevel
-    {
-        get
-        {
-            using var deviceEnumerator = new MMDeviceEnumerator();
-            using var device = deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-            return new VolumeLevel(device.AudioEndpointVolume.MasterVolumeLevelScalar);
-        }
-        set
-        {
-            using var deviceEnumerator = new MMDeviceEnumerator();
-            using var device = deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-            device.AudioEndpointVolume.MasterVolumeLevelScalar = value.AsPrimitive();
-        }
-    }
-
     public IEnumerable<IMicrophone> GetMicrophones(MicrophoneStatus status = MicrophoneStatus.Enable) =>
         _microphones.Where(x => status.HasFlag(x.Status));
 
