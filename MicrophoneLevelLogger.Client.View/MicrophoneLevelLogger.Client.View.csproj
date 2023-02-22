@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MicrophoneLevelLogger.Client.Controller\MicrophoneLevelLogger.Client.Controller.csproj" />
+    <ProjectReference Include="..\MicrophoneLevelLogger.System\MicrophoneLevelLogger.System.csproj" />
   </ItemGroup>
 
 </Project>

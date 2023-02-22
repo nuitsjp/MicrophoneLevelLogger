@@ -46,7 +46,6 @@ var host = Host.CreateDefaultBuilder(args)
         // Controller & View
         /////////////////////////////////////////////////////////////////////////
         services.AddTransient<ICommandInvoker, CommandInvoker>();
-        services.AddTransient<ICommandInvokerView, CommandInvokerView>();
         services.AddTransient<ICompositeControllerView, CompositeControllerView>();
 
         services.AddTransient<IMicrophoneView, MicrophoneView>();

@@ -62,7 +62,7 @@ public class ConsoleEx
         Console.Write(value);
     }
 
-    private enum StdHandle { Stdin = -10, Stdout = -11, Stderr = -12 };
+    private enum StdHandle { Stdin = -10 };
     [DllImport("kernel32.dll")]
     private static extern IntPtr GetStdHandle(StdHandle stdHandle);
     [DllImport("kernel32.dll")]

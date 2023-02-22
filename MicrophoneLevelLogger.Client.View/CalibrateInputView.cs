@@ -63,23 +63,6 @@ public class CalibrateInputView : MicrophoneView, ICalibrateInputView
         }
     }
 
-    public void NotifyCalibrated(IAudioInterface audioInterface)
-    {
-        lock (this)
-        {
-            ConsoleEx.WriteLine();
-            ConsoleEx.WriteLine();
-            ConsoleEx.WriteLine("マイクのキャリブレーションを完了しました。");
-
-            var microphones = audioInterface.GetMicrophones().ToList();
-            for (var i = 0; i < microphones.Count; i++)
-            {
-                var microphone = microphones[i];
-                ConsoleEx.WriteLine($"{i + 1} = {microphone.Name} 入力レベル：{microphone.VolumeLevel}");
-            }
-        }
-    }
-
     public class MicrophoneMasterVolumeLevelScalar
     {
         public MicrophoneMasterVolumeLevelScalar(

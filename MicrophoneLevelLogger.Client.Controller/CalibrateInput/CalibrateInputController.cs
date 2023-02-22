@@ -5,8 +5,6 @@
 /// </summary>
 public class CalibrateInputController : IController
 {
-    private const string DirectoryName = "Calibrate";
-
     private readonly ICalibrateInputView _view;
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly IRecorderProvider _recorderProvider;

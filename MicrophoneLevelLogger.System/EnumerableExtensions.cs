@@ -20,13 +20,6 @@ public static class EnumerableExtension
             .ForEach(x => enumerable.Remove(x));
     }
 
-    public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
-    {
-        foreach (var item in enumerable)
-        {
-            action(item);
-        }
-    }
     public static async Task ForEachAsync<T>(this IEnumerable<T> enumerable, Func<T, Task> action)
     {
         await Parallel.ForEachAsync(

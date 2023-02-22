@@ -29,7 +29,6 @@ public class Microphone : IMicrophone
             BufferMilliseconds = IMicrophone.SamplingMilliseconds
         };
         _waveInEvent.DataAvailable += WaveInEventOnDataAvailable;
-        _waveInEvent.RecordingStopped += WaveInEventOnRecordingStopped;
     }
 
     private void WaveInEventOnDataAvailable(object? sender, WaveInEventArgs e)
@@ -61,10 +60,6 @@ public class Microphone : IMicrophone
             Console.WriteLine(exception);
             throw;
         }
-    }
-
-    private void WaveInEventOnRecordingStopped(object? sender, StoppedEventArgs e)
-    {
     }
 
     public void Dispose()

@@ -112,15 +112,4 @@ public class MicrophoneView : IMicrophoneView
         var barsOff = barCount - barsOn;
         return new string('#', barsOn) + new string('-', barsOff);
     }
-
-    private static string GetBars(double decibel, int barCount = 35)
-    {
-        var value = 
-            0 < decibel
-                ? MaxBarValue
-                : decibel + MaxBarValue;
-        var barsOn = (int)(value / MaxBarValue * barCount);
-        var barsOff = barCount - barsOn;
-        return new string('#', barsOn) + new string('-', barsOff);
-    }
 }

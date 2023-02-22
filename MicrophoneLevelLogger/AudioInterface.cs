@@ -3,23 +3,45 @@ using NAudio.Wave;
 
 namespace MicrophoneLevelLogger;
 
+/// <summary>
+/// マイク・スピーカーなどを統合したオーディオ関連のインターフェース
+/// </summary>
 public class AudioInterface : IAudioInterface
 {
     private readonly ISettingsRepository _settingsRepository;
+
+    /// <summary>
+    /// 対象マイク
+    /// </summary>
     private readonly IReadOnlyList<IMicrophone> _microphones;
+
+    /// <summary>
+    /// すべてのマイクを扱うオーディオ インターフェースを作成する。
+    /// </summary>
+    /// <param name="settingsRepository"></param>
     public AudioInterface(ISettingsRepository settingsRepository)
     {
         _settingsRepository = settingsRepository;
-        _microphones = LoadAllMicrophones(_settingsRepository.Load()).ToList();
+        _microphones = LoadMicrophones(_settingsRepository.Load()).ToList();
     }
 
+    /// <summary>
+    /// 任意のマイクを扱うオーディオ インターフェースを作成する。
+    /// </summary>
+    /// <param name="settingsRepository"></param>
+    /// <param name="microphones"></param>
     public AudioInterface(ISettingsRepository settingsRepository, params IMicrophone[] microphones)
     {
         _settingsRepository = settingsRepository;
         _microphones = microphones;
     }
 
-    private IEnumerable<Microphone> LoadAllMicrophones(Settings settings)
+    /// <summary>
+    /// すべてのマイクをロードする。
+    /// </summary>
+    /// <param name="settings"></param>
+    /// <returns></returns>
+    private IEnumerable<Microphone> LoadMicrophones(Settings settings)
     {
         using var enumerator = new MMDeviceEnumerator();
         var mmDevices = enumerator
@@ -74,13 +96,23 @@ public class AudioInterface : IAudioInterface
         GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// 状態が合致するマイクを取得する。
+    /// </summary>
+    /// <param name="status"></param>
+    /// <returns></returns>
     public IEnumerable<IMicrophone> GetMicrophones(MicrophoneStatus status = MicrophoneStatus.Enable) =>
         _microphones.Where(x => status.HasFlag(x.Status));
 
+    /// <summary>
+    /// 現在有効なスピーカーを取得する。
+    /// </summary>
+    /// <returns></returns>
     public async Task<ISpeaker> GetSpeakerAsync()
     {
         var settings = await _settingsRepository.LoadAsync();
         using var emurator = new MMDeviceEnumerator();
+        // 明示的に指定されていればそれを、指定されていない場合、OSの出力先へ出力する。
         if (settings.SelectedSpeakerId is null)
         {
             using var mmDevice = emurator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
@@ -93,6 +125,10 @@ public class AudioInterface : IAudioInterface
         }
     }
 
+    /// <summary>
+    /// すべてのスピーカーを取得する。
+    /// </summary>
+    /// <returns></returns>
     public IEnumerable<ISpeaker> GetSpeakers()
     {
         using var emurator = new MMDeviceEnumerator();
@@ -102,12 +138,5 @@ public class AudioInterface : IAudioInterface
             {
                 yield return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
             }
-    }
-
-    public void ActivateMicrophones()
-    {
-        var tasks = GetMicrophones()
-            .Select(x => x.ActivateAsync());
-        Task.WaitAll(tasks.ToArray());
     }
 }

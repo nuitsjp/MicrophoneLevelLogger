@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrophoneLevelLogger.Repos
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrophoneLevelLogger.Server", "MicrophoneLevelLogger.Server\MicrophoneLevelLogger.Server.csproj", "{EFB0B8E7-43D7-482A-AD22-4BC043775962}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrophoneLevelLogger.System", "MicrophoneLevelLogger.System\MicrophoneLevelLogger.System.csproj", "{6A309903-D09E-4248-876F-15976F886616}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{EFB0B8E7-43D7-482A-AD22-4BC043775962}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFB0B8E7-43D7-482A-AD22-4BC043775962}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFB0B8E7-43D7-482A-AD22-4BC043775962}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A309903-D09E-4248-876F-15976F886616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A309903-D09E-4248-876F-15976F886616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A309903-D09E-4248-876F-15976F886616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A309903-D09E-4248-876F-15976F886616}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
