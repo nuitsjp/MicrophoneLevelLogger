@@ -13,6 +13,7 @@ using MicrophoneLevelLogger.Client.Controller.MonitorVolume;
 using MicrophoneLevelLogger.Client.Controller.Record;
 using MicrophoneLevelLogger.Client.Controller.RecordingSettings;
 using MicrophoneLevelLogger.Client.Controller.RemoveAlias;
+using MicrophoneLevelLogger.Client.Controller.SelectSpeaker;
 using MicrophoneLevelLogger.Client.Controller.SetAlias;
 using MicrophoneLevelLogger.Client.Controller.SetInputLevel;
 using MicrophoneLevelLogger.Client.Controller.SetMaxInputLevel;
@@ -91,6 +92,9 @@ var host = Host.CreateDefaultBuilder((string[])args)
 
         services.AddTransient<EnableMicrophoneController>();
         services.AddTransient<IEnableMicrophoneView, EnableMicrophoneView>();
+
+        services.AddTransient<SelectSpeakerController>();
+        services.AddTransient<ISelectSpeakerView, SelectSpeakerView>();
 
         services.AddTransient<SetMaxInputLevelController>();
     })
