@@ -49,7 +49,9 @@ public class RecordController : IController
         try
         {
             // 背景音源を再生する
-            var mediaPlayer = audioInterface.GetMediaPlayer(settings.IsEnableRemotePlaying);
+            using IMediaPlayer mediaPlayer = settings.IsEnableRemotePlaying
+                ? new RemoteMediaPlayer(settings.MediaPlayerHost)
+                : new MediaPlayer(await audioInterface.GetSpeakerAsync());
             await mediaPlayer.PlayLoopingAsync(source.Token);
 
 

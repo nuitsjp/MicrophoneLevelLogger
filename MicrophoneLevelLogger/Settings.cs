@@ -14,13 +14,15 @@ public class Settings
         bool isEnableRemotePlaying,
         bool isEnableRemoteRecording, 
         IReadOnlyList<Alias> aliases, 
-        IReadOnlyList<MicrophoneId> disabledMicrophones)
+        IReadOnlyList<MicrophoneId> disabledMicrophones, 
+        SpeakerId? selectedSpeakerId)
     {
         MediaPlayerHost = mediaPlayerHost;
         RecorderHost = recorderHost;
         RecordingSpan = recordingSpan;
         IsEnableRemotePlaying = isEnableRemotePlaying;
         IsEnableRemoteRecording = isEnableRemoteRecording;
+        SelectedSpeakerId = selectedSpeakerId;
         _aliases = aliases.ToList();
         _disabledMicrophones = disabledMicrophones.ToList();
     }
@@ -53,6 +55,7 @@ public class Settings
     /// 無効化されたマイク
     /// </summary>
     public IReadOnlyList<MicrophoneId> DisabledMicrophones => _disabledMicrophones;
+    public SpeakerId? SelectedSpeakerId { get; }
 
     /// <summary>
     /// 別名を更新する

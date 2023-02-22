@@ -1,4 +1,5 @@
-﻿using NAudio.CoreAudioApi;
+﻿using System.Data;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
 namespace MicrophoneLevelLogger;
@@ -93,15 +94,31 @@ public class AudioInterface : IAudioInterface
     public IEnumerable<IMicrophone> GetMicrophones(MicrophoneStatus status = MicrophoneStatus.Enable) =>
         _microphones.Where(x => status.HasFlag(x.Status));
 
-    public IMediaPlayer GetMediaPlayer(bool isRemotePlay)
+    public async Task<ISpeaker> GetSpeakerAsync()
     {
-        if (isRemotePlay)
-        {
-            return new RemoteMediaPlayer(_settingsRepository);
-        }
+        var settings = await _settingsRepository.LoadAsync();
         using var emurator = new MMDeviceEnumerator();
-        var mmDevices = emurator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-        return new MediaPlayer(mmDevices);
+        if (settings.SelectedSpeakerId is null)
+        {
+            using var mmDevice = emurator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+            return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
+        }
+        else
+        {
+            using var mmDevice = emurator.GetDevice(settings.SelectedSpeakerId?.AsPrimitive());
+            return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
+        }
+    }
+
+    public IEnumerable<ISpeaker> GetSpeakers()
+    {
+        using var emurator = new MMDeviceEnumerator();
+        var mmDevices = emurator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
+        foreach (var mmDevice in mmDevices)
+            using (mmDevice)
+            {
+                yield return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
+            }
     }
 
     public void ActivateMicrophones()

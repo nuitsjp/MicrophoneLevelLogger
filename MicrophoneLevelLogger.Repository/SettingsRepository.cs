@@ -22,7 +22,8 @@ public class SettingsRepository : ISettingsRepository
                 false,
                 false,
                 new List<Alias>(),
-                new List<MicrophoneId>());
+                new List<MicrophoneId>(),
+                null);
         }
     }
 
@@ -42,7 +43,8 @@ public class SettingsRepository : ISettingsRepository
                 false,
                 false,
                 new List<Alias>(),
-                new List<MicrophoneId>());
+                new List<MicrophoneId>(),
+                null);
         }
     }
 

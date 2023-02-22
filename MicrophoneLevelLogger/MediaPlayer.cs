@@ -1,6 +1,5 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
-using System.Media;
 
 namespace MicrophoneLevelLogger;
 
@@ -10,10 +9,11 @@ public class MediaPlayer : IMediaPlayer
     private readonly IWavePlayer _wavePlayer;
     private readonly WaveStream _waveStream = new LoopStream(new WaveFileReader(Properties.Resources.吾輩は猫である));
 
-    public MediaPlayer(MMDevice mmDevice)
+    public MediaPlayer(ISpeaker speaker)
     {
-        _mmDevice = mmDevice;
-        _wavePlayer = new WasapiOut(mmDevice, AudioClientShareMode.Shared, false, 0);
+        using var emurator = new MMDeviceEnumerator();
+        _mmDevice = emurator.GetDevice(speaker.Id.AsPrimitive());
+        _wavePlayer = new WasapiOut(_mmDevice, AudioClientShareMode.Shared, false, 0);
     }
 
     public Task PlayLoopingAsync(CancellationToken token)
@@ -80,5 +80,4 @@ public class MediaPlayer : IMediaPlayer
             return totalBytesRead;
         }
     }
-
 }

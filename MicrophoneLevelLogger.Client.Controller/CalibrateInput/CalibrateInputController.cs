@@ -44,7 +44,7 @@ public class CalibrateInputController : IController
         var target = _view.SelectTarget(audioInterface, reference);
 
         // マイクレベルを順番にキャリブレーションする
-        using var mediaPlayer = audioInterface.GetMediaPlayer(false);
+        using var mediaPlayer = new MediaPlayer(await audioInterface.GetSpeakerAsync());
         await Calibrate(reference, target, mediaPlayer);
 
         // キャリブレート結果を保存する
