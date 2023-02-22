@@ -1,6 +1,4 @@
-﻿using NAudio.Wave;
-
-namespace MicrophoneLevelLogger;
+﻿namespace MicrophoneLevelLogger;
 
 /// <summary>
 /// マイク

@@ -1,7 +1,4 @@
-﻿using CsvHelper;
-using System.Globalization;
-
-namespace MicrophoneLevelLogger;
+﻿namespace MicrophoneLevelLogger;
 
 /// <summary>
 /// 記録対象のマイクに対するレコーダー

@@ -1,6 +1,4 @@
 ﻿using NAudio.Wave;
-using System.Buffers;
-using System.IO;
 
 namespace MicrophoneLevelLogger;
 
@@ -66,7 +64,7 @@ public class MicrophoneRecorder : IMicrophoneRecorder
             : Stream.Null;
 
         // マイクからの入力を受け取る。
-        waveInEvent.DataAvailable += (sender, e) =>
+        waveInEvent.DataAvailable += (_, e) =>
         {
             // オリジナルの入力音源を保存する。
             waveWriter.Write(e.Buffer, 0, e.BytesRecorded);
