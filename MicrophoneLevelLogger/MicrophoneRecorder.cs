@@ -1,20 +1,21 @@
 ﻿using NAudio.Wave;
+using System.Buffers;
+using System.IO;
 
 namespace MicrophoneLevelLogger;
 
 public class MicrophoneRecorder : IMicrophoneRecorder
 {
-    private readonly Stream _waveWriter;
-    private readonly Fft _fft;
+    private const double MaxSignal = 3.886626914120802;
+    private const double Ratio = MaxSignal / short.MinValue * -1;
+
+    private readonly DirectoryInfo? _directoryInfo;
 
     public MicrophoneRecorder(IMicrophone microphone, DirectoryInfo? directoryInfo)
     {
         Microphone = microphone;
+        _directoryInfo = directoryInfo;
 
-        _waveWriter = directoryInfo is not null
-            ? new WaveFileWriter(Path.Join(directoryInfo.FullName, $"{Microphone.Name}.wav"), Microphone.WaveFormat)
-            : Stream.Null;
-        _fft = new Fft(Microphone.WaveFormat);
     }
     public IMicrophone Microphone { get; }
 
@@ -22,36 +23,63 @@ public class MicrophoneRecorder : IMicrophoneRecorder
     public Decibel Avg { get; private set; } = Decibel.Min;
     public Decibel Min { get; private set; } = Decibel.Min;
 
-    public async Task StartAsync(CancellationToken token)
+    public Task StartAsync(CancellationToken token)
     {
-        await Microphone.ActivateAsync();
-        var observerDisposable = Microphone.Subscribe(OnNextWaveInput);
-
-        async void Callback()
+        var waveInEvent = new WaveInEvent
         {
-            observerDisposable.Dispose();
+            DeviceNumber = Microphone.DeviceNumber.AsPrimitive(),
+            WaveFormat = new WaveFormat(rate: 48_000, bits: 16, channels: 1),
+            BufferMilliseconds = IMicrophone.SamplingMilliseconds
+        };
+        Fft fft = new(waveInEvent.WaveFormat);
+        var waveWriter = _directoryInfo is not null
+            ? new WaveFileWriter(Path.Join(_directoryInfo.FullName, $"{Microphone.Name}.wav"), waveInEvent.WaveFormat)
+            : Stream.Null;
+
+        var bytesPerSample = waveInEvent.WaveFormat.BitsPerSample / 8;
+        double[]? buffer = null;
+
+        waveInEvent.DataAvailable += (sender, e) =>
+        {
+            var samplesRecorded = e.BytesRecorded / bytesPerSample;
+
+            if (buffer is null)
+            {
+                buffer = ArrayPool<double>.Shared.Rent(samplesRecorded);
+                // Rentされるサイズは2の階上になる。このとき0埋めされていない場合があるため、クリアしておく
+                Array.Clear(buffer);
+            }
+
+            var indent = (buffer.Length - samplesRecorded) / 2;
+            for (var i = 0; i < samplesRecorded; i++)
+            {
+                buffer[indent + i] = BitConverter.ToInt16(e.Buffer, i * bytesPerSample) * Ratio;
+            }
+
+
+            waveWriter.Write(e.Buffer, 0, e.BytesRecorded);
+            var decibels =
+                AWeighting.Instance.Filter(
+                    fft.Transform(e.Buffer, e.BytesRecorded));
+            Min = new Decibel(decibels.Min(x => x.Decibel));
+            Avg = new Decibel(decibels.Average(x => x.Decibel));
+            Max = new Decibel(decibels.Max(x => x.Decibel));
+        };
+
+        waveInEvent.StartRecording();
+
+        void Callback()
+        {
+            waveInEvent.StopRecording();
+            waveInEvent.Dispose();
 
             // ReSharper disable once MethodSupportsCancellation
-            await _waveWriter.FlushAsync();
-            await _waveWriter.DisposeAsync();
-            Microphone.Deactivate();
+            waveWriter.Flush();
+            waveWriter.Dispose();
         }
 
         token.Register(Callback);
-    }
 
-    public void Dispose()
-    {
-        Microphone.Dispose();
-    }
-    private void OnNextWaveInput(WaveInput waveInput)
-    {
-        _waveWriter.Write(waveInput.Buffer, 0, waveInput.BytesRecorded);
-        var decibels =
-            AWeighting.Instance.Filter(
-                _fft.Transform(waveInput.Buffer, waveInput.BytesRecorded));
-        Min = new Decibel(decibels.Min(x => x.Decibel));
-        Avg = new Decibel(decibels.Average(x => x.Decibel));
-        Max = new Decibel(decibels.Max(x => x.Decibel));
+        return Task.CompletedTask;
     }
 }

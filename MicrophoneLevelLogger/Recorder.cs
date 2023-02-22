@@ -122,10 +122,6 @@ public class Recorder : IRecorder
 
     public void Dispose()
     {
-        foreach (var logger in MicrophoneRecorders)
-        {
-            logger.DisposeQuiet();
-        }
         _maxDecibelLogger.Dispose();
     }
 }

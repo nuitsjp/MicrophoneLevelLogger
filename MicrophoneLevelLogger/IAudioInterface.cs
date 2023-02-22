@@ -3,7 +3,7 @@
 /// <summary>
 /// マイク・スピーカーなどを統合したオーディオ関連のインターフェース
 /// </summary>
-public interface IAudioInterface : IDisposable
+public interface IAudioInterface
 {
     /// <summary>
     /// マイク一覧を取得する。

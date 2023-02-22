@@ -80,22 +80,6 @@ public class AudioInterface : IAudioInterface
 
     }
 
-    public void Dispose()
-    {
-        foreach (var microphone in GetMicrophones())
-        {
-            try
-            {
-                microphone.Dispose();
-            }
-            catch
-            {
-                // ignore
-            }
-        }
-        GC.SuppressFinalize(this);
-    }
-
     /// <summary>
     /// 状態が合致するマイクを取得する。
     /// </summary>

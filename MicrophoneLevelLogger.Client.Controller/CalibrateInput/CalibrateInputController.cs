@@ -32,7 +32,7 @@ public class CalibrateInputController : IController
     public async Task ExecuteAsync()
     {
         // すべてのマイクを取得する。
-        using var audioInterface = _audioInterfaceProvider.Resolve();
+        var audioInterface = _audioInterfaceProvider.Resolve();
 
         // 起動時情報を通知する。
         await _view.NotifyAudioInterfaceAsync(audioInterface);
