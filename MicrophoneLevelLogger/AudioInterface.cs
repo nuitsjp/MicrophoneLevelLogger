@@ -120,8 +120,27 @@ public class AudioInterface : IAudioInterface
         }
         else
         {
-            using var mmDevice = emurator.GetDevice(settings.SelectedSpeakerId?.AsPrimitive());
-            return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
+            try
+            {
+                using var mmDevice = emurator.GetDevice(settings.SelectedSpeakerId?.AsPrimitive());
+                return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
+            }
+            catch
+            {
+                // スピーカーを外したりすると、デバイスが見つからなくなるのでその場合は削除してデフォルトを返す。
+                await _settingsRepository.SaveAsync(
+                    new(
+                        settings.MediaPlayerHost,
+                        settings.RecorderHost,
+                        settings.RecordingSpan,
+                        settings.IsEnableRemotePlaying,
+                        settings.IsEnableRemoteRecording,
+                        settings.Aliases,
+                        settings.DisabledMicrophones,
+                        null));
+                using var mmDevice = emurator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+                return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
+            }
         }
     }
 
