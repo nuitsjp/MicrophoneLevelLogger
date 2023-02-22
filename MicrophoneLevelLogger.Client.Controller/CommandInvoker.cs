@@ -4,6 +4,7 @@ using MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
 using MicrophoneLevelLogger.Client.Controller.DeleteCalibrates;
 using MicrophoneLevelLogger.Client.Controller.DeleteRecord;
 using MicrophoneLevelLogger.Client.Controller.DisableMicrophone;
+using MicrophoneLevelLogger.Client.Controller.DisplayAudioInterface;
 using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
 using MicrophoneLevelLogger.Client.Controller.DisplayRecords;
 using MicrophoneLevelLogger.Client.Controller.EnableMicrophone;
@@ -45,6 +46,7 @@ public class CommandInvoker : ICommandInvoker
         DisableMicrophoneController disableMicrophoneController,
         EnableMicrophoneController enableMicrophoneController,
         SelectSpeakerController selectSpeakerController,
+        DisplayAudioInterfaceController displayAudioInterfaceController,
         ICompositeControllerView compositeControllerView)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
@@ -54,7 +56,7 @@ public class CommandInvoker : ICommandInvoker
             .AddController(recordController)
             .AddController(displayRecordsController)
             .AddController(new BorderController())
-            .AddController(new RedisplayMicrophoneController())
+            .AddController(displayAudioInterfaceController)
             .AddController(
                 new CompositeController(
                         "Settings",
@@ -93,19 +95,8 @@ public class CommandInvoker : ICommandInvoker
     public async Task InvokeAsync()
     {
         var microphones = _audioInterfaceProvider.Resolve();
-        _view.NotifyMicrophonesInformation(microphones);
+        await _view.NotifyAudioInterfaceAsync(microphones);
 
         await _compositeController.ExecuteAsync();
-    }
-
-    private class RedisplayMicrophoneController : IController
-    {
-        public string Name => "Display microphone";
-        public string Description => "マイクの情報を再表示します。";
-
-        public Task ExecuteAsync()
-        {
-            return Task.CompletedTask;
-        }
     }
 }

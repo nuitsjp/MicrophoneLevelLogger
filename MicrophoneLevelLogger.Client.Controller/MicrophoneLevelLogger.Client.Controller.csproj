@@ -16,6 +16,7 @@
     <Folder Include="RemoveAlias\" />
     <Folder Include="EnableMicrophone\" />
     <Folder Include="SelectSpeaker\" />
+    <Folder Include="DisplayAudioInterface\" />
   </ItemGroup>
 
 </Project>

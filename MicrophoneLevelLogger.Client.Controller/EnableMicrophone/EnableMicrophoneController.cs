@@ -28,7 +28,7 @@ public class EnableMicrophoneController : IController
             settings.EnableMicrophone(microphone.Id);
             await _repository.SaveAsync(settings);
 
-            _view.NotifyMicrophonesInformation(_provider.Resolve());
+            await _view.NotifyAudioInterfaceAsync(_provider.Resolve());
         }
     }
 }

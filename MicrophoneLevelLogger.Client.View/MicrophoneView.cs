@@ -11,7 +11,7 @@ public class MicrophoneView : IMicrophoneView
     /// </summary>
     private static readonly TimeSpan SamplingRate = TimeSpan.FromMilliseconds(50);
 
-    public void NotifyMicrophonesInformation(IAudioInterface audioInterface)
+    public async Task NotifyAudioInterfaceAsync(IAudioInterface audioInterface)
     {
         var infos = audioInterface
             .GetMicrophones()
@@ -23,6 +23,8 @@ public class MicrophoneView : IMicrophoneView
                 builder.Borders.InsideHorizontal.AsDisable();
             })
             .WriteLine(infos);
+
+        Console.WriteLine($"スピーカー : {(await audioInterface.GetSpeakerAsync()).Name}");
 
         ConsoleEx.WriteLine();
     }

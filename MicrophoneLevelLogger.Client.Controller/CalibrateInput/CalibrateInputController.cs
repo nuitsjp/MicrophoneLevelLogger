@@ -37,7 +37,7 @@ public class CalibrateInputController : IController
         using var audioInterface = _audioInterfaceProvider.Resolve();
 
         // 起動時情報を通知する。
-        _view.NotifyMicrophonesInformation(audioInterface);
+        await _view.NotifyAudioInterfaceAsync(audioInterface);
 
         // リファレンスマイクを選択する
         var reference = _view.SelectReference(audioInterface);

@@ -6,6 +6,7 @@ using MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
 using MicrophoneLevelLogger.Client.Controller.DeleteCalibrates;
 using MicrophoneLevelLogger.Client.Controller.DeleteRecord;
 using MicrophoneLevelLogger.Client.Controller.DisableMicrophone;
+using MicrophoneLevelLogger.Client.Controller.DisplayAudioInterface;
 using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
 using MicrophoneLevelLogger.Client.Controller.DisplayRecords;
 using MicrophoneLevelLogger.Client.Controller.EnableMicrophone;
@@ -97,6 +98,8 @@ var host = Host.CreateDefaultBuilder((string[])args)
         services.AddTransient<ISelectSpeakerView, SelectSpeakerView>();
 
         services.AddTransient<SetMaxInputLevelController>();
+
+        services.AddTransient<DisplayAudioInterfaceController>();
     })
     .ConfigureLogging((_, builder) =>
     {
