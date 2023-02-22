@@ -10,7 +10,7 @@ public class AudioInterfaceCalibrationValuesRepository : IAudioInterfaceCalibrat
     {
         if (!File.Exists(FileName))
         {
-            await SaveAsync(new AudioInterfaceCalibrationValues());
+            await SaveAsync(new AudioInterfaceCalibrationValues(Array.Empty<MicrophoneCalibrationValue>()));
         }
         await using var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read);
         return (await JsonSerializer.DeserializeAsync<AudioInterfaceCalibrationValues>(stream, JsonEnvironments.Options))!;
