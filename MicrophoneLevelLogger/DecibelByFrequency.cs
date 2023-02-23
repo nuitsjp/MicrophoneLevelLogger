@@ -8,18 +8,18 @@ public readonly struct DecibelByFrequency
     /// <summary>
     /// 周波数
     /// </summary>
-    public readonly double Frequency;
+    public readonly Hz Frequency;
     /// <summary>
     /// 音量
     /// </summary>
-    public readonly double Decibel;
+    public readonly Decibel Decibel;
 
     /// <summary>
     /// インスタンスを生成する
     /// </summary>
     /// <param name="frequency"></param>
     /// <param name="decibel"></param>
-    public DecibelByFrequency(double frequency, double decibel)
+    public DecibelByFrequency(Hz frequency, Decibel decibel)
     {
         Frequency = frequency;
         Decibel = decibel;

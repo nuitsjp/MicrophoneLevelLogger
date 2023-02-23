@@ -73,9 +73,9 @@ public class MicrophoneRecorder : IMicrophoneRecorder
                 AWeighting.Instance.Filter(
                     fft.Transform(e.Buffer, e.BytesRecorded));
             // サンプリング間隔中の各値を記録する。
-            Min = new Decibel(decibels.Min(x => x.Decibel));
-            Avg = new Decibel(decibels.Average(x => x.Decibel));
-            Max = new Decibel(decibels.Max(x => x.Decibel));
+            Min = decibels.Min(x => x.Decibel);
+            Avg = (Decibel) decibels.Average(x => x.Decibel.AsPrimitive());
+            Max = decibels.Max(x => x.Decibel);
         };
 
         // キャンセル処理を登録する。

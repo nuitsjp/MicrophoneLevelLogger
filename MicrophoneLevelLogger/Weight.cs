@@ -8,18 +8,18 @@ public readonly struct Weight
     /// <summary>
     /// 帯域
     /// </summary>
-    public readonly double Frequency;
+    public readonly Hz Frequency;
     /// <summary>
     /// 重み
     /// </summary>
-    public readonly double Value;
+    public readonly Decibel Value;
 
     /// <summary>
     /// インスタンスを生成する。
     /// </summary>
     /// <param name="frequency"></param>
     /// <param name="value"></param>
-    public Weight(double frequency, double value)
+    public Weight(Hz frequency, Decibel value)
     {
         Frequency = frequency;
         Value = value;

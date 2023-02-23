@@ -12,40 +12,40 @@ public class AWeighting
         new(
             new Weight[]
             {
-                new(10, -70.4),
-                new(12.5, -63.4),
-                new(16, -56.7),
-                new(20, -50.5),
-                new(25, -44.7),
-                new(31.5, -39.4),
-                new(40, -34.6),
-                new(50, -30.2),
-                new(63, -26.2),
-                new(80, -22.5),
-                new(100, -19.1),
-                new(125, -16.1),
-                new(160, -13.4),
-                new(200, -10.9),
-                new(250, -8.6),
-                new(315, -6.6),
-                new(400, -4.8),
-                new(500, -3.2),
-                new(630, -1.9),
-                new(800, -0.8),
-                new(1000, 0),
-                new(1250, 0.6),
-                new(1600, 1),
-                new(2000, 1.2),
-                new(2500, 1.3),
-                new(3150, 1.2),
-                new(4000, 1),
-                new(5000, 0.5),
-                new(6300, -0.1),
-                new(8000, -1.1),
-                new(10000, -2.5),
-                new(12500, -4.3),
-                new(16000, -6.6),
-                new(20000, -9.3)
+                new((Hz) 10, new Decibel(-70.4)),
+                new((Hz) 12.5, new Decibel(-63.4)),
+                new((Hz) 16, new Decibel(-56.7)),
+                new((Hz) 20, new Decibel(-50.5)),
+                new((Hz) 25, new Decibel(-44.7)),
+                new((Hz) 31.5, new Decibel(-39.4)),
+                new((Hz) 40, new Decibel(-34.6)),
+                new((Hz) 50, new Decibel(-30.2)),
+                new((Hz) 63, new Decibel(-26.2)),
+                new((Hz) 80, new Decibel(-22.5)),
+                new((Hz) 100, new Decibel(-19.1)),
+                new((Hz) 125, new Decibel(-16.1)),
+                new((Hz) 160, new Decibel(-13.4)),
+                new((Hz) 200, new Decibel(-10.9)),
+                new((Hz) 250, new Decibel(-8.6)),
+                new((Hz) 315, new Decibel(-6.6)),
+                new((Hz) 400, new Decibel(-4.8)),
+                new((Hz) 500, new Decibel(-3.2)),
+                new((Hz) 630, new Decibel(-1.9)),
+                new((Hz) 800, new Decibel(-0.8)),
+                new((Hz) 1000, new Decibel(0)),
+                new((Hz) 1250, new Decibel(0.6)),
+                new((Hz) 1600, new Decibel(1)),
+                new((Hz) 2000, new Decibel(1.2)),
+                new((Hz) 2500, new Decibel(1.3)),
+                new((Hz) 3150, new Decibel(1.2)),
+                new((Hz) 4000, new Decibel(1)),
+                new((Hz) 5000, new Decibel(0.5)),
+                new((Hz) 6300, new Decibel(-0.1)),
+                new((Hz) 8000, new Decibel(-1.1)),
+                new((Hz) 10000, new Decibel(-2.5)),
+                new((Hz) 12500, new Decibel(-4.3)),
+                new((Hz) 16000, new Decibel(-6.6)),
+                new((Hz) 20000, new Decibel(-9.3))
             }
         );
 
@@ -74,7 +74,7 @@ public class AWeighting
 
         var weightIndex = 0;
         var currentWeight = Weights[weightIndex];
-        var maxDecibel = Decibel.Minimum.AsPrimitive();
+        var maxDecibel = Decibel.Minimum;
         foreach (var currentByFrequency in decibelByFrequencies)
         {
             if (currentByFrequency.Frequency <= currentWeight.Frequency)
@@ -96,7 +96,7 @@ public class AWeighting
                     break;
                 }
                 currentWeight = Weights[weightIndex];
-                maxDecibel = Decibel.Minimum.AsPrimitive();
+                maxDecibel = Decibel.Minimum;
             }
         }
 

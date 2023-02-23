@@ -65,11 +65,12 @@ public class Fft
         var decibelByFrequencies = new DecibelByFrequency[power.Length];
         for (var i = 0; i < power.Length; i++)
         {
+            var decibel = (Decibel) power[i];
             decibelByFrequencies[i] = new DecibelByFrequency(
-                frequencies[i],
-                power[i] < Decibel.Minimum.AsPrimitive()
-                    ? Decibel.Minimum.AsPrimitive()
-                    : power[i]
+                (Hz) frequencies[i],
+                decibel < Decibel.Minimum
+                    ? Decibel.Minimum
+                    : decibel
             );
         }
 
