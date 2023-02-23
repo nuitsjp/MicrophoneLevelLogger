@@ -35,15 +35,15 @@ public class MicrophoneRecorder : IMicrophoneRecorder
     /// <summary>
     /// サンプリング間隔中の最大音量。
     /// </summary>
-    public Decibel Max { get; private set; } = Decibel.Min;
+    public Decibel Max { get; private set; } = Decibel.Minimum;
     /// <summary>
     /// サンプリング間隔中の平均音量
     /// </summary>
-    public Decibel Avg { get; private set; } = Decibel.Min;
+    public Decibel Avg { get; private set; } = Decibel.Minimum;
     /// <summary>
     /// サンプリング間隔中の最小音量
     /// </summary>
-    public Decibel Min { get; private set; } = Decibel.Min;
+    public Decibel Min { get; private set; } = Decibel.Minimum;
 
     /// <summary>
     /// 録音を開始する。

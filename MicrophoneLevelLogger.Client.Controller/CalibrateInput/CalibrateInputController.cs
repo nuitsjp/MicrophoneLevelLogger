@@ -67,7 +67,7 @@ public class CalibrateInputController : IController
 
         // ターゲット側の入力レベルを少しずつ下げていきながら
         // リファレンスと同程度の音量になるように調整していく。
-        Decibel high = Decibel.Max;
+        Decibel high = Decibel.Maximum;
         for (; VolumeLevel.Minimum < target.VolumeLevel; target.VolumeLevel -= step)
         {
             CancellationTokenSource source = new();

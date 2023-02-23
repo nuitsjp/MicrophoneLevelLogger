@@ -74,7 +74,7 @@ public class AWeighting
 
         var weightIndex = 0;
         var currentWeight = Weights[weightIndex];
-        var maxDecibel = Decibel.Min.AsPrimitive();
+        var maxDecibel = Decibel.Minimum.AsPrimitive();
         foreach (var currentByFrequency in decibelByFrequencies)
         {
             if (currentByFrequency.Frequency <= currentWeight.Frequency)
@@ -96,7 +96,7 @@ public class AWeighting
                     break;
                 }
                 currentWeight = Weights[weightIndex];
-                maxDecibel = Decibel.Min.AsPrimitive();
+                maxDecibel = Decibel.Minimum.AsPrimitive();
             }
         }
 

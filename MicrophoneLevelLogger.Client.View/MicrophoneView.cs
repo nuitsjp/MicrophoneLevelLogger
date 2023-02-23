@@ -100,12 +100,12 @@ public class MicrophoneView : IMicrophoneView
         ConsoleEx.Wait(timeSpan);
     }
 
-    private static readonly double MaxBarValue = Decibel.Min.AsPrimitive() * -1;
+    private static readonly double MaxBarValue = Decibel.Minimum.AsPrimitive() * -1;
 
     private static string GetBars(Decibel decibel, int barCount = 35)
     {
         var value =
-            Decibel.Max < decibel
+            Decibel.Maximum < decibel
                 ? MaxBarValue
                 : decibel.AsPrimitive() + MaxBarValue;
         var barsOn = (int)(value / MaxBarValue * barCount);

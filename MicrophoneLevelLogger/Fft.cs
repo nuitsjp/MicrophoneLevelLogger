@@ -67,8 +67,8 @@ public class Fft
         {
             decibelByFrequencies[i] = new DecibelByFrequency(
                 frequencies[i],
-                power[i] < Decibel.Min.AsPrimitive()
-                    ? Decibel.Min.AsPrimitive()
+                power[i] < Decibel.Minimum.AsPrimitive()
+                    ? Decibel.Minimum.AsPrimitive()
                     : power[i]
             );
         }
