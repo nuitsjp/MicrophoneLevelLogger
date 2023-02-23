@@ -15,7 +15,17 @@ MicrophoneLevelLoggerは、マイクの録音レベルを定量的に計測す�
 - [C# Microphone Level Monitor](https://swharden.com/blog/2021-07-03-csharp-microphone/)
 
 
-# メモ：ファイアウォールの開放
+# メモ
+
+## 用語
+
+|英語|日本語|説明|
+|--|--|--|
+|Volume|音量|マイクで録音した音量。単位はDecibel|
+|Level|レベル|マイクやスピーカーの入出力設定のレベル|
+
+
+## ファイアウォールの開放
 
 ```cmd
 netsh advfirewall firewall add rule name="Http Port 5000" dir=in action=allow protocol=TCP localport=5000
