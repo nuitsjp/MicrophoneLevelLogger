@@ -5,11 +5,30 @@
 /// </summary>
 public class CalibrateInputController : IController
 {
+    /// <summary>
+    /// ビュー
+    /// </summary>
     private readonly ICalibrateInputView _view;
+    /// <summary>
+    /// IAudioInterfaceプロバイダー
+    /// </summary>
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
+    /// <summary>
+    /// IRecorderプロバイダー
+    /// </summary>
     private readonly IRecorderProvider _recorderProvider;
+    /// <summary>
+    /// IAudioInterfaceCalibrationValuesリポジトリ
+    /// </summary>
     private readonly IAudioInterfaceCalibrationValuesRepository _audioInterfaceCalibrationValuesRepository;
 
+    /// <summary>
+    /// インスタンスを生成する。
+    /// </summary>
+    /// <param name="view"></param>
+    /// <param name="audioInterfaceProvider"></param>
+    /// <param name="audioInterfaceCalibrationValuesRepository"></param>
+    /// <param name="recorderProvider"></param>
     public CalibrateInputController(
         ICalibrateInputView view,
         IAudioInterfaceProvider audioInterfaceProvider,
@@ -31,7 +50,7 @@ public class CalibrateInputController : IController
 
     public async Task ExecuteAsync()
     {
-        // すべてのマイクを取得する。
+        // オーディオインターフェースを取得する。
         var audioInterface = _audioInterfaceProvider.Resolve();
 
         // 起動時情報を通知する。
@@ -43,8 +62,10 @@ public class CalibrateInputController : IController
         // 調整対象のマイクを選択する
         var target = _view.SelectTarget(audioInterface, reference);
 
-        // マイクレベルを順番にキャリブレーションする
+        // 音源再生用のプレイヤーを生成する。
         var mediaPlayer = new MediaPlayer(await audioInterface.GetSpeakerAsync());
+
+        // マイクレベルをキャリブレーションする
         await Calibrate(reference, target, mediaPlayer);
 
         // キャリブレート結果を保存する
@@ -57,6 +78,13 @@ public class CalibrateInputController : IController
         _view.NotifyCalibrated(values, target);
     }
 
+    /// <summary>
+    /// マイクを調整する。
+    /// </summary>
+    /// <param name="reference"></param>
+    /// <param name="target"></param>
+    /// <param name="mediaPlayer"></param>
+    /// <returns></returns>
     private async Task Calibrate(IMicrophone reference, IMicrophone target, IMediaPlayer mediaPlayer)
     {
         // ボリューム調整していくステップ

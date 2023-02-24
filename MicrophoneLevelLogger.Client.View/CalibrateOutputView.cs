@@ -42,7 +42,7 @@ public class CalibrateOutputView : MicrophoneView, ICalibrateOutputView
     }
 
 
-    public void DisplayDefaultOutputLevel(VolumeLevel level)
+    public void DisplaySpeakerVolumeLevel(VolumeLevel level)
     {
         ConsoleEx.Write($"出力レベル : {level.AsPrimitive():0.00}");
     }

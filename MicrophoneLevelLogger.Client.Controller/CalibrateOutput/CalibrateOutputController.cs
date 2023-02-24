@@ -1,12 +1,34 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.CalibrateOutput;
 
+/// <summary>
+/// スピーカーを調整する。
+/// </summary>
 public class CalibrateOutputController : IController
 {
+    /// <summary>
+    /// IAudioInterfaceプロバイダー
+    /// </summary>
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
+    /// <summary>
+    /// ビュー
+    /// </summary>
     private readonly ICalibrateOutputView _view;
+    /// <summary>
+    /// IRecorderプロバイダー
+    /// </summary>
     private readonly IRecorderProvider _recorderProvider;
+    /// <summary>
+    /// Settingリポジトリー
+    /// </summary>
     private readonly ISettingsRepository _settingsRepository;
 
+    /// <summary>
+    /// インスタンスを生成する。
+    /// </summary>
+    /// <param name="audioInterfaceProvider"></param>
+    /// <param name="view"></param>
+    /// <param name="settingsRepository"></param>
+    /// <param name="recorderProvider"></param>
     public CalibrateOutputController(
         IAudioInterfaceProvider audioInterfaceProvider, 
         ICalibrateOutputView view, 
@@ -19,7 +41,13 @@ public class CalibrateOutputController : IController
         _recorderProvider = recorderProvider;
     }
 
+    /// <summary>
+    /// 名称
+    /// </summary>
     public string Name => "Calibrate output";
+    /// <summary>
+    /// 概要
+    /// </summary>
     public string Description => "スピーカーの出力レベルを調整する。";
 
     public async Task ExecuteAsync()
@@ -43,6 +71,15 @@ public class CalibrateOutputController : IController
         await Calibrate(audioInterface, mediaPlayer, microphone, specifyVolume, TimeSpan.FromSeconds(span));
     }
 
+    /// <summary>
+    /// 調整する。
+    /// </summary>
+    /// <param name="audioInterface"></param>
+    /// <param name="mediaPlayer"></param>
+    /// <param name="microphone"></param>
+    /// <param name="specifyVolume"></param>
+    /// <param name="span"></param>
+    /// <returns></returns>
     private async Task Calibrate(
         IAudioInterface audioInterface, 
         IMediaPlayer mediaPlayer, 
@@ -63,7 +100,7 @@ public class CalibrateOutputController : IController
             try
             {
                 // ボリュームを表示する
-                _view.DisplayDefaultOutputLevel(speaker.VolumeLevel);
+                _view.DisplaySpeakerVolumeLevel(speaker.VolumeLevel);
 
                 // 計測を開始する
                 await recorder.StartAsync(source.Token);
