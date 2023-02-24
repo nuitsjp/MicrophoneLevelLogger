@@ -12,4 +12,8 @@
 		<ProjectReference Include="..\MicrophoneLevelLogger\MicrophoneLevelLogger.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Record\" />
+	</ItemGroup>
+
 </Project>

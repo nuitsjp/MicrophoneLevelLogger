@@ -74,7 +74,7 @@ public class AudioInterface : IAudioInterface
         {
             foreach (var mmDevice in mmDevices)
             {
-                mmDevice.DisposeQuiet();
+                mmDevice.Dispose();
             }
         }
 
