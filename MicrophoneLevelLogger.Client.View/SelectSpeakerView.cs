@@ -3,8 +3,18 @@ using Sharprompt;
 
 namespace MicrophoneLevelLogger.Client.View;
 
+/// <summary>
+/// スピーカー選択ビュー
+/// </summary>
 public class SelectSpeakerView : ISelectSpeakerView
 {
+    /// <summary>
+    /// スピーカーを選択する。
+    /// </summary>
+    /// <param name="speakers"></param>
+    /// <param name="current"></param>
+    /// <param name="selected"></param>
+    /// <returns></returns>
     public bool TrySelectSpeaker(IEnumerable<ISpeaker> speakers, ISpeaker current, out ISpeaker selected)
     {
         const string cancel = "取りやめる";

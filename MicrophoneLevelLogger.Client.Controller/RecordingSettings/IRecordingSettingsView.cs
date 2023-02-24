@@ -10,7 +10,6 @@ public interface IRecordingSettingsView
     /// </summary>
     /// <param name="settings"></param>
     void ShowSettings(Settings settings);
-
     /// <summary>
     /// 変更を確認する。
     /// </summary>

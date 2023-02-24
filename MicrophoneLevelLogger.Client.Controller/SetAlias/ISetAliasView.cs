@@ -1,7 +1,7 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.SetAlias;
 
 /// <summary>
-/// マイクに別名を設定する。
+/// マイクの別名設定ビュー。
 /// </summary>
 public interface ISetAliasView
 {

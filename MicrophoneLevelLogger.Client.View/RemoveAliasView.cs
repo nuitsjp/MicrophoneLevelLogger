@@ -3,8 +3,17 @@ using Sharprompt;
 
 namespace MicrophoneLevelLogger.Client.View;
 
+/// <summary>
+/// 別名削除ビュー
+/// </summary>
 public class RemoveAliasView : IRemoveAliasView
 {
+    /// <summary>
+    /// 削除する別名を選択する。
+    /// </summary>
+    /// <param name="settings"></param>
+    /// <param name="alias"></param>
+    /// <returns></returns>
     public bool TrySelectRemoveAlias(Settings settings, out Alias alias)
     {
         if (settings.Aliases.Empty())

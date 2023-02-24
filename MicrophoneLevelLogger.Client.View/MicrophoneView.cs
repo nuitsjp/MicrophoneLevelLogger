@@ -3,6 +3,9 @@ using MicrophoneLevelLogger.Client.Controller;
 
 namespace MicrophoneLevelLogger.Client.View;
 
+/// <summary>
+/// 汎用ビュー
+/// </summary>
 public class MicrophoneView : IMicrophoneView
 {
     /// <summary>
@@ -10,6 +13,11 @@ public class MicrophoneView : IMicrophoneView
     /// </summary>
     private static readonly TimeSpan SamplingRate = TimeSpan.FromMilliseconds(50);
 
+    /// <summary>
+    /// オーディオインターフェースの状態を通知する。
+    /// </summary>
+    /// <param name="audioInterface"></param>
+    /// <returns></returns>
     public async Task NotifyAudioInterfaceAsync(IAudioInterface audioInterface)
     {
         var infos = audioInterface
@@ -29,20 +37,11 @@ public class MicrophoneView : IMicrophoneView
         ConsoleEx.WriteLine();
     }
 
-    public class MicrophoneInfo
-    {
-        public MicrophoneInfo(int no, string name, VolumeLevel inputLevel)
-        {
-            No = no;
-            Name = name;
-            InputLevel = inputLevel;
-        }
-
-        public int No { get; }
-        public string Name { get; }
-        public VolumeLevel InputLevel { get; }
-    }
-
+    /// <summary>
+    /// レコーダーの記録状況の通知を開始する。
+    /// </summary>
+    /// <param name="recorder"></param>
+    /// <param name="token"></param>
     public void StartNotify(IRecorder recorder, CancellationToken token)
     {
         Task.Run( async () =>
@@ -75,6 +74,10 @@ public class MicrophoneView : IMicrophoneView
         }, token);
     }
 
+    /// <summary>
+    /// 記録結果を通知する。
+    /// </summary>
+    /// <param name="logger"></param>
     public void NotifyResult(IRecorder logger)
     {
         lock (this)
@@ -95,13 +98,26 @@ public class MicrophoneView : IMicrophoneView
         }
     }
 
+    /// <summary>
+    /// Enterでキャンセルできる状態で、指定時間待機する。
+    /// </summary>
+    /// <param name="timeSpan"></param>
     public void Wait(TimeSpan timeSpan)
     {
         ConsoleEx.Wait(timeSpan);
     }
 
+    /// <summary>
+    /// 音量バーが最大を表すときの値
+    /// </summary>
     private static readonly double MaxBarValue = Decibel.Minimum.AsPrimitive() * -1;
 
+    /// <summary>
+    /// 音量バーを取得する
+    /// </summary>
+    /// <param name="decibel"></param>
+    /// <param name="barCount"></param>
+    /// <returns></returns>
     private static string GetBars(Decibel decibel, int barCount = 35)
     {
         var value =
@@ -111,5 +127,18 @@ public class MicrophoneView : IMicrophoneView
         var barsOn = (int)(value / MaxBarValue * barCount);
         var barsOff = barCount - barsOn;
         return new string('#', barsOn) + new string('-', barsOff);
+    }
+    private class MicrophoneInfo
+    {
+        public MicrophoneInfo(int no, string name, VolumeLevel inputLevel)
+        {
+            No = no;
+            Name = name;
+            InputLevel = inputLevel;
+        }
+
+        public int No { get; }
+        public string Name { get; }
+        public VolumeLevel InputLevel { get; }
     }
 }

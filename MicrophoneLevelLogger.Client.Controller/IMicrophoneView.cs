@@ -12,7 +12,7 @@ public interface IMicrophoneView
     /// <returns></returns>
     Task NotifyAudioInterfaceAsync(IAudioInterface audioInterface);
     /// <summary>
-    /// レコーダーの記録状況を通知する。
+    /// レコーダーの記録状況の通知を開始する。
     /// </summary>
     /// <param name="recorder"></param>
     /// <param name="token"></param>

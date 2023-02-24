@@ -4,8 +4,16 @@ using Sharprompt;
 
 namespace MicrophoneLevelLogger.Client.View;
 
+/// <summary>
+/// マイクの入力レベル設定ビュー。
+/// </summary>
 public class SetInputLevelView : MicrophoneView, ISetInputLevelView
 {
+    /// <summary>
+    /// マイクを選択する。
+    /// </summary>
+    /// <param name="audioInterface"></param>
+    /// <returns></returns>
     public IMicrophone SelectMicrophone(IAudioInterface audioInterface)
     {
         return Prompt.Select(
@@ -13,6 +21,10 @@ public class SetInputLevelView : MicrophoneView, ISetInputLevelView
             audioInterface.GetMicrophones());
     }
 
+    /// <summary>
+    /// 入力レベルを入力する。
+    /// </summary>
+    /// <returns></returns>
     public float InputInputLevel()
     {
         return Prompt.Input<float>(

@@ -3,8 +3,17 @@ using Sharprompt;
 
 namespace MicrophoneLevelLogger.Client.View;
 
+/// <summary>
+/// 指定のマイクを無効化するビュー
+/// </summary>
 public class DisableMicrophoneView : MicrophoneView, IDisableMicrophoneView
 {
+    /// <summary>
+    /// 無効化するマイクを選択する。
+    /// </summary>
+    /// <param name="audioInterface"></param>
+    /// <param name="microphone"></param>
+    /// <returns></returns>
     public bool TrySelectMicrophone(IAudioInterface audioInterface, out IMicrophone microphone)
     {
         const string cancel = "取りやめる";

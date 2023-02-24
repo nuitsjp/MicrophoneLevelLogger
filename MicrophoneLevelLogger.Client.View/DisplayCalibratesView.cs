@@ -3,8 +3,15 @@ using MicrophoneLevelLogger.Client.Controller.DisplayCalibrates;
 
 namespace MicrophoneLevelLogger.Client.View;
 
+/// <summary>
+/// マイク調整結果ビュー
+/// </summary>
 public class DisplayCalibratesView : IDisplayCalibratesView
 {
+    /// <summary>
+    /// 調整結果を表示する。
+    /// </summary>
+    /// <param name="calibrates"></param>
     public void NotifyResult(AudioInterfaceCalibrationValues calibrates)
     {
         lock (this)

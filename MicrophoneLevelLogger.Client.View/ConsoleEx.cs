@@ -2,15 +2,27 @@
 
 namespace MicrophoneLevelLogger.Client.View;
 
+/// <summary>
+/// 拡張コンソール
+/// </summary>
 public class ConsoleEx
 {
     public static int CursorTop => Console.CursorTop;
 
+    /// <summary>
+    /// カーソル位置を移動する。
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="top"></param>
     public static void SetCursorPosition(int left, int top)
     {
         Console.SetCursorPosition(left, top);
     }
 
+    /// <summary>
+    /// Enterでキャンセル可能な状態で、指定時間待機する。
+    /// </summary>
+    /// <param name="timeout"></param>
     public static void Wait(TimeSpan timeout)
     {
         var completed = false;
@@ -20,6 +32,7 @@ public class ConsoleEx
             // ReSharper disable once AccessToModifiedClosure
             if (!completed)
             {
+                // Enterが先に押されていた場合は、処理しない
                 var handle = GetStdHandle(StdHandle.Stdin);
                 CancelIoEx(handle, IntPtr.Zero);
             }
@@ -38,6 +51,12 @@ public class ConsoleEx
         }
     }
 
+    /// <summary>
+    /// 前面・背面の色を指定してラインを表示する。
+    /// </summary>
+    /// <param name="line"></param>
+    /// <param name="foreground"></param>
+    /// <param name="background"></param>
     public static void WriteLine(string line = "", ConsoleColor? foreground = null, ConsoleColor? background = null)
     {
         var beforeForeground = Console.ForegroundColor;
@@ -57,6 +76,10 @@ public class ConsoleEx
         }
     }
 
+    /// <summary>
+    /// ラインを表示する。
+    /// </summary>
+    /// <param name="value"></param>
     public static void Write(string value = "")
     {
         Console.Write(value);

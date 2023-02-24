@@ -5,8 +5,15 @@ using Sharprompt;
 
 namespace MicrophoneLevelLogger.Client.View;
 
+/// <summary>
+/// 記録表示ビュー
+/// </summary>
 public class DisplayRecordsView : IDisplayRecordsView
 {
+    /// <summary>
+    /// 表示内容を選択する。
+    /// </summary>
+    /// <returns></returns>
     public DisplayType SelectDisplayRecordsType()
     {
         var types = new[]
@@ -19,7 +26,11 @@ public class DisplayRecordsView : IDisplayRecordsView
             ? DisplayType.MicrophoneView
             : DisplayType.RecordView;
     }
-
+    /// <summary>
+    /// 表示する記録を選択する。
+    /// </summary>
+    /// <param name="summaries"></param>
+    /// <returns></returns>
     public RecordSummary SelectRecordSummary(IEnumerable<RecordSummary> summaries)
     {
         var records = summaries.ToList();
@@ -30,7 +41,10 @@ public class DisplayRecordsView : IDisplayRecordsView
         var index = items.IndexOf(summary);
         return records[index];
     }
-
+    /// <summary>
+    /// 記録を表示する。
+    /// </summary>
+    /// <param name="summary"></param>
     public void Display(RecordSummary summary)
     {
         lock (this)
@@ -61,7 +75,10 @@ public class DisplayRecordsView : IDisplayRecordsView
             Console.WriteLine();
         }
     }
-
+    /// <summary>
+    /// マイク別の記録を表示する。
+    /// </summary>
+    /// <param name="summaries"></param>
     public void Display(IEnumerable<MicrophoneRecordSummary> summaries)
     {
         lock (this)

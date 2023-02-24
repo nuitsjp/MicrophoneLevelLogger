@@ -4,8 +4,16 @@ using Sharprompt;
 
 namespace MicrophoneLevelLogger.Client.View;
 
+/// <summary>
+/// マイク調整用ビュー
+/// </summary>
 public class CalibrateInputView : MicrophoneView, ICalibrateInputView
 {
+    /// <summary>
+    /// リファレンスマイクを選択する。
+    /// </summary>
+    /// <param name="audioInterface"></param>
+    /// <returns></returns>
     public IMicrophone SelectReference(IAudioInterface audioInterface)
     {
         return Prompt.Select(
@@ -13,6 +21,12 @@ public class CalibrateInputView : MicrophoneView, ICalibrateInputView
             audioInterface.GetMicrophones());
     }
 
+    /// <summary>
+    /// 調整対象マイクを選択する。
+    /// </summary>
+    /// <param name="audioInterface"></param>
+    /// <param name="reference"></param>
+    /// <returns></returns>
     public IMicrophone SelectTarget(IAudioInterface audioInterface, IMicrophone reference)
     {
         while (true)
@@ -32,6 +46,13 @@ public class CalibrateInputView : MicrophoneView, ICalibrateInputView
         }
     }
 
+    /// <summary>
+    /// 調整の進捗を表示する。
+    /// </summary>
+    /// <param name="reference"></param>
+    /// <param name="referenceDecibel"></param>
+    /// <param name="target"></param>
+    /// <param name="targetDecibel"></param>
     public void NotifyProgress(IMicrophone reference, Decibel referenceDecibel, IMicrophone target, Decibel targetDecibel)
     {
         Build
@@ -50,6 +71,11 @@ public class CalibrateInputView : MicrophoneView, ICalibrateInputView
             });
     }
 
+    /// <summary>
+    /// 調整結果を通知する。
+    /// </summary>
+    /// <param name="calibrationValue"></param>
+    /// <param name="microphone"></param>
     public void NotifyCalibrated(AudioInterfaceCalibrationValues calibrationValue, IMicrophone microphone)
     {
         lock (this)
