@@ -2,10 +2,19 @@
 
 namespace MicrophoneLevelLogger.Repository;
 
+/// <summary>
+/// RecordSummaryのリポジトリー
+/// </summary>
 public class RecordSummaryRepository : IRecordSummaryRepository
 {
     private const string FileName = "summary.json";
 
+    /// <summary>
+    /// RecordSummaryを保存する。
+    /// </summary>
+    /// <param name="recordSummary"></param>
+    /// <param name="directory"></param>
+    /// <returns></returns>
     public async Task SaveAsync(RecordSummary recordSummary, DirectoryInfo directory)
     {
 
@@ -13,6 +22,10 @@ public class RecordSummaryRepository : IRecordSummaryRepository
         await JsonSerializer.SerializeAsync(stream, recordSummary, JsonEnvironments.Options);
     }
 
+    /// <summary>
+    /// RecordSummaryをロードする。
+    /// </summary>
+    /// <returns></returns>
     public async Task<IEnumerable<RecordSummary>> LoadAsync()
     {
         var fileInfos = JsonEnvironments.RecordDirectory.GetFiles(FileName, SearchOption.AllDirectories);

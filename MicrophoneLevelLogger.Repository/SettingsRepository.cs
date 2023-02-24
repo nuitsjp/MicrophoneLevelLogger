@@ -2,10 +2,17 @@
 
 namespace MicrophoneLevelLogger.Repository;
 
+/// <summary>
+/// Settingsのリポジトリー
+/// </summary>
 public class SettingsRepository : ISettingsRepository
 {
     private const string FileName = $"{nameof(Settings)}.json";
 
+    /// <summary>
+    /// Settingsをロードする。
+    /// </summary>
+    /// <returns></returns>
     public async Task<Settings> LoadAsync()
     {
         if (File.Exists(FileName))
@@ -27,6 +34,10 @@ public class SettingsRepository : ISettingsRepository
         }
     }
 
+    /// <summary>
+    /// Settingsをロードする。
+    /// </summary>
+    /// <returns></returns>
     public Settings Load()
     {
         if (File.Exists(FileName))
@@ -48,6 +59,11 @@ public class SettingsRepository : ISettingsRepository
         }
     }
 
+    /// <summary>
+    /// Settingsを保存する。
+    /// </summary>
+    /// <param name="settings"></param>
+    /// <returns></returns>
     public async Task SaveAsync(Settings settings)
     {
         if (File.Exists(FileName))
