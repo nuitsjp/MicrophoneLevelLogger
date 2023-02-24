@@ -17,7 +17,7 @@ public class SelectSpeakerController : IController
     }
 
     public string Name => "Select speaker";
-    public string Description => "マイクの入力レベルを調整する。";
+    public string Description => "音源を再生するスピーカーを選択する。";
 
     public async Task ExecuteAsync()
     {
