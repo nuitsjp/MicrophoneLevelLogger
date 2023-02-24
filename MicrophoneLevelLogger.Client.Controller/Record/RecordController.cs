@@ -1,14 +1,39 @@
 ﻿namespace MicrophoneLevelLogger.Client.Controller.Record;
 
+/// <summary>
+/// 記録する。
+/// </summary>
 public class RecordController : IController
 {
+    /// <summary>
+    /// データを保管するルートディレクトリー名
+    /// </summary>
     public const string RecordDirectoryName = "Record";
 
+    /// <summary>
+    /// ビュー
+    /// </summary>
     private readonly IRecordView _view;
+    /// <summary>
+    /// IAudioInterfaceプロバイダー
+    /// </summary>
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
+    /// <summary>
+    /// IRecorderプロバイダー
+    /// </summary>
     private readonly IRecorderProvider _recorderProvider;
+    /// <summary>
+    /// Settingsリポジトリー
+    /// </summary>
     private readonly ISettingsRepository _settingsRepository;
 
+    /// <summary>
+    /// インスタンスを生成する。
+    /// </summary>
+    /// <param name="audioInterfaceProvider"></param>
+    /// <param name="view"></param>
+    /// <param name="settingsRepository"></param>
+    /// <param name="recorderProvider"></param>
     public RecordController(
         IAudioInterfaceProvider audioInterfaceProvider,
         IRecordView view,
@@ -21,15 +46,22 @@ public class RecordController : IController
         _audioInterfaceProvider = audioInterfaceProvider;
     }
 
+    /// <summary>
+    /// 名称
+    /// </summary>
     public string Name => "Record";
+    /// <summary>
+    /// 概要
+    /// </summary>
     public string Description => "マイクの入力をキャプチャーし保存する。";
 
 
     public async Task ExecuteAsync()
     {
-        // 録音名を入力する。
+        // 記録名を入力する。
         string recordName = _view.InputRecordName();
 
+        // レコーダーを解決する。
         var audioInterface = _audioInterfaceProvider.Resolve();
         var recorder = _recorderProvider.ResolveLocal(audioInterface, recordName);
 
@@ -51,8 +83,8 @@ public class RecordController : IController
             await mediaPlayer.PlayLoopingAsync(source.Token);
 
 
-            // 録音を開始する。
-            // リモート録音が有効な場合、初回開始に時間がかかる事があるためリモートを先に開始する。
+            // 記録を開始する。
+            // リモート記録が有効な場合、初回開始に時間がかかる事があるためリモートを先に開始する。
             if (settings.IsEnableRemoteRecording)
             {
                 var remoteLogger = _recorderProvider.ResolveRemote(recordName);
@@ -60,14 +92,15 @@ public class RecordController : IController
             }
             await recorder.StartAsync(source.Token);
 
-            // 録音時間、待機する。
+            // 記録時間、待機する。
             _view.Wait(settings.RecordingSpan);
 
-            // 録音結果を通知する。
+            // 記録結果を通知する。
             _view.NotifyResult(recorder);
         }
         finally
         {
+            // 記録を中断する。
             source.Cancel();
         }
 

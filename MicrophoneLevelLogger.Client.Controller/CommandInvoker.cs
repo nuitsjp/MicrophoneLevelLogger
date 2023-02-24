@@ -18,8 +18,14 @@ using MicrophoneLevelLogger.Client.Controller.SetMaxInputLevel;
 
 namespace MicrophoneLevelLogger.Client.Controller;
 
+/// <summary>
+/// MicrophoneLevelLogger全体をコントロールし実行する。
+/// </summary>
 public class CommandInvoker : ICommandInvoker
 {
+    /// <summary>
+    /// すべてのコントローラーを内包する復号コントローラー
+    /// </summary>
     private readonly CompositeController _controller;
 
     public CommandInvoker(
@@ -44,6 +50,7 @@ public class CommandInvoker : ICommandInvoker
         DisplayAudioInterfaceController displayAudioInterfaceController,
         ICompositeControllerView compositeControllerView)
     {
+        // メニューをくみ上げる。
         _controller = new RootController(microphoneView, compositeControllerView, audioInterfaceProvider)
             .AddController(monitorVolumeController)
             .AddController(recordController)
@@ -85,14 +92,27 @@ public class CommandInvoker : ICommandInvoker
                     .AddController(deleteRecordController));
     }
 
+    /// <summary>
+    /// 実行する。
+    /// </summary>
+    /// <returns></returns>
     public async Task InvokeAsync()
     {
         await _controller.ExecuteAsync();
     }
 
+    /// <summary>
+    /// 複合コントローラーを継承したルート専用のコントローラー
+    /// </summary>
     private class RootController : CompositeController
     {
+        /// <summary>
+        /// ビュー
+        /// </summary>
         private readonly IMicrophoneView _view;
+        /// <summary>
+        /// IAudioInterfaceプロバイダー
+        /// </summary>
         private readonly IAudioInterfaceProvider _provider;
 
         public RootController(
@@ -106,7 +126,10 @@ public class CommandInvoker : ICommandInvoker
 
         public override async Task ExecuteAsync()
         {
+            // オーディオインターフェースの状態を表示する。
             await _view.NotifyAudioInterfaceAsync(_provider.Resolve());
+
+            // 複合コントローラーを実行し、メニュー表示や選択されたコマンドを実行する。
             await base.ExecuteAsync();
         }
     }
