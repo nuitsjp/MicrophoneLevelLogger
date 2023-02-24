@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Diagnostics;
 using NAudio.Wave;
 
 namespace MicrophoneLevelLogger;
@@ -22,7 +23,6 @@ public class Fft
     /// WaveFormat
     /// </summary>
     private readonly WaveFormat _waveFormat;
-    private double[]? _lastBuffer;
 
     /// <summary>
     /// インスタンスを生成する。
@@ -45,35 +45,38 @@ public class Fft
         var bytesPerSample = _waveFormat.BitsPerSample / 8;
         var samplesRecorded = bytesRecorded / bytesPerSample;
 
-        if (_lastBuffer is null)
+        var adjusted = ArrayPool<double>.Shared.Rent(samplesRecorded);
+        try
         {
-            _lastBuffer = ArrayPool<double>.Shared.Rent(samplesRecorded);
-            // Rentされるサイズは2の階上になる。このとき0埋めされていない場合があるため、クリアしておく
-            Array.Clear(_lastBuffer);
-        }
+            Array.Clear(adjusted);
 
-        var indent = (_lastBuffer.Length - samplesRecorded) / 2;
-        for (var i = 0; i < samplesRecorded; i++)
+            var indent = (adjusted.Length - samplesRecorded) / 2;
+            for (var i = 0; i < samplesRecorded; i++)
+            {
+                adjusted[indent + i] = BitConverter.ToInt16(buffer, i * bytesPerSample) * Ratio;
+            }
+
+            var window = new FftSharp.Windows.Hanning();
+            var windowed = window.Apply(adjusted);
+            var power = FftSharp.Transform.FFTpower(windowed);
+            var frequencies = FftSharp.Transform.FFTfreq(_waveFormat.SampleRate, power.Length);
+            var decibelByFrequencies = new DecibelByFrequency[power.Length];
+            for (var i = 0; i < power.Length; i++)
+            {
+                var decibel = (Decibel)power[i];
+                decibelByFrequencies[i] = new DecibelByFrequency(
+                    (Hz)frequencies[i],
+                    decibel < Decibel.Minimum
+                        ? Decibel.Minimum
+                        : decibel
+                );
+            }
+
+            return decibelByFrequencies;
+        }
+        finally
         {
-            _lastBuffer[indent + i] = BitConverter.ToInt16(buffer, i * bytesPerSample) * Ratio;
+            ArrayPool<double>.Shared.Return(adjusted);
         }
-
-        var window = new FftSharp.Windows.Hanning();
-        var windowed = window.Apply(_lastBuffer);
-        var power = FftSharp.Transform.FFTpower(windowed);
-        var frequencies = FftSharp.Transform.FFTfreq(_waveFormat.SampleRate, power.Length);
-        var decibelByFrequencies = new DecibelByFrequency[power.Length];
-        for (var i = 0; i < power.Length; i++)
-        {
-            var decibel = (Decibel) power[i];
-            decibelByFrequencies[i] = new DecibelByFrequency(
-                (Hz) frequencies[i],
-                decibel < Decibel.Minimum
-                    ? Decibel.Minimum
-                    : decibel
-            );
-        }
-
-        return decibelByFrequencies;
     }
 }
