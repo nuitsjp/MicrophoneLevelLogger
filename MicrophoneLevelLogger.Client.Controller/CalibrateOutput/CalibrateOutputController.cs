@@ -126,7 +126,7 @@ public class CalibrateOutputController : IController
             // 最低でも1は上げる
             diff = diff == 0 ? 1 : diff;
 
-            if (1 < speaker.VolumeLevel.AsPrimitive() * 100 + diff)
+            if (100 < speaker.VolumeLevel.AsPrimitive() * 100 + diff)
             {
                 // 最大値を超えてしまう場合、最大値に設定する
                 speaker.VolumeLevel = VolumeLevel.Maximum;
