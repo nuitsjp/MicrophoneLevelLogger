@@ -17,6 +17,11 @@ public class MicrophoneRecorder : IMicrophoneRecorder
     private readonly DirectoryInfo? _directoryInfo;
 
     /// <summary>
+    /// 履歴
+    /// </summary>
+    private readonly List<Decibel> _avgHistory = new();
+
+    /// <summary>
     /// インスタンスを生成する。
     /// </summary>
     /// <param name="microphone"></param>
@@ -72,9 +77,12 @@ public class MicrophoneRecorder : IMicrophoneRecorder
             var decibels =
                 AWeighting.Instance.Filter(
                     fft.Transform(e.Buffer, e.BytesRecorded));
+            // 最新の入力の平均値を取得し、履歴に追加し、トータルの平均を求める。
+            var avg = (Decibel)decibels.Average(x => x.Decibel.AsPrimitive());
+            _avgHistory.Add(avg);
             // サンプリング間隔中の各値を記録する。
             Min = decibels.Min(x => x.Decibel);
-            Avg = (Decibel) decibels.Average(x => x.Decibel.AsPrimitive());
+            Avg = (Decibel)_avgHistory.Average(x => x.AsPrimitive());
             Max = decibels.Max(x => x.Decibel);
         };
 
