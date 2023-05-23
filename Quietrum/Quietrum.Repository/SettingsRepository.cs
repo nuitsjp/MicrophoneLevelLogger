@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace MicrophoneLevelLogger.Repository;
+namespace Quietrum.Repository;
 
 /// <summary>
 /// Settingsのリポジトリー

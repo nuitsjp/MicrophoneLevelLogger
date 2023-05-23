@@ -1,8 +1,7 @@
 ﻿using System.Buffers;
-using System.Diagnostics;
 using NAudio.Wave;
 
-namespace MicrophoneLevelLogger;
+namespace Quietrum;
 
 /// <summary>
 /// 高速フーリエ変換

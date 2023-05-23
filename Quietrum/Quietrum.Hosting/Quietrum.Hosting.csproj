@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+		<EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+	    </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Kamishibai.Hosting" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Quietrum.Repository\Quietrum.Repository.csproj" />
+    <ProjectReference Include="..\Quietrum.ViewModel\Quietrum.ViewModel.csproj" />
+    <ProjectReference Include="..\Quietrum.View\Quietrum.View.csproj" />
+    <ProjectReference Include="..\Quietrum\Quietrum.csproj" />
+  </ItemGroup>
+
+</Project>

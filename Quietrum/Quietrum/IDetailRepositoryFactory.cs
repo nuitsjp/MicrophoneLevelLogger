@@ -1,14 +1,14 @@
-﻿namespace MicrophoneLevelLogger.Repository;
+﻿namespace Quietrum;
 
 /// <summary>
 /// IDetailWriterファクトリー
 /// </summary>
-public class DetailRepositoryFactory : IDetailRepositoryFactory
+public interface IDetailRepositoryFactory
 {
     /// <summary>
     /// IDetailWriterを生成する。
     /// </summary>
     /// <param name="writer"></param>
     /// <returns></returns>
-    public IDetailRepository Create(StreamWriter writer) => new DetailRepository(writer);
+    IDetailRepository Create(StreamWriter writer);
 }

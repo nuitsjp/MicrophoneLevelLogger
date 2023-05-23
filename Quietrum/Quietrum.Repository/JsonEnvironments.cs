@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Unicode;
 
-namespace MicrophoneLevelLogger.Repository;
+namespace Quietrum.Repository;
 
 /// <summary>
 /// JSON関連の環境設定
