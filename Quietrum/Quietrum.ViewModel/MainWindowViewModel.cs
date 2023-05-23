@@ -1,47 +1,93 @@
 ﻿using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Kamishibai;
+using NAudio.Wave;
 using ScottPlot;
 
-namespace Quietrum.ViewModel
+namespace Quietrum.ViewModel;
+
+// ReSharper disable once ClassNeverInstantiated.Global
+public partial class MainWindowViewModel : ObservableObject, INavigatedAware
 {
-    public partial class MainWindowViewModel : ObservableObject, INavigatedAware
+    public RecordingConfig RecordingConfig { get; } = RecordingConfig.Default;
+
+    private readonly IAudioInterface _audioInterface;
+    [ObservableProperty]
+    private TimeSpan _elapsed = TimeSpan.Zero;
+    [ObservableProperty]
+    private List<MicrophoneViewModel> _microphones;
+    private readonly Stopwatch _stopwatch = new();
+
+    public MainWindowViewModel(IAudioInterface audioInterface)
     {
-        private readonly IAudioInterface _audioInterface;
-        [ObservableProperty]
-        private TimeSpan _elapsed = TimeSpan.Zero;
-
-        public double[] LiveData { get; } = new double[400];
-
-        private readonly DataGen.Electrocardiogram _ecg = new();
-        private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
-
-        private readonly Timer _updateDataTimer;
-
-        public TimeSpan Period { get; } = TimeSpan.FromMilliseconds(50);
-
-        public MainWindowViewModel(IAudioInterface audioInterface)
-        {
-            _audioInterface = audioInterface;
-            _updateDataTimer = new Timer(_ => UpdateData(), null, Timeout.Infinite, Timeout.Infinite);
-        }
+        _audioInterface = audioInterface;
+        _microphones = _audioInterface.GetMicrophones()
+            .Select(x => new MicrophoneViewModel(x, RecordingConfig))
+            .ToList();
+    }
         
-        void UpdateData()
+    public void OnNavigated(PostForwardEventArgs args)
+    {
+        var tokenSource = new CancellationTokenSource();
+        foreach (var microphone in Microphones)
         {
-            // "scroll" the whole chart to the left
-            Array.Copy(LiveData, 1, LiveData, 0, LiveData.Length - 1);
-
-            // place the newest data point at the end
-            var nextValue = _ecg.GetVoltage(_stopwatch.Elapsed.TotalSeconds);
-            LiveData[^1] = nextValue;
-            Elapsed = _stopwatch.Elapsed;
-        }
-
-        public void OnNavigated(PostForwardEventArgs args)
-        {
-            var microphones = _audioInterface.GetMicrophones();
-            var microphone = microphones.First();
-            _updateDataTimer.Change(TimeSpan.Zero, Period);
+            microphone.StartRecording(tokenSource.Token);
         }
     }
+}
+
+public class MicrophoneViewModel
+{
+    private readonly IMicrophone _microphone;
+    private readonly RecordingConfig _recordingConfig;
+
+    public MicrophoneViewModel(
+        IMicrophone microphone,
+        RecordingConfig recordingConfig)
+    {
+        _microphone = microphone;
+        _recordingConfig = recordingConfig;
+        LiveData = new double[(int)(_recordingConfig.RecordingSpan / _recordingConfig.RecordingInterval)];
+        Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
+    }
+
+    public string Name => _microphone.Name;
+    public double[] LiveData { get; }
+
+    public void StartRecording(CancellationToken token)
+    {
+        var observable = _microphone.StartRecording(_recordingConfig.WaveFormat, _recordingConfig.RecordingInterval, token);
+        observable.Subscribe(OnNext);
+    }
+    
+    private void OnNext(byte[] bytes)
+    {
+        // "scroll" the whole chart to the left
+        Array.Copy(LiveData, 1, LiveData, 0, LiveData.Length - 1);
+
+        int peakValue = 0;
+        for (int index = 0; index < bytes.Length; index += _recordingConfig.BytesPerSample)
+        {
+            int value = BitConverter.ToInt16(bytes, index);
+            peakValue = Math.Max(peakValue, value);
+        }
+
+        double level = (double)peakValue / (double)short.MaxValue;
+        double decibel = 20 * Math.Log10(level);
+
+        // place the newest data point at the end
+        LiveData[^1] = Math.Max(Math.Min(decibel, 0d), -84d);
+    }
+}
+
+public record RecordingConfig(
+    WaveFormat WaveFormat,
+    TimeSpan RecordingSpan,
+    TimeSpan RecordingInterval)
+{
+    public static readonly RecordingConfig Default =
+        new(new (48_000, 16, 1), TimeSpan.FromMinutes(2), TimeSpan.FromMilliseconds(50));
+
+    public int RecordingLength => (int)(RecordingSpan / RecordingInterval);
+    public int BytesPerSample => WaveFormat.BitsPerSample / 8;
 }

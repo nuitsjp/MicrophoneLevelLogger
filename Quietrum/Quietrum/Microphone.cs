@@ -1,4 +1,7 @@
-﻿using MMDeviceEnumerator = NAudio.CoreAudioApi.MMDeviceEnumerator;
+﻿using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using NAudio.Wave;
+using MMDeviceEnumerator = NAudio.CoreAudioApi.MMDeviceEnumerator;
 
 namespace Quietrum;
 
@@ -61,6 +64,39 @@ public class Microphone : IMicrophone
             using var mmDevice = enumerator.GetDevice(Id.AsPrimitive());
             mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar = (float)value;
         }
+    }
+
+    public IObservable<byte[]> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan, CancellationToken cancellationToken)
+    {
+        var subject = new Subject<byte[]>();
+        var waveIn = new WaveInEvent()
+        {
+            DeviceNumber = DeviceNumber.AsPrimitive(),
+            WaveFormat = waveFormat,
+            BufferMilliseconds = (int)bufferSpan.TotalMilliseconds
+        };
+
+        waveIn.DataAvailable += (s, a) =>
+        {
+            var buffer = new byte[a.BytesRecorded];
+            Buffer.BlockCopy(a.Buffer, 0, buffer, 0, a.BytesRecorded);
+            subject.OnNext(buffer);
+        };
+
+        waveIn.RecordingStopped += (sender, e) =>
+        {
+            waveIn.Dispose();
+            waveIn = null;
+            subject.OnCompleted();
+        };
+        
+        cancellationToken.Register(() =>
+        {
+            waveIn.StopRecording();
+        });
+
+        waveIn.StartRecording();
+        return subject.AsObservable();
     }
 
     /// <summary>

@@ -1,4 +1,6 @@
-﻿namespace Quietrum;
+﻿using NAudio.Wave;
+
+namespace Quietrum;
 
 /// <summary>
 /// マイク
@@ -29,4 +31,6 @@ public interface IMicrophone
     /// 入力レベル
     /// </summary>
     VolumeLevel VolumeLevel { get; set; }
+
+    IObservable<byte[]> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan, CancellationToken cancellationToken);
 }

@@ -8,7 +8,7 @@
         xmlns:viewModel="clr-namespace:Quietrum.ViewModel;assembly=Quietrum.ViewModel"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type viewModel:MainWindowViewModel}, IsDesignTimeCreatable=True}"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="1024" Width="1280">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
