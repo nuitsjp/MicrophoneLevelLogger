@@ -1,6 +1,8 @@
-﻿namespace Quietrum.ViewModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-public class MicrophoneViewModel
+namespace Quietrum.ViewModel;
+
+public partial class MicrophoneViewModel : ObservableObject
 {
     private readonly IMicrophone _microphone;
     private readonly RecordingConfig _recordingConfig;
@@ -17,6 +19,8 @@ public class MicrophoneViewModel
 
     public MicrophoneId Id => _microphone.Id;
     public string Name => _microphone.Name;
+    [ObservableProperty]
+    private bool _visible = true;
     public double[] LiveData { get; }
 
     public void StartRecording(CancellationToken token)
