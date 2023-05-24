@@ -15,6 +15,7 @@ public class MicrophoneViewModel
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
     }
 
+    public MicrophoneId Id => _microphone.Id;
     public string Name => _microphone.Name;
     public double[] LiveData { get; }
 

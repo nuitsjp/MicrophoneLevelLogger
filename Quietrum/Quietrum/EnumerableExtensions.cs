@@ -16,6 +16,11 @@ public static class EnumerableExtension
         return source.Any() is false;
     }
 
+    public static bool Empty<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+    {
+        return source.Any(predicate) is false;
+    }
+
     /// <summary>
     /// 指定要素を含んでいるか確認する。
     /// </summary>

@@ -1,10 +1,13 @@
-﻿namespace Quietrum;
+﻿using Reactive.Bindings;
+
+namespace Quietrum;
 
 /// <summary>
 /// マイク・スピーカーなどを統合したオーディオ関連のインターフェース
 /// </summary>
 public interface IAudioInterface
 {
+    ReadOnlyReactivePropertySlim<IList<IMicrophone>> Microphones { get; }
     /// <summary>
     /// マイク一覧を取得する。
     /// </summary>

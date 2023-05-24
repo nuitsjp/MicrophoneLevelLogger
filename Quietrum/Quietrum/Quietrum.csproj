@@ -9,6 +9,8 @@
   <ItemGroup>
     <PackageReference Include="FftSharp" Version="1.1.6" />
     <PackageReference Include="NAudio" Version="2.1.0" />
+    <PackageReference Include="ReactiveProperty" Version="9.1.2" />
+    <PackageReference Include="System.Management" Version="7.0.1" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
     <PackageReference Include="UnitGenerator" Version="1.4.10">
       <PrivateAssets>all</PrivateAssets>
