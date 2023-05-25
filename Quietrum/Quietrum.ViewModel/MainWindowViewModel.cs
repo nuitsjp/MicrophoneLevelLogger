@@ -8,7 +8,7 @@ using ScottPlot;
 namespace Quietrum.ViewModel;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAware
+public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAware, IDisposable
 {
     public RecordingConfig RecordingConfig { get; } = RecordingConfig.Default;
 
@@ -19,10 +19,6 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
     private readonly ReactivePropertySlim<IList<MicrophoneViewModel>> _microphones = new(new List<MicrophoneViewModel>());
     public ReadOnlyReactivePropertySlim<IList<MicrophoneViewModel>> Microphones { get; }
     
-    private readonly Stopwatch _stopwatch = new();
-
-    private readonly CancellationTokenSource _cancellationTokenSource = new();
-
     public MainWindowViewModel(IAudioInterfaceProvider audioInterfaceProvider)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
@@ -44,7 +40,7 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
                         .Select(x =>
                         {
                             var microphone = new MicrophoneViewModel(x, RecordingConfig);
-                            microphone.StartRecording(_cancellationTokenSource.Token);
+                            microphone.StartRecording();
                             return microphone;
                         }));
                 // 除去されたIMicrophoneを削除する
@@ -56,5 +52,11 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
                     });
                 _microphones.Value = newViewModels;
             });
+    }
+
+    public void Dispose()
+    {
+        Microphones.Value.Dispose();
+        Microphones.Dispose();
     }
 }

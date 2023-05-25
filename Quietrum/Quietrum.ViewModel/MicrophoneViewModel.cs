@@ -2,7 +2,7 @@
 
 namespace Quietrum.ViewModel;
 
-public partial class MicrophoneViewModel : ObservableObject
+public partial class MicrophoneViewModel : ObservableObject, IDisposable
 {
     private readonly IMicrophone _microphone;
     private readonly RecordingConfig _recordingConfig;
@@ -31,9 +31,9 @@ public partial class MicrophoneViewModel : ObservableObject
     }
     public double[] LiveData { get; }
 
-    public void StartRecording(CancellationToken token)
+    public void StartRecording()
     {
-        var observable = _microphone.StartRecording(_recordingConfig.WaveFormat, _recordingConfig.RecordingInterval, token);
+        var observable = _microphone.StartRecording(_recordingConfig.WaveFormat, _recordingConfig.RecordingInterval);
         observable.Subscribe(OnNext);
     }
     
@@ -54,5 +54,11 @@ public partial class MicrophoneViewModel : ObservableObject
 
         // place the newest data point at the end
         LiveData[^1] = Math.Max(Math.Min(decibel, 0d), -84d);
+    }
+
+    public void Dispose()
+    {
+        _microphone.StopRecording();
+        _microphone.Dispose();
     }
 }

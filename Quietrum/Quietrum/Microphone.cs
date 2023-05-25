@@ -70,34 +70,37 @@ public partial class Microphone : ObservableObject, IMicrophone
         }
     }
 
-    public IObservable<byte[]> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan, CancellationToken cancellationToken)
+    private WasapiCapture? _wasapiCapture;
+    public IObservable<byte[]> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan)
     {
         var subject = new Subject<byte[]>();
-        WasapiCapture capture = new WasapiCapture(_mmDevice)
+        _wasapiCapture = new WasapiCapture(_mmDevice)
         {
             WaveFormat = waveFormat,
             ShareMode = AudioClientShareMode.Shared
         };
         
 
-        capture.DataAvailable += (_, args) =>
+        _wasapiCapture.DataAvailable += (_, args) =>
         {
             var buffer = new byte[args.BytesRecorded];
             Buffer.BlockCopy(args.Buffer, 0, buffer, 0, args.BytesRecorded);
             subject.OnNext(buffer);
         };
-        capture.RecordingStopped += (sender, args) =>
+        _wasapiCapture.RecordingStopped += (sender, args) =>
         {
-            capture.Dispose();
+            _wasapiCapture?.Dispose();
+            _wasapiCapture = null;
             subject.OnCompleted();
         };
-        cancellationToken.Register(() =>
-        {
-            capture.StopRecording();
-        });
 
-        capture.StartRecording();
+        _wasapiCapture.StartRecording();
         return subject.AsObservable();
+    }
+
+    public void StopRecording()
+    {
+        _wasapiCapture?.StopRecording();
     }
 
     /// <summary>
