@@ -152,4 +152,11 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
                 break;
         }
     }
+
+    public void Dispose()
+    {
+        Microphones.Dispose();
+        _watcher.Stop();
+        _watcher.Dispose();
+    }
 }

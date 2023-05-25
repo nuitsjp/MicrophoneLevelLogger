@@ -5,7 +5,7 @@ namespace Quietrum;
 /// <summary>
 /// マイク・スピーカーなどを統合したオーディオ関連のインターフェース
 /// </summary>
-public interface IAudioInterface : INotifyPropertyChanged
+public interface IAudioInterface : INotifyPropertyChanged, IDisposable
 {
     /// <summary>
     /// 
