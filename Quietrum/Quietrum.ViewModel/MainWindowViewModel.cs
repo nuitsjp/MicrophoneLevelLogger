@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Kamishibai;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using ScottPlot;
 
 namespace Quietrum.ViewModel;
@@ -27,7 +28,9 @@ public partial class MainWindowViewModel : ObservableObject
         _audioInterface = audioInterface;
         Microphones = _microphones.ToReadOnlyReactivePropertySlim()!;
 
-        _audioInterface.Microphones.Subscribe(microphones =>
+        _audioInterface
+            .ObserveProperty(x => x.Microphones)
+            .Subscribe(microphones =>
         {
             List<MicrophoneViewModel> newViewModels = new(Microphones.Value);
             // 接続されたIMicrophoneを追加する。

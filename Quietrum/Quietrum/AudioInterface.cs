@@ -1,14 +1,13 @@
 ﻿using System.Management;
+using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
-using NAudio.Wave;
-using Reactive.Bindings;
 
 namespace Quietrum;
 
 /// <summary>
 /// マイク・スピーカーなどを統合したオーディオ関連のインターフェース
 /// </summary>
-public class AudioInterface : IAudioInterface
+public partial class AudioInterface : ObservableObject, IAudioInterface
 {
     private readonly ManagementEventWatcher _watcher = new(
         new WqlEventQuery("__InstanceOperationEvent")
@@ -19,12 +18,11 @@ public class AudioInterface : IAudioInterface
 
     private readonly ISettingsRepository _settingsRepository;
 
-    private readonly AudioDeviceWatcher _audioDeviceWatcher = new();
-    
     /// <summary>
     /// 
     /// </summary>
-    private readonly ReactivePropertySlim<IList<IMicrophone>> _microphones = new();
+    [ObservableProperty]
+    private IReadOnlyList<IMicrophone> _microphones;
 
     /// <summary>
     /// すべてのマイクを扱うオーディオ インターフェースを作成する。
@@ -33,8 +31,7 @@ public class AudioInterface : IAudioInterface
     public AudioInterface(ISettingsRepository settingsRepository)
     {
         _settingsRepository = settingsRepository;
-        Microphones = _microphones.ToReadOnlyReactivePropertySlim()!;
-        _microphones.Value = LoadMicrophones(_settingsRepository.Load()).ToList();
+        _microphones = LoadMicrophones(_settingsRepository.Load()).ToList();
         _watcher.EventArrived += WatcherEventArrived;
         _watcher.Start();
     }
@@ -47,13 +44,10 @@ public class AudioInterface : IAudioInterface
     public AudioInterface(ISettingsRepository settingsRepository, params IMicrophone[] microphones)
     {
         _settingsRepository = settingsRepository;
-        Microphones = _microphones.ToReadOnlyReactivePropertySlim()!;
-        _microphones.Value = microphones;
+        _microphones = microphones;
         _watcher.EventArrived += WatcherEventArrived;
         _watcher.Start();
     }
-
-    public ReadOnlyReactivePropertySlim<IList<IMicrophone>> Microphones { get; }
 
     /// <summary>
     /// すべてのマイクをロードする。
@@ -88,7 +82,7 @@ public class AudioInterface : IAudioInterface
     /// <returns></returns>
     [Obsolete]
     public IEnumerable<IMicrophone> GetMicrophones(MicrophoneStatus status = MicrophoneStatus.Enable) =>
-        _microphones.Value.Where(x => status.HasFlag(x.Status));
+        Microphones.Where(x => status.HasFlag(x.Status));
 
     /// <summary>
     /// 現在有効なスピーカーを取得する。
@@ -97,18 +91,18 @@ public class AudioInterface : IAudioInterface
     public async Task<ISpeaker> GetSpeakerAsync()
     {
         var settings = await _settingsRepository.LoadAsync();
-        using var emurator = new MMDeviceEnumerator();
+        using var enumerator = new MMDeviceEnumerator();
         // 明示的に指定されていればそれを、指定されていない場合、OSの出力先へ出力する。
         if (settings.SelectedSpeakerId is null)
         {
-            using var mmDevice = emurator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+            using var mmDevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
             return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
         }
         else
         {
             try
             {
-                using var mmDevice = emurator.GetDevice(settings.SelectedSpeakerId?.AsPrimitive());
+                using var mmDevice = enumerator.GetDevice(settings.SelectedSpeakerId?.AsPrimitive());
                 return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
             }
             catch
@@ -124,7 +118,7 @@ public class AudioInterface : IAudioInterface
                         settings.Aliases,
                         settings.DisabledMicrophones,
                         null));
-                using var mmDevice = emurator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+                using var mmDevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
                 return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
             }
         }
@@ -154,49 +148,8 @@ public class AudioInterface : IAudioInterface
         {
             case "__InstanceCreationEvent":
             case "__InstanceDeletionEvent":
-                _microphones.Value = LoadMicrophones(_settingsRepository.Load()).ToList();
+                Microphones = LoadMicrophones(_settingsRepository.Load()).ToList();
                 break;
         }
     }
-
-    class AudioDeviceWatcher
-    {
-        private readonly ManagementEventWatcher _watcher = new(
-            new WqlEventQuery("__InstanceOperationEvent")
-            {
-                WithinInterval = TimeSpan.FromSeconds(3),
-                Condition = "TargetInstance ISA 'Win32_SoundDevice'"
-            });
-
-        public AudioDeviceWatcher()
-        {
-            _watcher.EventArrived += WatcherEventArrived;
-            _watcher.Start();
-        }
-
-        private void WatcherEventArrived(object sender, EventArrivedEventArgs e)
-        {
-            var eventType = e.NewEvent.ClassPath.ClassName;
-            var targetInstance = e.NewEvent["TargetInstance"] as ManagementBaseObject;
-
-            if (targetInstance != null)
-            {
-                var deviceName = targetInstance["Name"] as string;
-                if (eventType == "__InstanceCreationEvent")
-                {
-                    Console.WriteLine($"Device connected: {deviceName}");
-                }
-                else if (eventType == "__InstanceDeletionEvent")
-                {
-                    Console.WriteLine($"Device disconnected: {deviceName}");
-                }
-            }
-        }
-
-        public void Stop()
-        {
-            _watcher.Stop();
-        }
-    }
-
 }
