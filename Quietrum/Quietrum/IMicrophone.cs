@@ -15,7 +15,7 @@ public interface IMicrophone : IDisposable, INotifyPropertyChanged
     /// <summary>
     /// 名称
     /// </summary>
-    string Name { get; }
+    string Name { get; set; }
     /// <summary>
     /// Windows上の名称
     /// </summary>

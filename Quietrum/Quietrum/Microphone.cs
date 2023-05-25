@@ -40,16 +40,17 @@ public partial class Microphone : ObservableObject, IMicrophone
     /// ID
     /// </summary>
     public MicrophoneId Id { get; }
+
     /// <summary>
     /// 名称
     /// </summary>
-    public string Name { get; }
+    [ObservableProperty] private string _name;
     /// <summary>
     /// Windows上の名称
     /// </summary>
     public string SystemName { get; }
 
-    [ObservableProperty] public bool _measure;
+    [ObservableProperty] private bool _measure;
 
     /// <summary>
     /// 入力レベル
@@ -87,7 +88,7 @@ public partial class Microphone : ObservableObject, IMicrophone
             Buffer.BlockCopy(args.Buffer, 0, buffer, 0, args.BytesRecorded);
             subject.OnNext(buffer);
         };
-        _wasapiCapture.RecordingStopped += (sender, args) =>
+        _wasapiCapture.RecordingStopped += (_, _) =>
         {
             _wasapiCapture?.Dispose();
             _wasapiCapture = null;

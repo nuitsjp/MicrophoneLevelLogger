@@ -1,8 +1,10 @@
 ﻿using Quietrum.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
+using Reactive.Bindings.Extensions;
 using ScottPlot;
 using ScottPlot.Plottable;
 
@@ -26,10 +28,10 @@ namespace Quietrum.View
             DataContext = viewModel;
 
             // plot the data array only once
-            viewModel.Microphones.Subscribe(microphones =>
+            viewModel.ObserveProperty(x => x.Microphones).Subscribe(microphones =>
             {
                 WpfPlot1.Plot.Clear();
-                foreach (var microphone in microphones)
+                foreach (var microphone in microphones.Where(x => x.Measure))
                 {
                     WpfPlot1.Plot.AddSignal(microphone.LiveData, label:microphone.Name);
                 }

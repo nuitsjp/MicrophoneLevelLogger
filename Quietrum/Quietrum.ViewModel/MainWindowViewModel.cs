@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Kamishibai;
 using Reactive.Bindings;
@@ -16,13 +17,12 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
     [ObservableProperty]
     private TimeSpan _elapsed = TimeSpan.Zero;
 
-    private readonly ReactivePropertySlim<IList<MicrophoneViewModel>> _microphones = new(new List<MicrophoneViewModel>());
-    public ReadOnlyReactivePropertySlim<IList<MicrophoneViewModel>> Microphones { get; }
+    [ObservableProperty]
+    private IList<MicrophoneViewModel> _microphones = new List<MicrophoneViewModel>();
     
     public MainWindowViewModel(IAudioInterfaceProvider audioInterfaceProvider)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
-        Microphones = _microphones.ToReadOnlyReactivePropertySlim()!;
     }
 
     public async Task OnNavigatedAsync(PostForwardEventArgs args)
@@ -32,7 +32,7 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
             .ObserveProperty(x => x.Microphones)
             .Subscribe(microphones =>
             {
-                List<MicrophoneViewModel> newViewModels = new(Microphones.Value);
+                List<MicrophoneViewModel> newViewModels = new(Microphones);
                 // 接続されたIMicrophoneを追加する。
                 newViewModels.AddRange(
                     microphones
@@ -40,6 +40,7 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
                         .Select(x =>
                         {
                             var microphone = new MicrophoneViewModel(x, RecordingConfig);
+                            microphone.PropertyChanged += MicrophoneOnPropertyChanged;
                             microphone.StartRecording();
                             return microphone;
                         }));
@@ -48,15 +49,21 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
                     .ToList()
                     .ForEach(viewModel =>
                     {
+                        viewModel.PropertyChanged -= MicrophoneOnPropertyChanged;
                         newViewModels.Remove(viewModel);
                     });
-                _microphones.Value = newViewModels;
+                Microphones = newViewModels;
             });
+    }
+
+    private void MicrophoneOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(Microphones));
     }
 
     public void Dispose()
     {
-        Microphones.Value.Dispose();
+        Microphones.Dispose();
         Microphones.Dispose();
     }
 }
