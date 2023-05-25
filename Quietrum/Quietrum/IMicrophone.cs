@@ -1,11 +1,12 @@
-﻿using NAudio.Wave;
+﻿using System.ComponentModel;
+using NAudio.Wave;
 
 namespace Quietrum;
 
 /// <summary>
 /// マイク
 /// </summary>
-public interface IMicrophone : IDisposable
+public interface IMicrophone : IDisposable, INotifyPropertyChanged
 {
     /// <summary>
     /// ID

@@ -1,5 +1,6 @@
 ﻿using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using MMDeviceEnumerator = NAudio.CoreAudioApi.MMDeviceEnumerator;
@@ -9,7 +10,7 @@ namespace Quietrum;
 /// <summary>
 /// マイク
 /// </summary>
-public class Microphone : IMicrophone
+public partial class Microphone : ObservableObject, IMicrophone
 {
     private readonly MMDevice _mmDevice;
 
@@ -31,7 +32,7 @@ public class Microphone : IMicrophone
         Id = id;
         Name = name;
         SystemName = systemName;
-        Measure = measure;
+        _measure = measure;
         _mmDevice = mmDevice;
     }
 
@@ -47,7 +48,8 @@ public class Microphone : IMicrophone
     /// Windows上の名称
     /// </summary>
     public string SystemName { get; }
-    public bool Measure { get; set; }
+
+    [ObservableProperty] public bool _measure;
 
     /// <summary>
     /// 入力レベル
@@ -68,23 +70,6 @@ public class Microphone : IMicrophone
         }
     }
 
-    private int GetDeviceNumber()
-    {
-        using MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
-        var mmDevices = enumerator
-            .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
-            .ToArray();
-
-        for (int i = 0; i < mmDevices.Length; i++)
-        {
-            if (mmDevices[i].ID == Id.AsPrimitive())
-            {
-                return i;
-            }
-        }
-
-        throw new NotImplementedException("デバイスが処理中に抜かれた場合の対応は未実装です。");
-    }
     public IObservable<byte[]> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan, CancellationToken cancellationToken)
     {
         var subject = new Subject<byte[]>();

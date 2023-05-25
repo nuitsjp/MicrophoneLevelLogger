@@ -19,8 +19,16 @@ public partial class MicrophoneViewModel : ObservableObject
 
     public MicrophoneId Id => _microphone.Id;
     public string Name => _microphone.Name;
-    [ObservableProperty]
-    private bool _visible = true;
+
+    public bool Measure
+    {
+        get => _microphone.Measure;
+        set
+        {
+            _microphone.Measure = value;
+            OnPropertyChanged();
+        }
+    }
     public double[] LiveData { get; }
 
     public void StartRecording(CancellationToken token)

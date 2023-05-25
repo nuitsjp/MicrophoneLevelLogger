@@ -1,4 +1,5 @@
-﻿using System.Management;
+﻿using System.ComponentModel;
+using System.Management;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
 
@@ -60,16 +61,29 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
                 _settings.AddMicrophoneConfig(microphoneConfig);
             }
 
-            yield return new Microphone(
+            var microphone = new Microphone(
                     microphoneId,
                     microphoneConfig.Name,
                     mmDevice.FriendlyName, 
                     microphoneConfig.Measure,
                     mmDevice);
+            microphone.PropertyChanged += MicrophoneOnPropertyChanged;
+            yield return microphone;
         }
 
         if (modified)
         {
+            _settingsRepository.SaveAsync(_settings);
+        }
+    }
+
+    private void MicrophoneOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (sender is IMicrophone microphone)
+        {
+            var config = _settings.GetMicrophoneConfig(microphone.Id);
+            config.Name = microphone.Name;
+            config.Measure = microphone.Measure;
             _settingsRepository.SaveAsync(_settings);
         }
     }

@@ -69,5 +69,10 @@ public class Settings
         return config is not null;
     }
 
+    public MicrophoneConfig GetMicrophoneConfig(MicrophoneId id)
+    {
+        return _microphoneConfigs.Single(x => x.Id == id);
+    }
+
     public void AddMicrophoneConfig(MicrophoneConfig microphoneConfig) => _microphoneConfigs.Add(microphoneConfig);
 }

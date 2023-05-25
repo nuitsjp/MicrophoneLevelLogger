@@ -94,7 +94,13 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True"/>
-                            <DataGridCheckBoxColumn Header="Visible" Binding="{Binding Visible}" />
+                            <DataGridTemplateColumn IsReadOnly="True" Header="Measure" Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding Measure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>                        
                         </DataGrid.Columns>
                     </DataGrid>
                     <scottPlot:WpfPlot Grid.Row="1" x:Name="WpfPlot1" >
