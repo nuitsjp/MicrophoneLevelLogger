@@ -23,8 +23,9 @@ public class AudioInterfaceProvider : IAudioInterfaceProvider
     /// IAudioInterfaceを解決する。
     /// </summary>
     /// <returns></returns>
-    public IAudioInterface Resolve()
+    public async Task<IAudioInterface> ResolveAsync()
     {
-        return new AudioInterface(_settingsRepository);
+        var settings = await _settingsRepository.LoadAsync();
+        return new AudioInterface(_settingsRepository, settings);
     }
 }

@@ -19,19 +19,19 @@ public class Microphone : IMicrophone
     /// <param name="id"></param>
     /// <param name="name"></param>
     /// <param name="systemName"></param>
-    /// <param name="status"></param>
+    /// <param name="measure"></param>
     /// <param name="mmDevice"></param>
     public Microphone(
         MicrophoneId id,
         string name,
         string systemName,
-        MicrophoneStatus status,
+        bool measure,
         MMDevice mmDevice)
     {
         Id = id;
         Name = name;
         SystemName = systemName;
-        Status = status;
+        Measure = measure;
         _mmDevice = mmDevice;
     }
 
@@ -47,10 +47,8 @@ public class Microphone : IMicrophone
     /// Windows上の名称
     /// </summary>
     public string SystemName { get; }
-    /// <summary>
-    /// 状態
-    /// </summary>
-    public MicrophoneStatus Status { get; }
+    public bool Measure { get; set; }
+
     /// <summary>
     /// 入力レベル
     /// </summary>

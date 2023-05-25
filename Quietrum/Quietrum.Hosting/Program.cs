@@ -8,7 +8,7 @@ using Quietrum.ViewModel;
 
 var builder = KamishibaiApplication<App, MainWindow>.CreateBuilder();
 
-builder.Services.AddTransient<IAudioInterface, AudioInterface>();
+builder.Services.AddTransient<IAudioInterfaceProvider, AudioInterfaceProvider>();
 builder.Services.AddTransient<ISettingsRepository, SettingsRepository>();
 
 builder.Services.AddPresentation<MainWindow, MainWindowViewModel>();

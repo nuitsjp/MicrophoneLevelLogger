@@ -8,11 +8,11 @@ using ScottPlot;
 namespace Quietrum.ViewModel;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public partial class MainWindowViewModel : ObservableObject
+public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAware
 {
     public RecordingConfig RecordingConfig { get; } = RecordingConfig.Default;
 
-    private readonly IAudioInterface _audioInterface;
+    private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     [ObservableProperty]
     private TimeSpan _elapsed = TimeSpan.Zero;
 
@@ -23,34 +23,38 @@ public partial class MainWindowViewModel : ObservableObject
 
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-    public MainWindowViewModel(IAudioInterface audioInterface)
+    public MainWindowViewModel(IAudioInterfaceProvider audioInterfaceProvider)
     {
-        _audioInterface = audioInterface;
+        _audioInterfaceProvider = audioInterfaceProvider;
         Microphones = _microphones.ToReadOnlyReactivePropertySlim()!;
+    }
 
-        _audioInterface
+    public async Task OnNavigatedAsync(PostForwardEventArgs args)
+    {
+        var audioInterface = await _audioInterfaceProvider.ResolveAsync();
+        audioInterface
             .ObserveProperty(x => x.Microphones)
             .Subscribe(microphones =>
-        {
-            List<MicrophoneViewModel> newViewModels = new(Microphones.Value);
-            // 接続されたIMicrophoneを追加する。
-            newViewModels.AddRange(
-                microphones
-                    .Where(x => newViewModels.Empty(viewModel => viewModel.Id == x.Id))
-                    .Select(x =>
+            {
+                List<MicrophoneViewModel> newViewModels = new(Microphones.Value);
+                // 接続されたIMicrophoneを追加する。
+                newViewModels.AddRange(
+                    microphones
+                        .Where(x => newViewModels.Empty(viewModel => viewModel.Id == x.Id))
+                        .Select(x =>
+                        {
+                            var microphone = new MicrophoneViewModel(x, RecordingConfig);
+                            microphone.StartRecording(_cancellationTokenSource.Token);
+                            return microphone;
+                        }));
+                // 除去されたIMicrophoneを削除する
+                newViewModels.Where(x => microphones.Empty(microphone => microphone.Id == x.Id))
+                    .ToList()
+                    .ForEach(viewModel =>
                     {
-                        var microphone = new MicrophoneViewModel(x, RecordingConfig);
-                        microphone.StartRecording(_cancellationTokenSource.Token);
-                        return microphone;
-                    }));
-            // 除去されたIMicrophoneを削除する
-            newViewModels.Where(x => microphones.Empty(microphone => microphone.Id == x.Id))
-                .ToList()
-                .ForEach(viewModel =>
-                {
-                    newViewModels.Remove(viewModel);
-                });
-            _microphones.Value = newViewModels;
-        });
+                        newViewModels.Remove(viewModel);
+                    });
+                _microphones.Value = newViewModels;
+            });
     }
 }

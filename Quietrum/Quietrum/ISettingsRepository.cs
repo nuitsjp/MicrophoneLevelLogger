@@ -11,11 +11,6 @@ public interface ISettingsRepository
     /// <returns></returns>
     Task<Settings> LoadAsync();
     /// <summary>
-    /// Settingsをロードする。
-    /// </summary>
-    /// <returns></returns>
-    Settings Load();
-    /// <summary>
     /// Settingsを保存する。
     /// </summary>
     /// <param name="settings"></param>

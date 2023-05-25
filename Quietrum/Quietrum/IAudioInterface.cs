@@ -11,12 +11,6 @@ public interface IAudioInterface : INotifyPropertyChanged, IDisposable
     /// 
     /// </summary>
     IReadOnlyList<IMicrophone> Microphones { get; }
-    /// <summary>
-    /// マイク一覧を取得する。
-    /// </summary>
-    /// <param name="status"></param>
-    /// <returns></returns>
-    IEnumerable<IMicrophone> GetMicrophones(MicrophoneStatus status = MicrophoneStatus.Enable);
 
     /// <summary>
     /// 現在有効なスピーカーを取得する。

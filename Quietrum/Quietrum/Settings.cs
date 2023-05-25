@@ -5,14 +5,7 @@
 /// </summary>
 public class Settings
 {
-    /// <summary>
-    /// マイクの別名
-    /// </summary>
-    private readonly List<Alias> _aliases;
-    /// <summary>
-    /// 無効化されているマイク
-    /// </summary>
-    private readonly List<MicrophoneId> _disabledMicrophones;
+    private readonly List<MicrophoneConfig> _microphoneConfigs;
 
     /// <summary>
     /// インスタンスを生成する。
@@ -22,18 +15,16 @@ public class Settings
     /// <param name="recordingSpan"></param>
     /// <param name="isEnableRemotePlaying"></param>
     /// <param name="isEnableRemoteRecording"></param>
-    /// <param name="aliases"></param>
-    /// <param name="disabledMicrophones"></param>
     /// <param name="selectedSpeakerId"></param>
+    /// <param name="microphoneConfigs"></param>
     public Settings(
         string mediaPlayerHost,
         string recorderHost,
         TimeSpan recordingSpan,
         bool isEnableRemotePlaying,
         bool isEnableRemoteRecording, 
-        IReadOnlyList<Alias> aliases, 
-        IReadOnlyList<MicrophoneId> disabledMicrophones, 
-        SpeakerId? selectedSpeakerId)
+        SpeakerId? selectedSpeakerId, 
+        IReadOnlyList<MicrophoneConfig> microphoneConfigs)
     {
         MediaPlayerHost = mediaPlayerHost;
         RecorderHost = recorderHost;
@@ -41,8 +32,7 @@ public class Settings
         IsEnableRemotePlaying = isEnableRemotePlaying;
         IsEnableRemoteRecording = isEnableRemoteRecording;
         SelectedSpeakerId = selectedSpeakerId;
-        _aliases = aliases.ToList();
-        _disabledMicrophones = disabledMicrophones.ToList();
+        _microphoneConfigs = microphoneConfigs.ToList();
     }
 
     /// <summary>
@@ -66,57 +56,18 @@ public class Settings
     /// </summary>
     public string RecorderHost { get; }
     /// <summary>
-    /// マイクの別名
+    /// マイク設定
     /// </summary>
-    public IReadOnlyList<Alias> Aliases => _aliases;
-    /// <summary>
-    /// 無効化されたマイク
-    /// </summary>
-    public IReadOnlyList<MicrophoneId> DisabledMicrophones => _disabledMicrophones;
+    public IReadOnlyList<MicrophoneConfig> MicrophoneConfigs => _microphoneConfigs;
+
     public SpeakerId? SelectedSpeakerId { get; }
 
-    /// <summary>
-    /// 別名を更新する
-    /// </summary>
-    /// <param name="alias"></param>
-    public void UpdateAlias(Alias alias)
+    public bool TryGetMicrophoneConfig(MicrophoneId id, out MicrophoneConfig microphoneConfig)
     {
-        _aliases.Remove(x => x.Id == alias.Id);
-        _aliases.Add(alias);
+        var config = _microphoneConfigs.SingleOrDefault(x => x.Id == id);
+        microphoneConfig = config!;
+        return config is not null;
     }
 
-    /// <summary>
-    /// 別名を削除する
-    /// </summary>
-    /// <param name="alias"></param>
-    public void RemoveAlias(Alias alias)
-    {
-        _aliases.Remove(alias);
-    }
-
-    /// <summary>
-    /// マイクを無効化する
-    /// </summary>
-    /// <param name="id"></param>
-    public void DisableMicrophone(MicrophoneId id)
-    {
-        if (_disabledMicrophones.Contains(id))
-        {
-            return;
-        }
-        _disabledMicrophones.Add(id);
-    }
-
-    /// <summary>
-    /// マイクを有効化する
-    /// </summary>
-    /// <param name="id"></param>
-    public void EnableMicrophone(MicrophoneId id)
-    {
-        if (_disabledMicrophones.Contains(id))
-        {
-            _disabledMicrophones.Remove(id);
-        }
-    }
-
+    public void AddMicrophoneConfig(MicrophoneConfig microphoneConfig) => _microphoneConfigs.Add(microphoneConfig);
 }

@@ -19,10 +19,11 @@ public interface IMicrophone : IDisposable
     /// Windows上の名称
     /// </summary>
     string SystemName { get; }
+
     /// <summary>
-    /// ステータス
+    /// 計測するか、しないか取得する。
     /// </summary>
-    MicrophoneStatus Status { get; }
+    bool Measure { get; set; }
     /// <summary>
     /// 入力レベル
     /// </summary>

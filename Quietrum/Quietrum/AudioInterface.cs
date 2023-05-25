@@ -24,27 +24,17 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
     [ObservableProperty]
     private IReadOnlyList<IMicrophone> _microphones;
 
+    private Settings _settings;
     /// <summary>
     /// すべてのマイクを扱うオーディオ インターフェースを作成する。
     /// </summary>
     /// <param name="settingsRepository"></param>
-    public AudioInterface(ISettingsRepository settingsRepository)
+    /// <param name="settings"></param>
+    public AudioInterface(ISettingsRepository settingsRepository, Settings settings)
     {
         _settingsRepository = settingsRepository;
-        _microphones = LoadMicrophones(_settingsRepository.Load()).ToList();
-        _watcher.EventArrived += WatcherEventArrived;
-        _watcher.Start();
-    }
-
-    /// <summary>
-    /// 任意のマイクを扱うオーディオ インターフェースを作成する。
-    /// </summary>
-    /// <param name="settingsRepository"></param>
-    /// <param name="microphones"></param>
-    public AudioInterface(ISettingsRepository settingsRepository, params IMicrophone[] microphones)
-    {
-        _settingsRepository = settingsRepository;
-        _microphones = microphones;
+        _settings = settings;
+        _microphones = LoadMicrophones().ToList();
         _watcher.EventArrived += WatcherEventArrived;
         _watcher.Start();
     }
@@ -52,37 +42,37 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
     /// <summary>
     /// すべてのマイクをロードする。
     /// </summary>
-    /// <param name="settings"></param>
     /// <returns></returns>
-    private IEnumerable<IMicrophone> LoadMicrophones(Settings settings)
+    private IEnumerable<IMicrophone> LoadMicrophones()
     {
         using var enumerator = new MMDeviceEnumerator();
         var mmDevices = enumerator
             .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
             .ToArray();
+        var modified = false;
         foreach (var mmDevice in mmDevices)
         {
             var microphoneId = new MicrophoneId(mmDevice.ID);
-            var alias = settings.Aliases.SingleOrDefault(x => x.Id == microphoneId)?.Name ?? mmDevice.FriendlyName;
+            if (_settings.TryGetMicrophoneConfig(microphoneId, out var microphoneConfig) is false)
+            {
+                modified = true;
+                microphoneConfig = new MicrophoneConfig(microphoneId, mmDevice.FriendlyName, true);
+                _settings.AddMicrophoneConfig(microphoneConfig);
+            }
+
             yield return new Microphone(
-                microphoneId,
-                alias,
-                mmDevice.FriendlyName, 
-                settings.DisabledMicrophones.NotContains(microphoneId) 
-                    ? MicrophoneStatus.Enable 
-                    : MicrophoneStatus.Disable,
-                mmDevice);
+                    microphoneId,
+                    microphoneConfig.Name,
+                    mmDevice.FriendlyName, 
+                    microphoneConfig.Measure,
+                    mmDevice);
+        }
+
+        if (modified)
+        {
+            _settingsRepository.SaveAsync(_settings);
         }
     }
-
-    /// <summary>
-    /// 状態が合致するマイクを取得する。
-    /// </summary>
-    /// <param name="status"></param>
-    /// <returns></returns>
-    [Obsolete]
-    public IEnumerable<IMicrophone> GetMicrophones(MicrophoneStatus status = MicrophoneStatus.Enable) =>
-        Microphones.Where(x => status.HasFlag(x.Status));
 
     /// <summary>
     /// 現在有効なスピーカーを取得する。
@@ -115,9 +105,8 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
                         settings.RecordingSpan,
                         settings.IsEnableRemotePlaying,
                         settings.IsEnableRemoteRecording,
-                        settings.Aliases,
-                        settings.DisabledMicrophones,
-                        null));
+                        null,
+                        settings.MicrophoneConfigs));
                 using var mmDevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
                 return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
             }
@@ -130,13 +119,15 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
     /// <returns></returns>
     public IEnumerable<ISpeaker> GetSpeakers()
     {
-        using var emurator = new MMDeviceEnumerator();
-        var mmDevices = emurator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
+        using var enumerator = new MMDeviceEnumerator();
+        var mmDevices = enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
         foreach (var mmDevice in mmDevices)
+        {
             using (mmDevice)
             {
                 yield return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
             }
+        }
     }
     
     private void WatcherEventArrived(object sender, EventArrivedEventArgs e)
@@ -148,7 +139,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
         {
             case "__InstanceCreationEvent":
             case "__InstanceDeletionEvent":
-                Microphones = LoadMicrophones(_settingsRepository.Load()).ToList();
+                Microphones = LoadMicrophones().ToList();
                 break;
         }
     }
