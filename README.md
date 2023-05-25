@@ -42,6 +42,8 @@ MicrophoneLevelLoggerは、マイクの録音レベルを定量的に計測す�
 
 # メモ
 
+Quietrum : "Quiet"（静か）と"Spectrum"（範囲、スペクトル）を組み合わせています
+
 ## 用語
 
 |英語|日本語|説明|
