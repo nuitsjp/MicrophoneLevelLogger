@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using NAudio.CoreAudioApi;
+using NAudio.Wave;
 
 namespace Quietrum;
 
@@ -59,7 +60,7 @@ public class MicrophoneRecorder : IMicrophoneRecorder
     {
         var waveInEvent = new WaveInEvent
         {
-            DeviceNumber = Microphone.DeviceNumber.AsPrimitive(),
+            DeviceNumber = GetDeviceNumber(),
             WaveFormat = new WaveFormat(rate: 48_000, bits: 16, channels: 1),
             BufferMilliseconds = (int)SamplingSpan.TotalMilliseconds
         };
@@ -100,5 +101,21 @@ public class MicrophoneRecorder : IMicrophoneRecorder
         waveInEvent.StartRecording();
 
         return Task.CompletedTask;
+    }
+    
+    private int GetDeviceNumber()
+    {
+        using MMDeviceEnumerator deviceEnumerator = new MMDeviceEnumerator();
+        MMDeviceCollection devices = deviceEnumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
+
+        for (int i = 0; i < devices.Count; i++)
+        {
+            if (devices[i].ID == Microphone.Id.AsPrimitive())
+            {
+                return i;
+            }
+        }
+
+        throw new NotImplementedException("デバイスが処理中に抜かれた場合の対応は未実装です。");
     }
 }

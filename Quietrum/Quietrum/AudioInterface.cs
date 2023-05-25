@@ -66,37 +66,19 @@ public class AudioInterface : IAudioInterface
         var mmDevices = enumerator
             .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
             .ToArray();
-        try
+        foreach (var mmDevice in mmDevices)
         {
-            for (var i = 0; i < WaveIn.DeviceCount; i++)
-            {
-                var capability = WaveIn.GetCapabilities(i);
-                var name = capability.ProductName;
-                // 名称が長いとWaveIn側の名前は途中までしか取得できないため、前方一致で判定する
-                var mmDevice = mmDevices.SingleOrDefault(x => x.FriendlyName.StartsWith(name));
-                if (mmDevice is not null)
-                {
-                    var microphoneId = new MicrophoneId(mmDevice.ID);
-                    var alias = settings.Aliases.SingleOrDefault(x => x.Id == microphoneId)?.Name ?? mmDevice.FriendlyName;
-                    yield return new Microphone(
-                        microphoneId,
-                        alias,
-                        mmDevice.FriendlyName, 
-                        i,
-                        settings.DisabledMicrophones.NotContains(microphoneId) 
-                            ? MicrophoneStatus.Enable 
-                            : MicrophoneStatus.Disable);
-                }
-            }
+            var microphoneId = new MicrophoneId(mmDevice.ID);
+            var alias = settings.Aliases.SingleOrDefault(x => x.Id == microphoneId)?.Name ?? mmDevice.FriendlyName;
+            yield return new Microphone(
+                microphoneId,
+                alias,
+                mmDevice.FriendlyName, 
+                settings.DisabledMicrophones.NotContains(microphoneId) 
+                    ? MicrophoneStatus.Enable 
+                    : MicrophoneStatus.Disable,
+                mmDevice);
         }
-        finally
-        {
-            foreach (var mmDevice in mmDevices)
-            {
-                mmDevice.Dispose();
-            }
-        }
-
     }
 
     /// <summary>

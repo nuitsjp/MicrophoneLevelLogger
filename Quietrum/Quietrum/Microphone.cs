@@ -1,5 +1,6 @@
 ﻿using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using MMDeviceEnumerator = NAudio.CoreAudioApi.MMDeviceEnumerator;
 
@@ -10,31 +11,34 @@ namespace Quietrum;
 /// </summary>
 public class Microphone : IMicrophone
 {
+    private readonly MMDevice _mmDevice;
+
     /// <summary>
     /// インスタンスを生成する。
     /// </summary>
     /// <param name="id"></param>
     /// <param name="name"></param>
     /// <param name="systemName"></param>
-    /// <param name="deviceNumber"></param>
     /// <param name="status"></param>
-    public Microphone(MicrophoneId id, string name, string systemName, int deviceNumber, MicrophoneStatus status)
+    /// <param name="mmDevice"></param>
+    public Microphone(
+        MicrophoneId id,
+        string name,
+        string systemName,
+        MicrophoneStatus status,
+        MMDevice mmDevice)
     {
         Id = id;
-        DeviceNumber = new DeviceNumber(deviceNumber);
         Name = name;
         SystemName = systemName;
         Status = status;
+        _mmDevice = mmDevice;
     }
 
     /// <summary>
     /// ID
     /// </summary>
     public MicrophoneId Id { get; }
-    /// <summary>
-    /// デバイス番号
-    /// </summary>
-    public DeviceNumber DeviceNumber { get; }
     /// <summary>
     /// 名称
     /// </summary>
@@ -66,36 +70,50 @@ public class Microphone : IMicrophone
         }
     }
 
+    private int GetDeviceNumber()
+    {
+        using MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
+        var mmDevices = enumerator
+            .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
+            .ToArray();
+
+        for (int i = 0; i < mmDevices.Length; i++)
+        {
+            if (mmDevices[i].ID == Id.AsPrimitive())
+            {
+                return i;
+            }
+        }
+
+        throw new NotImplementedException("デバイスが処理中に抜かれた場合の対応は未実装です。");
+    }
     public IObservable<byte[]> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan, CancellationToken cancellationToken)
     {
         var subject = new Subject<byte[]>();
-        var waveIn = new WaveInEvent()
+        WasapiCapture capture = new WasapiCapture(_mmDevice)
         {
-            DeviceNumber = DeviceNumber.AsPrimitive(),
             WaveFormat = waveFormat,
-            BufferMilliseconds = (int)bufferSpan.TotalMilliseconds
-        };
-
-        waveIn.DataAvailable += (s, a) =>
-        {
-            var buffer = new byte[a.BytesRecorded];
-            Buffer.BlockCopy(a.Buffer, 0, buffer, 0, a.BytesRecorded);
-            subject.OnNext(buffer);
-        };
-
-        waveIn.RecordingStopped += (sender, e) =>
-        {
-            waveIn.Dispose();
-            waveIn = null;
-            subject.OnCompleted();
+            ShareMode = AudioClientShareMode.Shared
         };
         
+
+        capture.DataAvailable += (_, args) =>
+        {
+            var buffer = new byte[args.BytesRecorded];
+            Buffer.BlockCopy(args.Buffer, 0, buffer, 0, args.BytesRecorded);
+            subject.OnNext(buffer);
+        };
+        capture.RecordingStopped += (sender, args) =>
+        {
+            capture.Dispose();
+            subject.OnCompleted();
+        };
         cancellationToken.Register(() =>
         {
-            waveIn.StopRecording();
+            capture.StopRecording();
         });
 
-        waveIn.StartRecording();
+        capture.StartRecording();
         return subject.AsObservable();
     }
 
@@ -104,4 +122,9 @@ public class Microphone : IMicrophone
     /// </summary>
     /// <returns></returns>
     public override string ToString() => Name;
+
+    public void Dispose()
+    {
+        _mmDevice.Dispose();
+    }
 }

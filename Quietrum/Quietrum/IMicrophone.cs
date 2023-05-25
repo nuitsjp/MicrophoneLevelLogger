@@ -5,16 +5,12 @@ namespace Quietrum;
 /// <summary>
 /// マイク
 /// </summary>
-public interface IMicrophone
+public interface IMicrophone : IDisposable
 {
     /// <summary>
     /// ID
     /// </summary>
     MicrophoneId Id { get; }
-    /// <summary>
-    /// デバイス番号
-    /// </summary>
-    DeviceNumber DeviceNumber { get; }
     /// <summary>
     /// 名称
     /// </summary>
