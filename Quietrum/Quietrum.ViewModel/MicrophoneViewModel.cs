@@ -37,6 +37,14 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
         set
         {
             _microphone.Measure = value;
+            if (_microphone.Measure)
+            {
+                _microphone.StartRecording(_recordingConfig.WaveFormat, _recordingConfig.RecordingInterval);
+            }
+            else
+            {
+                _microphone.StopRecording();;
+            }
             OnPropertyChanged();
         }
     }
