@@ -1,4 +1,6 @@
-﻿namespace Quietrum;
+﻿using NAudio.CoreAudioApi;
+
+namespace Quietrum;
 
 /// <summary>
 /// MicrophoneLevelLoggerの各種設定

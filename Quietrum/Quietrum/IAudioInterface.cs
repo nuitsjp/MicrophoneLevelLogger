@@ -7,6 +7,8 @@ namespace Quietrum;
 /// </summary>
 public interface IAudioInterface : INotifyPropertyChanged, IDisposable
 {
+    Task ActivateAsync();
+    
     /// <summary>
     /// 
     /// </summary>

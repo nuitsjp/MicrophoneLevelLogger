@@ -16,9 +16,16 @@ public static class EnumerableExtension
         return source.Any() is false;
     }
 
-    public static bool Empty<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+    public static bool NotContains<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
     {
         return source.Any(predicate) is false;
+    }
+
+    public static bool TryGet<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate, out TSource value)
+    {
+        var result = source.SingleOrDefault(predicate);
+        value = result!;
+        return result is not null;
     }
 
     /// <summary>

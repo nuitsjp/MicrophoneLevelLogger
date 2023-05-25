@@ -40,7 +40,7 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
                 // 接続されたIMicrophoneを追加する。
                 newViewModels.AddRange(
                     microphones
-                        .Where(x => newViewModels.Empty(viewModel => viewModel.Id == x.Id))
+                        .Where(x => newViewModels.NotContains(viewModel => viewModel.Id == x.Id))
                         .Select(x =>
                         {
                             var microphone = new MicrophoneViewModel(x, RecordingConfig);
@@ -48,7 +48,7 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
                             return microphone;
                         }));
                 // 除去されたIMicrophoneを削除する
-                newViewModels.Where(x => microphones.Empty(microphone => microphone.Id == x.Id))
+                newViewModels.Where(x => microphones.NotContains(microphone => microphone.Id == x.Id))
                     .ToList()
                     .ForEach(viewModel =>
                     {

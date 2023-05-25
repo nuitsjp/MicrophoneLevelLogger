@@ -23,68 +23,95 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
     /// 
     /// </summary>
     [ObservableProperty]
-    private IReadOnlyList<IMicrophone> _microphones;
+    private IReadOnlyList<IMicrophone> _microphones = new List<IMicrophone>();
 
     private Settings _settings;
     /// <summary>
     /// すべてのマイクを扱うオーディオ インターフェースを作成する。
     /// </summary>
     /// <param name="settingsRepository"></param>
-    /// <param name="settings"></param>
-    public AudioInterface(ISettingsRepository settingsRepository, Settings settings)
+    internal AudioInterface(ISettingsRepository settingsRepository)
     {
         _settingsRepository = settingsRepository;
-        _settings = settings;
-        _microphones = LoadMicrophones().ToList();
+        _settings = default!;
         _watcher.EventArrived += WatcherEventArrived;
         _watcher.Start();
     }
 
+    public async Task ActivateAsync()
+    {
+        _settings = await _settingsRepository.LoadAsync();
+        await ReloadMicrophonesAsync();
+    }
+
     /// <summary>
-    /// すべてのマイクをロードする。
+    /// すべてのマイクをリロードする。
     /// </summary>
     /// <returns></returns>
-    private IEnumerable<IMicrophone> LoadMicrophones()
+    private async Task ReloadMicrophonesAsync()
     {
+        var newMicrophones = new List<IMicrophone>();
         using var enumerator = new MMDeviceEnumerator();
         var mmDevices = enumerator
             .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
             .ToArray();
         var modified = false;
+        // 新たに接続されたマイクを追加する。
         foreach (var mmDevice in mmDevices)
         {
             var microphoneId = new MicrophoneId(mmDevice.ID);
-            if (_settings.TryGetMicrophoneConfig(microphoneId, out var microphoneConfig) is false)
+            if (Microphones.TryGet(x => x.Id == microphoneId, out var microphone))
             {
-                modified = true;
-                microphoneConfig = new MicrophoneConfig(microphoneId, mmDevice.FriendlyName, true);
-                _settings.AddMicrophoneConfig(microphoneConfig);
+                // すでに登録されているマイクだった場合、mmDeviceのリソースは開放する。
+                mmDevice.Dispose();
             }
+            else
+            {
+                // 新たに接続されたマイクだった場合
+                if (_settings.TryGetMicrophoneConfig(microphoneId, out var microphoneConfig) is false)
+                {
+                    modified = true;
+                    microphoneConfig = new MicrophoneConfig(microphoneId, mmDevice.FriendlyName, true);
+                    _settings.AddMicrophoneConfig(microphoneConfig);
+                }
 
-            var microphone = new Microphone(
+                microphone = new Microphone(
                     microphoneId,
                     microphoneConfig.Name,
                     mmDevice.FriendlyName, 
                     microphoneConfig.Measure,
                     mmDevice);
-            microphone.PropertyChanged += MicrophoneOnPropertyChanged;
-            yield return microphone;
+                microphone.PropertyChanged += MicrophoneOnPropertyChanged;
+            }
+            newMicrophones.Add(microphone);
+        }
+
+        // 取り外されたマイクがあればリソースを開放する
+        foreach (var microphone in Microphones.ToArray())
+        {
+            if (newMicrophones.NotContains(x => x.Id == microphone.Id))
+            {
+                // 取り外されたマイクのリソースを開放する
+                microphone.Dispose();
+            }
         }
 
         if (modified)
         {
-            _settingsRepository.SaveAsync(_settings);
+            await _settingsRepository.SaveAsync(_settings);
         }
+
+        Microphones = newMicrophones;
     }
 
-    private void MicrophoneOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private async void MicrophoneOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (sender is IMicrophone microphone)
         {
             var config = _settings.GetMicrophoneConfig(microphone.Id);
             config.Name = microphone.Name;
             config.Measure = microphone.Measure;
-            _settingsRepository.SaveAsync(_settings);
+            await _settingsRepository.SaveAsync(_settings);
         }
     }
 
@@ -144,7 +171,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
         }
     }
     
-    private void WatcherEventArrived(object sender, EventArrivedEventArgs e)
+    private async void WatcherEventArrived(object sender, EventArrivedEventArgs e)
     {
         if (e.NewEvent["TargetInstance"] is not ManagementBaseObject) return;
         
@@ -153,7 +180,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
         {
             case "__InstanceCreationEvent":
             case "__InstanceDeletionEvent":
-                Microphones = LoadMicrophones().ToList();
+                await ReloadMicrophonesAsync();
                 break;
         }
     }
