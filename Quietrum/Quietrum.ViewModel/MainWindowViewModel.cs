@@ -54,7 +54,19 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
         }
     }
 
-    private void OnRecord(bool obj)
+    private void OnRecord(bool record)
+    {
+        if (record)
+        {
+            StartRecording();
+        }
+        else
+        {
+            StopRecording();
+        }
+    }
+
+    private void StartRecording()
     {
         const string recordNameFormat = "yyyy.MM.dd-HH.mm.ss";
         do
@@ -65,8 +77,18 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
         var directory = new DirectoryInfo(RecordName);
         directory.Create();
 
+        Microphones
+            .Where(x => x.Measure)
+            .ToList()
+            .ForEach(x => x.StartRecording(directory));
+    }
 
-        //throw new NotImplementedException();
+    private void StopRecording()
+    {
+        Microphones
+            .Where(x => x.Measure)
+            .ToList()
+            .ForEach(x => x.StopRecording());
     }
 
     public async Task OnNavigatedAsync(PostForwardEventArgs args)

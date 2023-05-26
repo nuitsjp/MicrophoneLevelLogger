@@ -6,6 +6,9 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
 {
     private readonly IMicrophone _microphone;
     private readonly RecordingConfig _recordingConfig;
+    private IObservable<byte[]>? _observable;
+    private IDisposable? _disposable;
+    private WaveRecorder? _waveRecorder;
 
     public MicrophoneViewModel(
         IMicrophone microphone,
@@ -52,14 +55,37 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
 
     public void StartMonitoring()
     {
-        var observable = _microphone.StartRecording(_recordingConfig.WaveFormat, _recordingConfig.RecordingInterval);
-        observable.Subscribe(OnNext);
+        _observable = _microphone.StartRecording(_recordingConfig.WaveFormat, _recordingConfig.RecordingInterval);
+        _disposable = _observable.Subscribe(OnNext);
     }
 
     public void StopMonitoring()
     {
         _microphone.StopRecording();
+        _disposable?.Dispose();
+        _observable = null;
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
+    }
+
+    public void StartRecording(DirectoryInfo directoryInfo)
+    {
+        if (_observable is null)
+        {
+            throw new InvalidOperationException();
+        }
+
+        var fileInfo = new FileInfo(Path.Combine(directoryInfo.FullName, Name + ".wav"));
+        _waveRecorder = new WaveRecorder(
+            fileInfo,
+            _recordingConfig.WaveFormat,
+            _observable);
+        _waveRecorder.StartRecording();
+    }
+
+    public void StopRecording()
+    {
+        _waveRecorder?.StopRecording();
+        _waveRecorder = null;
     }
 
     private void OnNext(byte[] bytes)
