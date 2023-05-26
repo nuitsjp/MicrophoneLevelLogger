@@ -80,7 +80,6 @@ public partial class Microphone : ObservableObject, IMicrophone
             WaveFormat = waveFormat,
             ShareMode = AudioClientShareMode.Shared
         };
-        
 
         _wasapiCapture.DataAvailable += (_, args) =>
         {

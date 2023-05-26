@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Kamishibai;
 using Reactive.Bindings;
 using Reactive.Bindings.Disposables;
@@ -17,9 +18,10 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
     public RecordingConfig RecordingConfig { get; } = RecordingConfig.Default;
 
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
+    [ObservableProperty] private int _threshold = -50;
     [ObservableProperty] private bool _monitor = true;
     [ObservableProperty] private bool _record;
-    [ObservableProperty] private string _recordName;
+    [ObservableProperty] private string _recordName = string.Empty;
     [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
     [ObservableProperty] private IList<MicrophoneViewModel> _microphones = new List<MicrophoneViewModel>();
     

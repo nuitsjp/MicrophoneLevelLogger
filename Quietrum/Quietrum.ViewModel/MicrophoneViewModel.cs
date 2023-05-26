@@ -9,6 +9,9 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
     private IObservable<byte[]>? _observable;
     private IDisposable? _disposable;
     private WaveRecorder? _waveRecorder;
+    [ObservableProperty] private string _minus30dB = string.Empty;
+    [ObservableProperty] private string _minus40dB = string.Empty;
+    [ObservableProperty] private string _minus50dB = string.Empty;
 
     public MicrophoneViewModel(
         IMicrophone microphone,
@@ -88,23 +91,33 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
         _waveRecorder = null;
     }
 
+    private List<double> _buffer = new();
     private void OnNext(byte[] bytes)
     {
         // "scroll" the whole chart to the left
         Array.Copy(LiveData, 1, LiveData, 0, LiveData.Length - 1);
 
-        var peakValue = 0;
+        var decibels = new double[bytes.Length / _recordingConfig.BytesPerSample];
         for (var index = 0; index < bytes.Length; index += _recordingConfig.BytesPerSample)
         {
             int value = BitConverter.ToInt16(bytes, index);
-            peakValue = Math.Max(peakValue, value);
+            var decibel = 20 * Math.Log10((double)value / short.MaxValue);
+            if (decibel < Decibel.Minimum.AsPrimitive()) decibel = Decibel.Minimum.AsPrimitive();
+            if (double.IsNaN(decibel))
+            {
+                decibel = Decibel.Minimum.AsPrimitive();
+            }
+            decibels[index / _recordingConfig.BytesPerSample] = decibel;
         }
 
-        var level = (double)peakValue / short.MaxValue;
-        var decibel = 20 * Math.Log10(level);
+        var data = decibels.Max();
 
         // place the newest data point at the end
-        LiveData[^1] = Math.Max(Math.Min(decibel, 0d), -84d);
+        LiveData[^1] = data;
+        // _buffer.AddRange(decibels);
+        // Minus30dB = $"{_buffer.Count(x => -30d < x) / (double)_buffer.Count * 100d:#0.00}%";
+        // Minus40dB = $"{_buffer.Count(x => -40d < x) / (double)_buffer.Count * 100d:#0.00}%";
+        // Minus50dB = $"{_buffer.Count(x => -50d < x) / (double)_buffer.Count * 100d:#0.00}%";
     }
 
     public void Dispose()
