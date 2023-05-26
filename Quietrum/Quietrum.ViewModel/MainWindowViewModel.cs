@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Kamishibai;
 using Reactive.Bindings;
+using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
 using ScottPlot;
 
@@ -11,18 +13,60 @@ namespace Quietrum.ViewModel;
 // ReSharper disable once ClassNeverInstantiated.Global
 public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAware, IDisposable
 {
+    private readonly CompositeDisposable _compositeDisposable = new();
     public RecordingConfig RecordingConfig { get; } = RecordingConfig.Default;
 
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
-    [ObservableProperty]
-    private TimeSpan _elapsed = TimeSpan.Zero;
-
-    [ObservableProperty]
-    private IList<MicrophoneViewModel> _microphones = new List<MicrophoneViewModel>();
+    [ObservableProperty] private bool _monitor = true;
+    [ObservableProperty] private bool _record;
+    [ObservableProperty] private string _recordName;
+    [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
+    [ObservableProperty] private IList<MicrophoneViewModel> _microphones = new List<MicrophoneViewModel>();
     
     public MainWindowViewModel(IAudioInterfaceProvider audioInterfaceProvider)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
+        this.ObserveProperty(x => x.Monitor)
+            .Skip(1)
+            .Subscribe(OnMonitor)
+            .AddTo(_compositeDisposable);
+        this.ObserveProperty(x => x.Record)
+            .Skip(1)
+            .Subscribe(OnRecord)
+            .AddTo(_compositeDisposable);
+    }
+
+    private void OnMonitor(bool monitor)
+    {
+        if (monitor)
+        {
+            Microphones
+                .Where(x => x.Measure)
+                .ToList()
+                .ForEach(x => x.StartMonitoring());
+        }
+        else
+        {
+            Microphones
+                .Where(x => x.Measure)
+                .ToList()
+                .ForEach(x => x.StopMonitoring());
+        }
+    }
+
+    private void OnRecord(bool obj)
+    {
+        const string recordNameFormat = "yyyy.MM.dd-HH.mm.ss";
+        do
+        {
+            RecordName = DateTime.Now.ToString(recordNameFormat);
+        } while (Directory.Exists(RecordName));
+
+        var directory = new DirectoryInfo(RecordName);
+        directory.Create();
+
+
+        //throw new NotImplementedException();
     }
 
     public async Task OnNavigatedAsync(PostForwardEventArgs args)
@@ -41,7 +85,10 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
                         {
                             var microphone = new MicrophoneViewModel(x, RecordingConfig);
                             microphone.PropertyChanged += MicrophoneOnPropertyChanged;
-                            microphone.StartRecording();
+                            if (microphone.Measure)
+                            {
+                                microphone.StartMonitoring();
+                            }
                             return microphone;
                         }));
                 // 除去されたIMicrophoneを削除する
@@ -65,5 +112,6 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
     {
         Microphones.Dispose();
         Microphones.Dispose();
+        _compositeDisposable.Dispose();
     }
 }

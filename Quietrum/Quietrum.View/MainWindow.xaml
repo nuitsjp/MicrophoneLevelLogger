@@ -29,6 +29,9 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="DefaultToggleButton" TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
+                <Setter Property="Margin" Value="5" />
+            </Style>
         </ResourceDictionary>
     </Window.Resources>    
     <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
@@ -88,9 +91,23 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <DataGrid ItemsSource="{Binding Microphones}" AutoGenerateColumns="False">
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <ToggleButton
+                            Content="{materialDesign:PackIcon Kind=Microphone}"
+                            IsChecked="{Binding Monitor}"
+                            Style="{StaticResource DefaultToggleButton}"
+                            ToolTip="マイク" />
+                        <ToggleButton
+                            Content="{materialDesign:PackIcon Kind=Record}"
+                            IsChecked="{Binding Record}"
+                            Style="{StaticResource DefaultToggleButton}"
+                            ToolTip="録音"/>
+                        <TextBox Text="{Binding RecordName}" Width="150"/>
+                    </StackPanel>
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Microphones}" AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                             <DataGridTextColumn Header="(SystemName)" Binding="{Binding SystemName}" IsReadOnly="True"/>
@@ -103,7 +120,7 @@
                             </DataGridTemplateColumn>                        
                         </DataGrid.Columns>
                     </DataGrid>
-                    <scottPlot:WpfPlot Grid.Row="1" x:Name="WpfPlot1" >
+                    <scottPlot:WpfPlot Grid.Row="2" x:Name="WpfPlot1" >
             
                     </scottPlot:WpfPlot>
                 </Grid>

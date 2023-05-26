@@ -39,23 +39,29 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
             _microphone.Measure = value;
             if (_microphone.Measure)
             {
-                _microphone.StartRecording(_recordingConfig.WaveFormat, _recordingConfig.RecordingInterval);
+                StartMonitoring();
             }
             else
             {
-                _microphone.StopRecording();;
+                StopMonitoring();
             }
             OnPropertyChanged();
         }
     }
     public double[] LiveData { get; }
 
-    public void StartRecording()
+    public void StartMonitoring()
     {
         var observable = _microphone.StartRecording(_recordingConfig.WaveFormat, _recordingConfig.RecordingInterval);
         observable.Subscribe(OnNext);
     }
-    
+
+    public void StopMonitoring()
+    {
+        _microphone.StopRecording();
+        Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
+    }
+
     private void OnNext(byte[] bytes)
     {
         // "scroll" the whole chart to the left
