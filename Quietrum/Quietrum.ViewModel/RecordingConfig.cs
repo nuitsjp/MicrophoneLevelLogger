@@ -5,11 +5,11 @@ namespace Quietrum.ViewModel;
 public record RecordingConfig(
     WaveFormat WaveFormat,
     TimeSpan RecordingSpan,
-    TimeSpan RecordingInterval)
+    RefreshRate RefreshRate)
 {
     public static readonly RecordingConfig Default =
-        new(new (48_000, 16, 1), TimeSpan.FromMinutes(2), TimeSpan.FromMilliseconds(50));
+        new(new (48_000, 16, 1), TimeSpan.FromMinutes(2), new RefreshRate(40));
 
-    public int RecordingLength => (int)(RecordingSpan / RecordingInterval);
+    public int RecordingLength => (int)(RecordingSpan / RefreshRate.Interval);
     public int BytesPerSample => WaveFormat.BitsPerSample / 8;
 }

@@ -1,4 +1,5 @@
-﻿using UnitGenerator;
+﻿using System.Security.Cryptography;
+using UnitGenerator;
 
 namespace Quietrum;
 
@@ -8,14 +9,18 @@ namespace Quietrum;
 [UnitOf(typeof(double), UnitGenerateOptions.Comparable | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.ArithmeticOperator)]
 public readonly partial struct Decibel
 {
+    public static readonly double MinimumValue = -84d;
+    public static readonly double MaximumValue = 0d;
+
     /// <summary>
     /// 最小値
     /// </summary>
-    public static readonly Decibel Minimum = new(-84);
+    public static readonly Decibel Minimum = new(MinimumValue);
+
     /// <summary>
     /// 最大値
     /// </summary>
-    public static readonly Decibel Maximum = new(0);
+    public static readonly Decibel Maximum = new(MaximumValue);
 
     /// <summary>
     /// 値を検証する。

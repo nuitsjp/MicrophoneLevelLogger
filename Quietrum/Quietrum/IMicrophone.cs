@@ -30,6 +30,6 @@ public interface IMicrophone : IDisposable, INotifyPropertyChanged
     /// </summary>
     VolumeLevel VolumeLevel { get; set; }
 
-    IObservable<byte[]> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan);
+    IObservable<WaveInEventArgs> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan);
     void StopRecording();
 }

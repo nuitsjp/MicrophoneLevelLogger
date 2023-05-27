@@ -44,13 +44,13 @@ namespace Quietrum.View
                     // データの全長
                     config.RecordingLength
                     // 表示時間を表示間隔で割ることで、表示幅を計算する
-                    - (int)(DisplayWidth / viewModel.RecordingConfig.RecordingInterval);
+                    - (int)(DisplayWidth / viewModel.RecordingConfig.RefreshRate.Interval);
                 WpfPlot1.Plot.SetAxisLimits(
                     xMin: xMin, xMax: config.RecordingLength,
                     yMin: -90, yMax: 0);
                 WpfPlot1.Plot.XAxis.SetBoundary(0, config.RecordingLength);
                 WpfPlot1.Plot.YAxis.SetBoundary(-90, 0);
-                WpfPlot1.Plot.XAxis.TickLabelFormat(x => $"{(((config.RecordingLength - x) * -1 * viewModel.RecordingConfig.RecordingInterval.TotalMilliseconds) / 1000d):#0.0[s]}");
+                WpfPlot1.Plot.XAxis.TickLabelFormat(x => $"{(((config.RecordingLength - x) * -1 * viewModel.RecordingConfig.RefreshRate.Interval.TotalMilliseconds) / 1000d):#0.0[s]}");
                 WpfPlot1.Configuration.LockVerticalAxis = true;
                 WpfPlot1.Plot.Legend(location:Alignment.UpperLeft);
                 Dispatcher.Invoke(() =>

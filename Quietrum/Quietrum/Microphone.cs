@@ -72,9 +72,9 @@ public partial class Microphone : ObservableObject, IMicrophone
     }
 
     private WasapiCapture? _wasapiCapture;
-    public IObservable<byte[]> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan)
+    public IObservable<WaveInEventArgs> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan)
     {
-        var subject = new Subject<byte[]>();
+        var subject = new Subject<WaveInEventArgs>();
         _wasapiCapture = new WasapiCapture(_mmDevice)
         {
             WaveFormat = waveFormat,
@@ -83,9 +83,9 @@ public partial class Microphone : ObservableObject, IMicrophone
 
         _wasapiCapture.DataAvailable += (_, args) =>
         {
-            var buffer = new byte[args.BytesRecorded];
-            Buffer.BlockCopy(args.Buffer, 0, buffer, 0, args.BytesRecorded);
-            subject.OnNext(buffer);
+            // var buffer = new byte[args.BytesRecorded];
+            // Buffer.BlockCopy(args.Buffer, 0, buffer, 0, args.BytesRecorded);
+            subject.OnNext(args);
         };
         _wasapiCapture.RecordingStopped += (_, _) =>
         {

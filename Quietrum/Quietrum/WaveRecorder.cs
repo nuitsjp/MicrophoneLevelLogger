@@ -4,14 +4,14 @@ namespace Quietrum;
 
 public class WaveRecorder
 {
-    private readonly IObservable<byte[]> _observable;
+    private readonly IObservable<WaveInEventArgs> _observable;
     private readonly WaveFileWriter _fileWriter;
     private IDisposable? _disposable;
 
     public WaveRecorder(
         FileInfo fileInfo,
         WaveFormat waveFormat, 
-        IObservable<byte[]> observable)
+        IObservable<WaveInEventArgs> observable)
     {
         _observable = observable;
         _fileWriter = new WaveFileWriter(fileInfo.FullName, waveFormat);
@@ -20,7 +20,7 @@ public class WaveRecorder
     public void StartRecording()
     {
         _disposable = _observable.Subscribe(
-            onNext: bytes => _fileWriter.Write(bytes, 0, bytes.Length),
+            onNext: e => _fileWriter.Write(e.Buffer, 0, e.BytesRecorded),
             onCompleted: OnCompleted);
     }
 
