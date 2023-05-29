@@ -1,4 +1,6 @@
-﻿namespace Quietrum;
+﻿using NAudio.Dsp;
+
+namespace Quietrum;
 
 /// <summary>
 /// From:ChatGPT
@@ -19,7 +21,32 @@
 /// したがって、あなたのケースでは、FFT長として512または1024を推奨します。
 /// ただし、これらの値は初期の推定値であり、実際のパフォーマンスと要件に基づいて調整することができます。
 /// </summary>
-public class FftFilter
+public class FastFourierTransform
 {
+    /// <summary>
+    /// FFTの長さ
+    /// </summary>
+    private const int FftLength = 1024;
+
+    /// <summary>
+    /// (int)Math.Log(FftLength, 2.0)
+    /// </summary>
+    private const int LogSize = 10;
+
+    public static Complex[] Transform(float[] audioData)
+    {
+        var fftBuffer = new Complex[FftLength];
     
+        // 音声データをFFTバッファにコピーします。
+        for (int i = 0; i < FftLength; i++)
+        {
+            fftBuffer[i].X = audioData[i];
+            fftBuffer[i].Y = 0f;
+        }
+
+        // FFTを適用します。
+        NAudio.Dsp.FastFourierTransform.FFT(true, LogSize, fftBuffer);
+
+        return fftBuffer;
+    }
 }
