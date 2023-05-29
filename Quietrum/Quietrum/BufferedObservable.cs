@@ -12,7 +12,8 @@ public class BufferedObservable : IObservable<short[]>
     public BufferedObservable(IObservable<WaveInEventArgs> source, WaveFormat waveFormat, RefreshRate refreshRate)
     {
         _source = source;
-        _bufferSize = (int)(waveFormat.SampleRate * refreshRate.Interval.TotalSeconds);
+        //_bufferSize = (int)(waveFormat.SampleRate * refreshRate.Interval.TotalSeconds);
+        _bufferSize = 1024;
         
         _observable = Observable.Create(OnSubscribe());
     }

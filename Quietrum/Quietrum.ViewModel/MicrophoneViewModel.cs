@@ -69,10 +69,12 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
             _recordingConfig.RefreshRate);
         var normalize = new Normalize(_recordingConfig.WaveFormat);
         var fastTimeWeighting = new FastTimeWeighting(_recordingConfig.WaveFormat);
+        var fft = new FastFourierTransform(_recordingConfig.WaveFormat);
         var converter = new DecibelConverter();
         _disposable = _bufferedObservable
             .Select(normalize.Filter)
             .Select(fastTimeWeighting.Filter)
+            .Select(fft.Transform)
             .Select(converter.Convert)
             .Subscribe(OnNext);
     }

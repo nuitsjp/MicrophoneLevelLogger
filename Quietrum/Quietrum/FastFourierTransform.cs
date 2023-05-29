@@ -1,4 +1,6 @@
-﻿using NAudio.Dsp;
+﻿using FftSharp.Windows;
+using NAudio.Dsp;
+using NAudio.Wave;
 
 namespace Quietrum;
 
@@ -33,20 +35,39 @@ public class FastFourierTransform
     /// </summary>
     private const int LogSize = 10;
 
-    public static Complex[] Transform(float[] audioData)
+    private static readonly Hanning Hanning = new();
+
+    private readonly double _sampleRate;
+
+    public FastFourierTransform(WaveFormat waveFormat)
     {
-        var fftBuffer = new Complex[FftLength];
-    
-        // 音声データをFFTバッファにコピーします。
-        for (int i = 0; i < FftLength; i++)
-        {
-            fftBuffer[i].X = audioData[i];
-            fftBuffer[i].Y = 0f;
-        }
+        _sampleRate = waveFormat.SampleRate;
+    }
 
-        // FFTを適用します。
-        NAudio.Dsp.FastFourierTransform.FFT(true, LogSize, fftBuffer);
+    public double[] Transform(double[] signal)
+    {
+        // Shape the signal using a Hanning window
+        Hanning.ApplyInPlace(signal);
 
-        return fftBuffer;
+        // Calculate the FFT as an array of complex numbers
+        System.Numerics.Complex[] spectrum = FftSharp.FFT.Forward(signal);
+        var power  = FftSharp.FFT.Power(spectrum);
+        double[] freq = FftSharp.FFT.FrequencyScale(power.Length, _sampleRate);
+
+        return AWeighting.Filter(power, freq);
+
+        // var fftBuffer = new Complex[FftLength];
+        //
+        // // 音声データをFFTバッファにコピーします。
+        // for (int i = 0; i < FftLength; i++)
+        // {
+        //     fftBuffer[i].X = audioData[i];
+        //     fftBuffer[i].Y = 0f;
+        // }
+        //
+        // // FFTを適用します。
+        // NAudio.Dsp.FastFourierTransform.FFT(true, LogSize, fftBuffer);
+        //
+        // return fftBuffer;
     }
 }
