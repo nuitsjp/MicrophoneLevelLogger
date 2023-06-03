@@ -75,36 +75,43 @@ public partial class Device : ObservableObject, IDevice
         }
     }
 
-    private WasapiCapture? _wasapiCapture;
+    private IWaveIn? _waveIn;
     public IObservable<WaveInEventArgs> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan)
     {
         var subject = new Subject<WaveInEventArgs>();
-        _wasapiCapture = new WasapiCapture(_mmDevice)
-        {
-            WaveFormat = waveFormat,
-            ShareMode = AudioClientShareMode.Shared
-        };
-
-        _wasapiCapture.DataAvailable += (_, args) =>
+        _waveIn =
+            DataFlow == DataFlow.Capture
+                ? new WasapiCapture(_mmDevice)
+                {
+                    WaveFormat = waveFormat,
+                    ShareMode = AudioClientShareMode.Shared
+                }
+                : new WasapiLoopbackCapture(_mmDevice)
+                {
+                    WaveFormat = waveFormat,
+                    ShareMode = AudioClientShareMode.Shared
+                };
+        
+        _waveIn.DataAvailable += (_, args) =>
         {
             // var buffer = new byte[args.BytesRecorded];
             // Buffer.BlockCopy(args.Buffer, 0, buffer, 0, args.BytesRecorded);
             subject.OnNext(args);
         };
-        _wasapiCapture.RecordingStopped += (_, _) =>
+        _waveIn.RecordingStopped += (_, _) =>
         {
-            _wasapiCapture?.Dispose();
-            _wasapiCapture = null;
+            _waveIn?.Dispose();
+            _waveIn = null;
             subject.OnCompleted();
         };
 
-        _wasapiCapture.StartRecording();
+        _waveIn.StartRecording();
         return subject.AsObservable();
     }
 
     public void StopRecording()
     {
-        _wasapiCapture?.StopRecording();
+        _waveIn?.StopRecording();
     }
 
     /// <summary>
