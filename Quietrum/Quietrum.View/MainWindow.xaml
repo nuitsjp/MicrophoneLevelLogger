@@ -96,6 +96,7 @@
                     </StackPanel>
                     <DataGrid Grid.Row="1" ItemsSource="{Binding Devices}" AutoGenerateColumns="False">
                         <DataGrid.Columns>
+                            <DataGridTextColumn Header="DataFlow" Binding="{Binding DataFlow}"/>
                             <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                             <DataGridTextColumn Header="(SystemName)" Binding="{Binding SystemName}" IsReadOnly="True"/>
                             <DataGridTemplateColumn IsReadOnly="True" Header="Measure" Width="Auto">

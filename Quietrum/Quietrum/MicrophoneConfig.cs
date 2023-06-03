@@ -3,7 +3,7 @@
 public class MicrophoneConfig
 {
     public MicrophoneConfig(
-        MicrophoneId id, 
+        DeviceId id, 
         string name, 
         bool measure)
     {
@@ -15,7 +15,7 @@ public class MicrophoneConfig
     /// <summary>
     /// ID
     /// </summary>
-    public MicrophoneId Id { get; }
+    public DeviceId Id { get; }
     /// <summary>
     /// 名称
     /// </summary>

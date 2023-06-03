@@ -14,7 +14,7 @@ public class MicrophoneRecordSummary
     /// <param name="avg"></param>
     /// <param name="max"></param>
     public MicrophoneRecordSummary(
-        MicrophoneId id, 
+        DeviceId id, 
         string name, 
         Decibel min, 
         Decibel avg, 
@@ -30,7 +30,7 @@ public class MicrophoneRecordSummary
     /// <summary>
     /// マイクID
     /// </summary>
-    public MicrophoneId Id { get; }
+    public DeviceId Id { get; }
     /// <summary>
     /// マイク名称
     /// </summary>

@@ -6,7 +6,7 @@ namespace Quietrum;
 /// マイクID
 /// </summary>
 [UnitOf(typeof(string), UnitGenerateOptions.JsonConverter)]
-public partial struct MicrophoneId
+public partial struct DeviceId
 {
     
 }

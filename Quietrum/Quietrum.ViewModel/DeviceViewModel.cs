@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using Reactive.Bindings.Extensions;
 using Reactive.Bindings.TinyLinq;
@@ -30,7 +31,8 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
     }
 
-    public MicrophoneId Id => _device.Id;
+    public DeviceId Id => _device.Id;
+    public DataFlow DataFlow => _device.DataFlow;
 
     public string Name
     {

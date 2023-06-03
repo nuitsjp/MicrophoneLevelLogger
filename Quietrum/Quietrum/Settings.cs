@@ -64,14 +64,14 @@ public class Settings
 
     public SpeakerId? SelectedSpeakerId { get; }
 
-    public bool TryGetMicrophoneConfig(MicrophoneId id, out MicrophoneConfig microphoneConfig)
+    public bool TryGetMicrophoneConfig(DeviceId id, out MicrophoneConfig microphoneConfig)
     {
         var config = _microphoneConfigs.SingleOrDefault(x => x.Id == id);
         microphoneConfig = config!;
         return config is not null;
     }
 
-    public MicrophoneConfig GetMicrophoneConfig(MicrophoneId id)
+    public MicrophoneConfig GetMicrophoneConfig(DeviceId id)
     {
         return _microphoneConfigs.Single(x => x.Id == id);
     }

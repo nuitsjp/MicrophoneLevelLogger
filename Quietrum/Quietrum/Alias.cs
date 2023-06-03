@@ -11,7 +11,7 @@ public class Alias
     /// <param name="id"></param>
     /// <param name="systemName"></param>
     /// <param name="name"></param>
-    public Alias(MicrophoneId id, string systemName, string name)
+    public Alias(DeviceId id, string systemName, string name)
     {
         Id = id;
         SystemName = systemName;
@@ -21,7 +21,7 @@ public class Alias
     /// <summary>
     /// マイクのID
     /// </summary>
-    public MicrophoneId Id { get; }
+    public DeviceId Id { get; }
     /// <summary>
     /// マイクのOS上の名称
     /// </summary>

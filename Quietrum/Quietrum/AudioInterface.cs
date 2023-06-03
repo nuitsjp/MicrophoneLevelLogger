@@ -53,13 +53,13 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
         var newMicrophones = new List<IDevice>();
         using var enumerator = new MMDeviceEnumerator();
         var mmDevices = enumerator
-            .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
+            .EnumerateAudioEndPoints(DataFlow.All, DeviceState.Active)
             .ToArray();
         var modified = false;
         // 新たに接続されたマイクを追加する。
         foreach (var mmDevice in mmDevices)
         {
-            var microphoneId = new MicrophoneId(mmDevice.ID);
+            var microphoneId = new DeviceId(mmDevice.ID);
             if (Microphones.TryGet(x => x.Id == microphoneId, out var microphone))
             {
                 // すでに登録されているマイクだった場合、mmDeviceのリソースは開放する。

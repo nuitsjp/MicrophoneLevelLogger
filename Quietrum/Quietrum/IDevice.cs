@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
 namespace Quietrum;
@@ -11,7 +12,11 @@ public interface IDevice : IDisposable, INotifyPropertyChanged
     /// <summary>
     /// ID
     /// </summary>
-    MicrophoneId Id { get; }
+    DeviceId Id { get; }
+    /// <summary>
+    /// DataFlow
+    /// </summary>
+    DataFlow DataFlow { get; }
     /// <summary>
     /// 名称
     /// </summary>

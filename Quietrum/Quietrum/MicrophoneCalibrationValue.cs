@@ -12,7 +12,7 @@ public class MicrophoneCalibrationValue
     /// <param name="name"></param>
     /// <param name="volumeLevel"></param>
     public MicrophoneCalibrationValue(
-        MicrophoneId id,
+        DeviceId id,
         string name,
         VolumeLevel volumeLevel)
     {
@@ -24,7 +24,7 @@ public class MicrophoneCalibrationValue
     /// <summary>
     /// ID
     /// </summary>
-    public MicrophoneId Id { get; }
+    public DeviceId Id { get; }
     /// <summary>
     /// 名前
     /// </summary>

@@ -23,7 +23,7 @@ public partial class Device : ObservableObject, IDevice
     /// <param name="measure"></param>
     /// <param name="mmDevice"></param>
     public Device(
-        MicrophoneId id,
+        DeviceId id,
         string name,
         string systemName,
         bool measure,
@@ -43,7 +43,12 @@ public partial class Device : ObservableObject, IDevice
     /// <summary>
     /// ID
     /// </summary>
-    public MicrophoneId Id { get; }
+    public DeviceId Id { get; }
+
+    /// <summary>
+    /// DataFlow
+    /// </summary>
+    public DataFlow DataFlow => _mmDevice.DataFlow;
 
     /// <summary>
     /// 名称
