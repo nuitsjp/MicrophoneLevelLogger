@@ -80,8 +80,6 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
-                        <TextBlock Text="Threshold : "/>
-                        <TextBox Width="100"/>
                         <ToggleButton
                             Content="{materialDesign:PackIcon Kind=Microphone}"
                             IsChecked="{Binding Monitor}"
@@ -106,7 +104,8 @@
                                         <CheckBox IsChecked="{Binding Measure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>                        
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Volume Level" Binding="{Binding VolumeLevel}"/>
                             <DataGridTextColumn Header="-30dB以上" Binding="{Binding Minus30dB}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="-40dB以上" Binding="{Binding Minus40dB}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="-50dB以上" Binding="{Binding Minus50dB}" IsReadOnly="True"/>

@@ -106,13 +106,15 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
 
     private async void MicrophoneOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (sender is IMicrophone microphone)
-        {
-            var config = _settings.GetMicrophoneConfig(microphone.Id);
-            config.Name = microphone.Name;
-            config.Measure = microphone.Measure;
-            await _settingsRepository.SaveAsync(_settings);
-        }
+        if (sender is not IMicrophone microphone) return;
+        if(e.PropertyName is not (
+           nameof(IMicrophone.Measure) 
+           or nameof(IMicrophone.Measure))) return;
+        
+        var config = _settings.GetMicrophoneConfig(microphone.Id);
+        config.Name = microphone.Name;
+        config.Measure = microphone.Measure;
+        await _settingsRepository.SaveAsync(_settings);
     }
 
     /// <summary>

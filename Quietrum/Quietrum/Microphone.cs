@@ -34,6 +34,10 @@ public partial class Microphone : ObservableObject, IMicrophone
         SystemName = systemName;
         _measure = measure;
         _mmDevice = mmDevice;
+        _mmDevice.AudioEndpointVolume.OnVolumeNotification += data =>
+        {
+            OnPropertyChanged(nameof(VolumeLevel));
+        };
     }
 
     /// <summary>
@@ -50,6 +54,7 @@ public partial class Microphone : ObservableObject, IMicrophone
     /// </summary>
     public string SystemName { get; }
 
+    
     [ObservableProperty] private bool _measure;
 
     /// <summary>
@@ -57,17 +62,11 @@ public partial class Microphone : ObservableObject, IMicrophone
     /// </summary>
     public VolumeLevel VolumeLevel
     {
-        get
-        {
-            using var enumerator = new MMDeviceEnumerator();
-            using var mmDevice = enumerator.GetDevice(Id.AsPrimitive());
-            return (VolumeLevel)mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
-        }
+        get => (VolumeLevel)_mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
         set
         {
-            using var enumerator = new MMDeviceEnumerator();
-            using var mmDevice = enumerator.GetDevice(Id.AsPrimitive());
-            mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar = (float)value;
+            _mmDevice.AudioEndpointVolume.MasterVolumeLevelScalar = (float)value;
+            OnPropertyChanged();
         }
     }
 

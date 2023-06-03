@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.Wave;
+using Reactive.Bindings.Extensions;
 using Reactive.Bindings.TinyLinq;
 
 namespace Quietrum.ViewModel;
@@ -22,6 +23,8 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
         RecordingConfig recordingConfig)
     {
         _microphone = microphone;
+        _microphone.ObserveProperty(x => x.VolumeLevel)
+            .Subscribe(x => OnPropertyChanged(nameof(VolumeLevel)));
         _recordingConfig = recordingConfig;
         LiveData = new double[(int)(_recordingConfig.RecordingSpan / _recordingConfig.RefreshRate.Interval)];
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
@@ -40,6 +43,25 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
     }
 
     public string SystemName => _microphone.SystemName;
+
+    /// <summary>
+    /// 入力レベル
+    /// </summary>
+    public string VolumeLevel
+    {
+        get => (_microphone.VolumeLevel.AsPrimitive() * 100).ToString("0");
+        set
+        {
+            if(int.TryParse(value, out var intValue))
+            {
+                if (intValue is >= 0 and <= 100)
+                {
+                    _microphone.VolumeLevel = new VolumeLevel(intValue / 100f);
+                }
+            }
+            OnPropertyChanged();
+        }
+    }
 
     public bool Measure
     {
