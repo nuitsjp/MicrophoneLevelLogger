@@ -30,7 +30,7 @@ public class DetailRepository : IDetailRepository
         foreach (var microphoneLogger in recorders)
         {
             await _writer.WriteAsync(",");
-            await _writer.WriteAsync(microphoneLogger.Microphone.Name);
+            await _writer.WriteAsync(microphoneLogger.Device.Name);
         }
 
         await _writer.WriteLineAsync();

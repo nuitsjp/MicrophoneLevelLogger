@@ -6,9 +6,9 @@ using Reactive.Bindings.TinyLinq;
 
 namespace Quietrum.ViewModel;
 
-public partial class MicrophoneViewModel : ObservableObject, IDisposable
+public partial class DeviceViewModel : ObservableObject, IDisposable
 {
-    private readonly IMicrophone _microphone;
+    private readonly IDevice _device;
     private readonly RecordingConfig _recordingConfig;
     private IObservable<WaveInEventArgs>? _observable;
     private IObservable<short[]>? _bufferedObservable;
@@ -18,45 +18,45 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
     [ObservableProperty] private string _minus40dB = string.Empty;
     [ObservableProperty] private string _minus50dB = string.Empty;
 
-    public MicrophoneViewModel(
-        IMicrophone microphone,
+    public DeviceViewModel(
+        IDevice device,
         RecordingConfig recordingConfig)
     {
-        _microphone = microphone;
-        _microphone.ObserveProperty(x => x.VolumeLevel)
+        _device = device;
+        _device.ObserveProperty(x => x.VolumeLevel)
             .Subscribe(x => OnPropertyChanged(nameof(VolumeLevel)));
         _recordingConfig = recordingConfig;
         LiveData = new double[(int)(_recordingConfig.RecordingSpan / _recordingConfig.RefreshRate.Interval)];
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
     }
 
-    public MicrophoneId Id => _microphone.Id;
+    public MicrophoneId Id => _device.Id;
 
     public string Name
     {
-        get => _microphone.Name;
+        get => _device.Name;
         set
         {
-            _microphone.Name = value;
+            _device.Name = value;
             OnPropertyChanged();
         }
     }
 
-    public string SystemName => _microphone.SystemName;
+    public string SystemName => _device.SystemName;
 
     /// <summary>
     /// 入力レベル
     /// </summary>
     public string VolumeLevel
     {
-        get => (_microphone.VolumeLevel.AsPrimitive() * 100).ToString("0");
+        get => (_device.VolumeLevel.AsPrimitive() * 100).ToString("0");
         set
         {
             if(int.TryParse(value, out var intValue))
             {
                 if (intValue is >= 0 and <= 100)
                 {
-                    _microphone.VolumeLevel = new VolumeLevel(intValue / 100f);
+                    _device.VolumeLevel = new VolumeLevel(intValue / 100f);
                 }
             }
             OnPropertyChanged();
@@ -65,11 +65,11 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
 
     public bool Measure
     {
-        get => _microphone.Measure;
+        get => _device.Measure;
         set
         {
-            _microphone.Measure = value;
-            if (_microphone.Measure)
+            _device.Measure = value;
+            if (_device.Measure)
             {
                 StartMonitoring();
             }
@@ -84,7 +84,7 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
 
     public void StartMonitoring()
     {
-        _observable = _microphone.StartRecording(_recordingConfig.WaveFormat, _recordingConfig.RefreshRate.Interval);
+        _observable = _device.StartRecording(_recordingConfig.WaveFormat, _recordingConfig.RefreshRate.Interval);
         _bufferedObservable = new BufferedObservable(
             _observable, 
             _recordingConfig.WaveFormat, 
@@ -103,7 +103,7 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
 
     public void StopMonitoring()
     {
-        _microphone.StopRecording();
+        _device.StopRecording();
         _disposable?.Dispose();
         _observable = null;
         _bufferedObservable = null;
@@ -143,7 +143,7 @@ public partial class MicrophoneViewModel : ObservableObject, IDisposable
 
     public void Dispose()
     {
-        _microphone.StopRecording();
-        _microphone.Dispose();
+        _device.StopRecording();
+        _device.Dispose();
     }
 }

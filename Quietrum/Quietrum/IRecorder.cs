@@ -18,7 +18,7 @@ public interface IRecorder
     /// <summary>
     /// 該当マイクのレコーダーを取得する。
     /// </summary>
-    /// <param name="microphone"></param>
+    /// <param name="device"></param>
     /// <returns></returns>
-    public IMicrophoneRecorder GetLogger(IMicrophone microphone);
+    public IMicrophoneRecorder GetLogger(IDevice device);
 }

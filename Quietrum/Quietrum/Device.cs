@@ -10,7 +10,7 @@ namespace Quietrum;
 /// <summary>
 /// マイク
 /// </summary>
-public partial class Microphone : ObservableObject, IMicrophone
+public partial class Device : ObservableObject, IDevice
 {
     private readonly MMDevice _mmDevice;
 
@@ -22,7 +22,7 @@ public partial class Microphone : ObservableObject, IMicrophone
     /// <param name="systemName"></param>
     /// <param name="measure"></param>
     /// <param name="mmDevice"></param>
-    public Microphone(
+    public Device(
         MicrophoneId id,
         string name,
         string systemName,

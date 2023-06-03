@@ -13,7 +13,7 @@ public class RecordResult
     public RecordResult(int no, IMicrophoneRecorder microphoneRecorder)
     {
         No = no;
-        Name = microphoneRecorder.Microphone.Name;
+        Name = microphoneRecorder.Device.Name;
         Min = microphoneRecorder.Min;
         Avg = microphoneRecorder.Avg;
         Max = microphoneRecorder.Max;

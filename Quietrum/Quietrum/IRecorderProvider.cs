@@ -17,7 +17,7 @@ public interface IRecorderProvider
     /// </summary>
     /// <param name="microphones"></param>
     /// <returns></returns>
-    IRecorder ResolveLocal(params IMicrophone[] microphones);
+    IRecorder ResolveLocal(params IDevice[] microphones);
     /// <summary>
     /// リモートのレコーダーを解決する。
     /// </summary>

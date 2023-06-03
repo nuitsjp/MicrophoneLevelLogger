@@ -23,7 +23,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
     /// 
     /// </summary>
     [ObservableProperty]
-    private IReadOnlyList<IMicrophone> _microphones = new List<IMicrophone>();
+    private IReadOnlyList<IDevice> _microphones = new List<IDevice>();
 
     private Settings _settings;
     /// <summary>
@@ -50,7 +50,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
     /// <returns></returns>
     private async Task ReloadMicrophonesAsync()
     {
-        var newMicrophones = new List<IMicrophone>();
+        var newMicrophones = new List<IDevice>();
         using var enumerator = new MMDeviceEnumerator();
         var mmDevices = enumerator
             .EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active)
@@ -75,7 +75,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
                     _settings.AddMicrophoneConfig(microphoneConfig);
                 }
 
-                microphone = new Microphone(
+                microphone = new Device(
                     microphoneId,
                     microphoneConfig.Name,
                     mmDevice.FriendlyName, 
@@ -106,10 +106,10 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
 
     private async void MicrophoneOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (sender is not IMicrophone microphone) return;
+        if (sender is not IDevice microphone) return;
         if(e.PropertyName is not (
-           nameof(IMicrophone.Measure) 
-           or nameof(IMicrophone.Measure))) return;
+           nameof(IDevice.Measure) 
+           or nameof(IDevice.Measure))) return;
         
         var config = _settings.GetMicrophoneConfig(microphone.Id);
         config.Name = microphone.Name;

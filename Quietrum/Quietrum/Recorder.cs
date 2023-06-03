@@ -54,7 +54,7 @@ public class Recorder : IRecorder
         IRecordSummaryRepository recordSummaryRepository, 
         IDetailRepositoryFactory detailRepositoryFactory, 
         string? recordName = null,
-        params IMicrophone[] microphones)
+        params IDevice[] microphones)
     {
         _recordSummaryRepository = recordSummaryRepository;
         _detailRepositoryFactory = detailRepositoryFactory;
@@ -130,7 +130,7 @@ public class Recorder : IRecorder
                 beginTime, 
                 DateTime.Now, 
                 MicrophoneRecorders
-                    .Select(x => new MicrophoneRecordSummary(x.Microphone.Id, x.Microphone.Name, x.Min, x.Avg, x.Max))
+                    .Select(x => new MicrophoneRecordSummary(x.Device.Id, x.Device.Name, x.Min, x.Avg, x.Max))
                     .ToList());
             await _recordSummaryRepository.SaveAsync(summary, _saveDirectory!);
         });
@@ -139,8 +139,8 @@ public class Recorder : IRecorder
     /// <summary>
     /// 該当マイクのレコーダーを取得する。
     /// </summary>
-    /// <param name="microphone"></param>
+    /// <param name="device"></param>
     /// <returns></returns>
-    public IMicrophoneRecorder GetLogger(IMicrophone microphone) =>
-        MicrophoneRecorders.Single(x => x.Microphone.Id == microphone.Id);
+    public IMicrophoneRecorder GetLogger(IDevice device) =>
+        MicrophoneRecorders.Single(x => x.Device.Id == device.Id);
 }

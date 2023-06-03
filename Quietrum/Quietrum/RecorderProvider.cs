@@ -48,7 +48,7 @@ public class RecorderProvider : IRecorderProvider
     /// </summary>
     /// <param name="microphones"></param>
     /// <returns></returns>
-    public IRecorder ResolveLocal(params IMicrophone[] microphones)
+    public IRecorder ResolveLocal(params IDevice[] microphones)
         => new Recorder(_recordSummaryRepository, _detailRepositoryFactory, null, microphones);
 
     /// <summary>

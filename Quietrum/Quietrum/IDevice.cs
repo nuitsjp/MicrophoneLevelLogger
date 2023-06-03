@@ -6,7 +6,7 @@ namespace Quietrum;
 /// <summary>
 /// マイク
 /// </summary>
-public interface IMicrophone : IDisposable, INotifyPropertyChanged
+public interface IDevice : IDisposable, INotifyPropertyChanged
 {
     /// <summary>
     /// ID

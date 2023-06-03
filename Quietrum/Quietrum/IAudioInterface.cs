@@ -12,7 +12,7 @@ public interface IAudioInterface : INotifyPropertyChanged, IDisposable
     /// <summary>
     /// 
     /// </summary>
-    IReadOnlyList<IMicrophone> Microphones { get; }
+    IReadOnlyList<IDevice> Microphones { get; }
 
     /// <summary>
     /// 現在有効なスピーカーを取得する。

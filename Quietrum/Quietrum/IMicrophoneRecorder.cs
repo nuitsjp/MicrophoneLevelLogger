@@ -8,7 +8,7 @@ public interface IMicrophoneRecorder
     /// <summary>
     /// 録音対象のマイク
     /// </summary>
-    public IMicrophone Microphone { get; }
+    public IDevice Device { get; }
     /// <summary>
     /// 最大音量
     /// </summary>

@@ -60,8 +60,8 @@ public class RemoteRecorder : IRecorder
     /// <summary>
     /// 未実装。
     /// </summary>
-    /// <param name="microphone"></param>
+    /// <param name="device"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public IMicrophoneRecorder GetLogger(IMicrophone microphone) => throw new NotImplementedException();
+    public IMicrophoneRecorder GetLogger(IDevice device) => throw new NotImplementedException();
 }

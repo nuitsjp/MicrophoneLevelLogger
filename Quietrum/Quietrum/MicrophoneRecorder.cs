@@ -25,11 +25,11 @@ public class MicrophoneRecorder : IMicrophoneRecorder
     /// <summary>
     /// インスタンスを生成する。
     /// </summary>
-    /// <param name="microphone"></param>
+    /// <param name="device"></param>
     /// <param name="directoryInfo">録音ファイルの保管ディレクトリ。nullの場合、保管しない。</param>
-    public MicrophoneRecorder(IMicrophone microphone, DirectoryInfo? directoryInfo)
+    public MicrophoneRecorder(IDevice device, DirectoryInfo? directoryInfo)
     {
-        Microphone = microphone;
+        Device = device;
         _directoryInfo = directoryInfo;
 
     }
@@ -37,7 +37,7 @@ public class MicrophoneRecorder : IMicrophoneRecorder
     /// <summary>
     /// マイク
     /// </summary>
-    public IMicrophone Microphone { get; }
+    public IDevice Device { get; }
     /// <summary>
     /// サンプリング間隔中の最大音量。
     /// </summary>
@@ -66,7 +66,7 @@ public class MicrophoneRecorder : IMicrophoneRecorder
         };
         Fft fft = new(waveInEvent.WaveFormat);
         var waveWriter = _directoryInfo is not null
-            ? new WaveFileWriter(Path.Join(_directoryInfo.FullName, $"{Microphone.Name}.wav"), waveInEvent.WaveFormat)
+            ? new WaveFileWriter(Path.Join(_directoryInfo.FullName, $"{Device.Name}.wav"), waveInEvent.WaveFormat)
             : Stream.Null;
 
         // マイクからの入力を受け取る。
@@ -110,7 +110,7 @@ public class MicrophoneRecorder : IMicrophoneRecorder
 
         for (int i = 0; i < devices.Count; i++)
         {
-            if (devices[i].ID == Microphone.Id.AsPrimitive())
+            if (devices[i].ID == Device.Id.AsPrimitive())
             {
                 return i;
             }

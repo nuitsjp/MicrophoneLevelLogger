@@ -28,7 +28,7 @@ namespace Quietrum.View
             DataContext = viewModel;
 
             // plot the data array only once
-            viewModel.ObserveProperty(x => x.Microphones).Subscribe(microphones =>
+            viewModel.ObserveProperty(x => x.Devices).Subscribe(microphones =>
             {
                 WpfPlot1.Plot.Clear();
                 foreach (var microphone in microphones.Where(x => x.Measure))

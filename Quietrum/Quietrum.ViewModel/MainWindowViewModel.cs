@@ -23,7 +23,7 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
     [ObservableProperty] private bool _record;
     [ObservableProperty] private string _recordName = string.Empty;
     [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
-    [ObservableProperty] private IList<MicrophoneViewModel> _microphones = new List<MicrophoneViewModel>();
+    [ObservableProperty] private IList<DeviceViewModel> _devices = new List<DeviceViewModel>();
     
     public MainWindowViewModel(IAudioInterfaceProvider audioInterfaceProvider)
     {
@@ -42,14 +42,14 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
     {
         if (monitor)
         {
-            Microphones
+            Devices
                 .Where(x => x.Measure)
                 .ToList()
                 .ForEach(x => x.StartMonitoring());
         }
         else
         {
-            Microphones
+            Devices
                 .Where(x => x.Measure)
                 .ToList()
                 .ForEach(x => x.StopMonitoring());
@@ -79,7 +79,7 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
         var directory = new DirectoryInfo(RecordName);
         directory.Create();
 
-        Microphones
+        Devices
             .Where(x => x.Measure)
             .ToList()
             .ForEach(x => x.StartRecording(directory));
@@ -87,7 +87,7 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
 
     private void StopRecording()
     {
-        Microphones
+        Devices
             .Where(x => x.Measure)
             .ToList()
             .ForEach(x => x.StopRecording());
@@ -100,14 +100,14 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
             .ObserveProperty(x => x.Microphones)
             .Subscribe(microphones =>
             {
-                List<MicrophoneViewModel> newViewModels = new(Microphones);
+                List<DeviceViewModel> newViewModels = new(Devices);
                 // 接続されたIMicrophoneを追加する。
                 newViewModels.AddRange(
                     microphones
                         .Where(x => newViewModels.NotContains(viewModel => viewModel.Id == x.Id))
                         .Select(x =>
                         {
-                            var microphone = new MicrophoneViewModel(x, RecordingConfig);
+                            var microphone = new DeviceViewModel(x, RecordingConfig);
                             microphone.PropertyChanged += MicrophoneOnPropertyChanged;
                             if (microphone.Measure)
                             {
@@ -123,19 +123,19 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
                         viewModel.PropertyChanged -= MicrophoneOnPropertyChanged;
                         newViewModels.Remove(viewModel);
                     });
-                Microphones = newViewModels;
+                Devices = newViewModels;
             });
     }
 
     private void MicrophoneOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        OnPropertyChanged(nameof(Microphones));
+        OnPropertyChanged(nameof(Devices));
     }
 
     public void Dispose()
     {
-        Microphones.Dispose();
-        Microphones.Dispose();
+        Devices.Dispose();
+        Devices.Dispose();
         _compositeDisposable.Dispose();
     }
 }

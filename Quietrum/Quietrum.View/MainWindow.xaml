@@ -94,7 +94,7 @@
                         <TextBlock Text="{Binding RecordName}" Width="150"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
-                    <DataGrid Grid.Row="1" ItemsSource="{Binding Microphones}" AutoGenerateColumns="False">
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Devices}" AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                             <DataGridTextColumn Header="(SystemName)" Binding="{Binding SystemName}" IsReadOnly="True"/>
