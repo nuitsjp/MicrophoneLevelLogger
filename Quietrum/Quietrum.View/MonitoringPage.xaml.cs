@@ -13,7 +13,7 @@ namespace Quietrum.View
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow
+    public partial class MonitoringPage
     {
         private static readonly TimeSpan DisplayWidth = TimeSpan.FromSeconds(20);
         
@@ -22,7 +22,7 @@ namespace Quietrum.View
             Interval = TimeSpan.FromMilliseconds(10)
         };
 
-        public MainWindow(MonitoringPageViewModel pageViewModel)
+        public MonitoringPage(MonitoringPageViewModel pageViewModel)
         {
             InitializeComponent();
             DataContext = pageViewModel;

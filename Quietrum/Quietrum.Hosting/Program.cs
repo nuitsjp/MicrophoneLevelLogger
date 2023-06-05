@@ -6,12 +6,12 @@ using Quietrum.Repository;
 using Quietrum.View;
 using Quietrum.ViewModel;
 
-var builder = KamishibaiApplication<App, MainWindow>.CreateBuilder();
+var builder = KamishibaiApplication<App, MonitoringPage>.CreateBuilder();
 
 builder.Services.AddTransient<IAudioInterfaceProvider, AudioInterfaceProvider>();
 builder.Services.AddTransient<ISettingsRepository, SettingsRepository>();
 
-builder.Services.AddPresentation<MainWindow, MonitoringPageViewModel>();
+builder.Services.AddPresentation<MonitoringPage, MonitoringPageViewModel>();
 
 await builder
     .Build()
