@@ -13,7 +13,7 @@ namespace Quietrum.View
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         private static readonly TimeSpan DisplayWidth = TimeSpan.FromSeconds(20);
         
