@@ -40,7 +40,11 @@
             <TextBlock Text="{Binding RecordName}" Width="150"
                        VerticalAlignment="Center"/>
         </StackPanel>
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Devices}" AutoGenerateColumns="False">
+        <DataGrid Grid.Row="1" 
+                  ItemsSource="{Binding Devices}" 
+                  AutoGenerateColumns="False"
+                  Height="300"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="DataFlow" Binding="{Binding DataFlow}"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
