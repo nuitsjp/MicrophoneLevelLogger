@@ -22,13 +22,13 @@ namespace Quietrum.View
             Interval = TimeSpan.FromMilliseconds(10)
         };
 
-        public MainWindow(MainWindowViewModel viewModel)
+        public MainWindow(MonitoringPageViewModel pageViewModel)
         {
             InitializeComponent();
-            DataContext = viewModel;
+            DataContext = pageViewModel;
 
             // plot the data array only once
-            viewModel.ObserveProperty(x => x.Devices).Subscribe(microphones =>
+            pageViewModel.ObserveProperty(x => x.Devices).Subscribe(microphones =>
             {
                 WpfPlot1.Plot.Clear();
                 foreach (var microphone in microphones.Where(x => x.Measure))
@@ -38,19 +38,19 @@ namespace Quietrum.View
                     
                 WpfPlot1.Plot.AxisAutoX(margin: 0);
 
-                RecordingConfig config = viewModel.RecordingConfig;
+                RecordingConfig config = pageViewModel.RecordingConfig;
                 // データの全長から、デフォルトの表示幅分を引いた値をデフォルトのx軸の最小値とする
                 var xMin =
                     // データの全長
                     config.RecordingLength
                     // 表示時間を表示間隔で割ることで、表示幅を計算する
-                    - (int)(DisplayWidth / viewModel.RecordingConfig.RefreshRate.Interval);
+                    - (int)(DisplayWidth / pageViewModel.RecordingConfig.RefreshRate.Interval);
                 WpfPlot1.Plot.SetAxisLimits(
                     xMin: xMin, xMax: config.RecordingLength,
                     yMin: -90, yMax: 0);
                 WpfPlot1.Plot.XAxis.SetBoundary(0, config.RecordingLength);
                 WpfPlot1.Plot.YAxis.SetBoundary(-90, 0);
-                WpfPlot1.Plot.XAxis.TickLabelFormat(x => $"{(((config.RecordingLength - x) * -1 * viewModel.RecordingConfig.RefreshRate.Interval.TotalMilliseconds) / 1000d):#0.0[s]}");
+                WpfPlot1.Plot.XAxis.TickLabelFormat(x => $"{(((config.RecordingLength - x) * -1 * pageViewModel.RecordingConfig.RefreshRate.Interval.TotalMilliseconds) / 1000d):#0.0[s]}");
                 WpfPlot1.Configuration.LockVerticalAxis = true;
                 WpfPlot1.Plot.Legend(location:Alignment.UpperLeft);
                 Dispatcher.Invoke(() =>

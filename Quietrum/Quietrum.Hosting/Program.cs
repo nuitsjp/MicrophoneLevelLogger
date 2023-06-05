@@ -11,7 +11,7 @@ var builder = KamishibaiApplication<App, MainWindow>.CreateBuilder();
 builder.Services.AddTransient<IAudioInterfaceProvider, AudioInterfaceProvider>();
 builder.Services.AddTransient<ISettingsRepository, SettingsRepository>();
 
-builder.Services.AddPresentation<MainWindow, MainWindowViewModel>();
+builder.Services.AddPresentation<MainWindow, MonitoringPageViewModel>();
 
 await builder
     .Build()

@@ -14,7 +14,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance {x:Type viewModel1:MainWindowViewModel}, IsDesignTimeCreatable=True}"
+        d:DataContext="{d:DesignInstance {x:Type viewModel1:MonitoringPageViewModel}, IsDesignTimeCreatable=True}"
         Title="Quietrum" Height="1024" Width="1280">
     <Window.Resources>
         <ResourceDictionary Source="Style/Generic.xaml"/>
