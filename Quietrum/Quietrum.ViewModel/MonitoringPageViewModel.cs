@@ -11,6 +11,7 @@ using ScottPlot;
 
 namespace Quietrum.ViewModel;
 
+[Navigate]
 // ReSharper disable once ClassNeverInstantiated.Global
 public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsyncAware, IDisposable
 {
@@ -18,14 +19,14 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     public RecordingConfig RecordingConfig { get; } = RecordingConfig.Default;
 
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
-    [ObservableProperty] private int _threshold = -50;
     [ObservableProperty] private bool _monitor = true;
     [ObservableProperty] private bool _record;
     [ObservableProperty] private string _recordName = string.Empty;
     [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
     [ObservableProperty] private IList<DeviceViewModel> _devices = new List<DeviceViewModel>();
     
-    public MonitoringPageViewModel(IAudioInterfaceProvider audioInterfaceProvider)
+    public MonitoringPageViewModel(
+        [Inject] IAudioInterfaceProvider audioInterfaceProvider)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         this.ObserveProperty(x => x.Monitor)
