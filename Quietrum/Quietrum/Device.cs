@@ -34,6 +34,7 @@ public partial class Device : ObservableObject, IDevice
         SystemName = systemName;
         _measure = measure;
         _mmDevice = mmDevice;
+        DataFlow = _mmDevice.DataFlow;
         _mmDevice.AudioEndpointVolume.OnVolumeNotification += data =>
         {
             OnPropertyChanged(nameof(VolumeLevel));
@@ -48,7 +49,7 @@ public partial class Device : ObservableObject, IDevice
     /// <summary>
     /// DataFlow
     /// </summary>
-    public DataFlow DataFlow => _mmDevice.DataFlow;
+    public DataFlow DataFlow { get; }
 
     /// <summary>
     /// 名称
@@ -105,7 +106,14 @@ public partial class Device : ObservableObject, IDevice
             subject.OnCompleted();
         };
 
-        _waveIn.StartRecording();
+        try
+        {
+            _waveIn.StartRecording();
+        }
+        catch
+        {
+            // ignore
+        }
         return subject.AsObservable();
     }
 

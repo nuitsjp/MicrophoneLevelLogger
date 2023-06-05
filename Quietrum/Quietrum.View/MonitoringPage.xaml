@@ -15,110 +15,51 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type viewModel1:MonitoringPageViewModel}, IsDesignTimeCreatable=True}"
-        Height="1024" Width="1280">
+        d:DesignHeight="1024" d:DesignWidth="1280">
     <UserControl.Resources>
         <ResourceDictionary Source="Style/Generic.xaml"/>
     </UserControl.Resources>    
-    <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
-        <materialDesign:DrawerHost.LeftDrawerContent>
-            <DockPanel MinWidth="220">
-                <ToggleButton 
-                        Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
-                        DockPanel.Dock="Top"
-                        HorizontalAlignment="Right" 
-                        Margin="16"
-                        IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"/>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <ToggleButton
+                Content="{materialDesign:PackIcon Kind=Microphone}"
+                IsChecked="{Binding Monitor}"
+                Style="{StaticResource DefaultToggleButton}"
+                ToolTip="マイク" />
+            <ToggleButton
+                Content="{materialDesign:PackIcon Kind=Record}"
+                IsChecked="{Binding Record}"
+                IsEnabled="{Binding Monitor}"
+                Style="{StaticResource DefaultToggleButton}"
+                ToolTip="録音"/>
+            <TextBlock Text="{Binding RecordName}" Width="150"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Devices}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="DataFlow" Binding="{Binding DataFlow}"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="(SystemName)" Binding="{Binding SystemName}" IsReadOnly="True"/>
+                <DataGridTemplateColumn IsReadOnly="True" Header="Measure" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding Measure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Volume Level" Binding="{Binding VolumeLevel}"/>
+                <DataGridTextColumn Header="-30dB以上" Binding="{Binding Minus30dB}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="-40dB以上" Binding="{Binding Minus40dB}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="-50dB以上" Binding="{Binding Minus50dB}" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <scottPlot:WpfPlot Grid.Row="2" x:Name="WpfPlot1" >
 
-                <ListBox
-                        Margin="0 16 0 16"
-                        SelectedItem="{Binding SelectedMenuItem}"
-                        ItemsSource="{Binding SampleItems}"
-                        AutomationProperties.Name="DemoPagesListBox"
-                        Style="{StaticResource MaterialDesignNavigationPrimaryListBox}">
-                    <ListBox.Resources>
-                        <Style TargetType="ScrollBar" BasedOn="{StaticResource MaterialDesignScrollBarMinimal}"/>
-                    </ListBox.Resources>
-                    <!-- <ListBox.ItemTemplate> -->
-                    <!--     <DataTemplate DataType="viewModel:MenuItem"> -->
-                    <!--         <TextBlock Text="{Binding Name}" Margin="24 4 0 4" AutomationProperties.AutomationId="DemoItemPage"/> -->
-                    <!--     </DataTemplate> -->
-                    <!-- </ListBox.ItemTemplate> -->
-                </ListBox>
-            </DockPanel>
-        </materialDesign:DrawerHost.LeftDrawerContent>
-
-        <DockPanel>
-            <materialDesign:ColorZone
-                    Padding="16"
-                    materialDesign:ShadowAssist.ShadowDepth="Depth2"
-                    Mode="PrimaryMid"
-                    DockPanel.Dock="Top">
-                <DockPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <ToggleButton
-                                x:Name="MenuToggleButton"
-                                Style="{StaticResource MaterialDesignHamburgerToggleButton}"
-                                IsChecked="False"
-                                AutomationProperties.Name="HamburgerToggleButton"/>
-                    </StackPanel>
-
-                    <TextBlock
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontSize="22"
-                            Margin="-152,0,0,0"
-                            AutomationProperties.Name="Quietrum"
-                            Text="Quietrum"/>
-                </DockPanel>
-            </materialDesign:ColorZone>
-
-            <Grid Margin="16">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Orientation="Horizontal">
-                        <ToggleButton
-                            Content="{materialDesign:PackIcon Kind=Microphone}"
-                            IsChecked="{Binding Monitor}"
-                            Style="{StaticResource DefaultToggleButton}"
-                            ToolTip="マイク" />
-                        <ToggleButton
-                            Content="{materialDesign:PackIcon Kind=Record}"
-                            IsChecked="{Binding Record}"
-                            IsEnabled="{Binding Monitor}"
-                            Style="{StaticResource DefaultToggleButton}"
-                            ToolTip="録音"/>
-                        <TextBlock Text="{Binding RecordName}" Width="150"
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
-                    <DataGrid Grid.Row="1" ItemsSource="{Binding Devices}" AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="DataFlow" Binding="{Binding DataFlow}"/>
-                            <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                            <DataGridTextColumn Header="(SystemName)" Binding="{Binding SystemName}" IsReadOnly="True"/>
-                            <DataGridTemplateColumn IsReadOnly="True" Header="Measure" Width="Auto">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <CheckBox IsChecked="{Binding Measure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="Volume Level" Binding="{Binding VolumeLevel}"/>
-                            <DataGridTextColumn Header="-30dB以上" Binding="{Binding Minus30dB}" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="-40dB以上" Binding="{Binding Minus40dB}" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="-50dB以上" Binding="{Binding Minus50dB}" IsReadOnly="True"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <scottPlot:WpfPlot Grid.Row="2" x:Name="WpfPlot1" >
-            
-                    </scottPlot:WpfPlot>
-                </Grid>
-                <materialDesign:Snackbar
-                        MessageQueue="{materialDesign:MessageQueue}"/>
-            </Grid>
-        </DockPanel>
-    </materialDesign:DrawerHost>
+        </scottPlot:WpfPlot>
+    </Grid>
 </UserControl>
