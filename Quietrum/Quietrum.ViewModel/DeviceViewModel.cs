@@ -103,6 +103,12 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
             .Subscribe(OnNext);
     }
 
+    public void Connect()
+    {
+        RemoteDeviceConnector connector = new RemoteDeviceConnector("localhost", _observable!);
+        connector.Connect();
+    }
+
     public void StopMonitoring()
     {
         _device.StopRecording();

@@ -39,6 +39,14 @@
                 ToolTip="録音"/>
             <TextBlock Text="{Binding RecordName}" Width="150"
                        VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding Speakers}"
+                      DisplayMemberPath="Name"
+                      Width="200"/>
+            <ToggleButton
+                Content="{materialDesign:PackIcon Kind=Connection}"
+                IsChecked="{Binding Connect}"
+                Style="{StaticResource DefaultToggleButton}"
+                ToolTip="接続" />
         </StackPanel>
         <DataGrid Grid.Row="1" 
                   ItemsSource="{Binding Devices}" 

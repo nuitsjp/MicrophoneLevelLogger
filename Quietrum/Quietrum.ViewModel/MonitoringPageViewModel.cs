@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics;
 using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Kamishibai;
+using NAudio.CoreAudioApi;
 using Reactive.Bindings;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
@@ -21,9 +20,12 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     [ObservableProperty] private bool _monitor = true;
     [ObservableProperty] private bool _record;
+    [ObservableProperty] private bool _connect;
     [ObservableProperty] private string _recordName = string.Empty;
     [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
     [ObservableProperty] private IList<DeviceViewModel> _devices = new List<DeviceViewModel>();
+    [ObservableProperty] private IList<DeviceViewModel> _speakers = new List<DeviceViewModel>();
+    [ObservableProperty] private DeviceViewModel? _selectedSpeaker;
     
     public MonitoringPageViewModel(
         [Inject] IAudioInterfaceProvider audioInterfaceProvider)
@@ -37,6 +39,35 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .Skip(1)
             .Subscribe(OnRecord)
             .AddTo(_compositeDisposable);
+        this.ObserveProperty(x => x.Connect)
+            .Skip(1)
+            .Subscribe(OnConnect)
+            .AddTo(_compositeDisposable);
+        this.ObserveProperty(x => x.Devices)
+            .Skip(1)
+            .Subscribe(OnDeviceChanged)
+            .AddTo(_compositeDisposable);
+    }
+
+    private void OnDeviceChanged(IList<DeviceViewModel> obj)
+    {
+        Speakers = Devices.Where(x => x.DataFlow == DataFlow.Render).ToList();
+        SelectedSpeaker = Speakers.FirstOrDefault();
+    }
+
+    private void OnConnect(bool connect)
+    {
+        if (connect)
+        {
+            if (SelectedSpeaker is not null)
+            {
+                SelectedSpeaker.Connect();
+            }
+        }
+        else
+        {
+            
+        }
     }
 
     private void OnMonitor(bool monitor)

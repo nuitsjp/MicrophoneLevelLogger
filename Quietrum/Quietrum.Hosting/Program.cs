@@ -10,6 +10,7 @@ var builder = KamishibaiApplication<App, MainWindow>.CreateBuilder();
 
 builder.Services.AddTransient<IAudioInterfaceProvider, AudioInterfaceProvider>();
 builder.Services.AddTransient<ISettingsRepository, SettingsRepository>();
+builder.Services.AddTransient<IRemoteDeviceServer, RemoteDeviceServer>();
 
 builder.Services.AddPresentation<MainWindow, MainWindowViewModel>();
 builder.Services.AddPresentation<MonitoringPage, MonitoringPageViewModel>();

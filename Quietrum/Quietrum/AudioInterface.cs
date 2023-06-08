@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Management;
+using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
 
@@ -19,28 +20,39 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
 
     private readonly ISettingsRepository _settingsRepository;
 
+    private readonly IRemoteDeviceServer _remoteDeviceServer;
+
     /// <summary>
     /// 
     /// </summary>
     [ObservableProperty]
     private IReadOnlyList<IDevice> _microphones = new List<IDevice>();
 
+    private readonly List<RemoteDevice> _remoteDevices = new();
+
     private Settings _settings;
+
     /// <summary>
     /// すべてのマイクを扱うオーディオ インターフェースを作成する。
     /// </summary>
     /// <param name="settingsRepository"></param>
-    internal AudioInterface(ISettingsRepository settingsRepository)
+    /// <param name="remoteDeviceServer"></param>
+    internal AudioInterface(
+        ISettingsRepository settingsRepository, 
+        IRemoteDeviceServer remoteDeviceServer)
     {
         _settingsRepository = settingsRepository;
+        _remoteDeviceServer = remoteDeviceServer;
         _settings = default!;
         _watcher.EventArrived += WatcherEventArrived;
         _watcher.Start();
+        _remoteDeviceServer.RemoteDevicesChanged += (_, _) => ReloadMicrophonesAsync().ConfigureAwait(true);
     }
 
     public async Task ActivateAsync()
     {
         _settings = await _settingsRepository.LoadAsync();
+        _remoteDeviceServer.Activate();
         await ReloadMicrophonesAsync();
     }
 
@@ -54,7 +66,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
         using var enumerator = new MMDeviceEnumerator();
         var mmDevices = enumerator
             .EnumerateAudioEndPoints(DataFlow.All, DeviceState.Active)
-            .ToArray();
+            .ToList();
         var modified = false;
         // 新たに接続されたマイクを追加する。
         foreach (var mmDevice in mmDevices)
@@ -108,7 +120,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
     {
         if (sender is not IDevice microphone) return;
         if(e.PropertyName is not (
-           nameof(IDevice.Measure) 
+           nameof(IDevice.Name) 
            or nameof(IDevice.Measure))) return;
         
         var config = _settings.GetMicrophoneConfig(microphone.Id);
