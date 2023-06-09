@@ -129,7 +129,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     {
         var audioInterface = await _audioInterfaceProvider.ResolveAsync();
         audioInterface
-            .ObserveProperty(x => x.Microphones)
+            .ObserveProperty(x => x.Devices)
             .Subscribe(microphones =>
             {
                 List<DeviceViewModel> newViewModels = new(Devices);
@@ -155,7 +155,10 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                         viewModel.PropertyChanged -= MicrophoneOnPropertyChanged;
                         newViewModels.Remove(viewModel);
                     });
-                Devices = newViewModels;
+                Devices = newViewModels
+                    .OrderBy(x => x.DataFlow.ToString())
+                    .ThenBy(x => x.Name)
+                    .ToList();
             });
     }
 

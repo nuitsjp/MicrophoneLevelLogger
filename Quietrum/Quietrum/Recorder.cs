@@ -39,7 +39,7 @@ public class Recorder : IRecorder
         IRecordSummaryRepository recordSummaryRepository, 
         IDetailRepositoryFactory detailRepositoryFactory, 
         string? recordName = null)
-        : this(recordSummaryRepository, detailRepositoryFactory, recordName, audioInterface.Microphones.ToArray())
+        : this(recordSummaryRepository, detailRepositoryFactory, recordName, audioInterface.Devices.ToArray())
     {
     }
 
