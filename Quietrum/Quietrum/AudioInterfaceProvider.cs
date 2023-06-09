@@ -31,7 +31,11 @@ public class AudioInterfaceProvider : IAudioInterfaceProvider
     /// <returns></returns>
     public async Task<IAudioInterface> ResolveAsync()
     {
-        var audioInterface = new AudioInterface(_settingsRepository, _remoteDeviceServer);
+        var audioInterface = 
+            new AudioInterface(
+                _settingsRepository, 
+                _remoteDeviceServer,
+                new LocalDeviceInterface(_settingsRepository));
         await audioInterface.ActivateAsync();
         return audioInterface;
     }

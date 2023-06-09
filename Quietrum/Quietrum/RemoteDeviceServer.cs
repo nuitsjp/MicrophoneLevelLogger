@@ -66,3 +66,23 @@ public interface IRemoteDeviceServer
 
     public void Activate();
 }
+
+public interface IDeviceInterface<out TDevice> where TDevice : IDevice
+{
+    public event EventHandler<DeviceEventArgs>? ConnectedDevice;
+    public event EventHandler<DeviceEventArgs>? DisconnectedDevice;
+    
+    public IReadOnlyList<TDevice> Devices { get; }
+
+    public Task ActivateAsync();
+}
+
+public class DeviceEventArgs : EventArgs
+{
+    public DeviceEventArgs(IDevice device)
+    {
+        Device = device;
+    }
+
+    public IDevice Device { get; }
+}

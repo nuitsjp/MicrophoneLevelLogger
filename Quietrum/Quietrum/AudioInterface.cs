@@ -22,6 +22,8 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
 
     private readonly IRemoteDeviceServer _remoteDeviceServer;
 
+    private readonly LocalDeviceInterface _localDeviceInterface;
+
     /// <summary>
     /// 
     /// </summary>
@@ -37,12 +39,15 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
     /// </summary>
     /// <param name="settingsRepository"></param>
     /// <param name="remoteDeviceServer"></param>
+    /// <param name="localDeviceInterface"></param>
     internal AudioInterface(
         ISettingsRepository settingsRepository, 
-        IRemoteDeviceServer remoteDeviceServer)
+        IRemoteDeviceServer remoteDeviceServer, 
+        LocalDeviceInterface localDeviceInterface)
     {
         _settingsRepository = settingsRepository;
         _remoteDeviceServer = remoteDeviceServer;
+        _localDeviceInterface = localDeviceInterface;
         _settings = default!;
         _watcher.EventArrived += WatcherEventArrived;
         _watcher.Start();
@@ -53,6 +58,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
     {
         _settings = await _settingsRepository.LoadAsync();
         _remoteDeviceServer.Activate();
+        await _localDeviceInterface.ActivateAsync();
         await ReloadMicrophonesAsync();
     }
 
