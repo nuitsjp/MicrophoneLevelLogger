@@ -40,10 +40,24 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
         _settingsRepository = settingsRepository;
         _remoteDeviceServer = remoteDeviceServer;
         _localDeviceInterface = localDeviceInterface;
-        _localDeviceInterface.ConnectedDevice += (_, _) => ReloadDevices();
-        _localDeviceInterface.DisconnectedDevice += (_, _) => ReloadDevices();
+        _localDeviceInterface.ConnectedDevice += OnConnectedDevice;
+        _localDeviceInterface.DisconnectedDevice += OnDisconnectedDevice;
         _settings = default!;
         _remoteDeviceServer.RemoteDevicesChanged += (_, _) => ReloadDevices();
+    }
+
+    private void OnConnectedDevice(object? sender, DeviceEventArgs e)
+    {
+        var devices = Devices.ToList();
+        devices.Add(e.Device);
+        Devices = devices;
+    }
+
+    private void OnDisconnectedDevice(object? sender, DeviceEventArgs e)
+    {
+        var devices = Devices.ToList();
+        devices.Remove(e.Device);
+        Devices = devices;
     }
 
     public async Task ActivateAsync()
