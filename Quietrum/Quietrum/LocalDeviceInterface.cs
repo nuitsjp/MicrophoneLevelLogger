@@ -1,6 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Management;
+using System.Reactive.Concurrency;
 using NAudio.CoreAudioApi;
+using Reactive.Bindings;
 
 namespace Quietrum;
 
@@ -14,18 +17,17 @@ public class LocalDeviceInterface : IDeviceInterface<IDevice>
         });
 
     private readonly ISettingsRepository _settingsRepository;
-    private readonly List<IDevice> _devices = new();
+    private readonly ReactiveCollection<IDevice> _devices = new();
     private Settings _settings = default!;
 
     public LocalDeviceInterface(ISettingsRepository settingsRepository)
     {
         _settingsRepository = settingsRepository;
+        Devices = _devices
+            .ToReadOnlyReactiveCollection(scheduler: CurrentThreadScheduler.Instance);
     }
 
-    public event EventHandler<DeviceEventArgs>? ConnectedDevice;
-    public event EventHandler<DeviceEventArgs>? DisconnectedDevice;
-
-    public IReadOnlyList<IDevice> Devices => _devices;
+    public ReadOnlyReactiveCollection<IDevice> Devices { get; }
 
     public async Task ActivateAsync()
     {
@@ -67,7 +69,6 @@ public class LocalDeviceInterface : IDeviceInterface<IDevice>
         {
             var device = await ResolveDeviceAsync(mmDevice);
             _devices.Add(device);
-            ConnectedDevice?.Invoke(this, new DeviceEventArgs(device));
         }
         
         // 切断されたデバイスの確認
@@ -78,7 +79,6 @@ public class LocalDeviceInterface : IDeviceInterface<IDevice>
         {
             _devices.Remove(device);
             device.Dispose();
-            DisconnectedDevice?.Invoke(this, new DeviceEventArgs(device));
         }
     }
     

@@ -1,11 +1,11 @@
-﻿namespace Quietrum;
+﻿using System.Collections.ObjectModel;
+using Reactive.Bindings;
 
-public interface IDeviceInterface<out TDevice> where TDevice : IDevice
+namespace Quietrum;
+
+public interface IDeviceInterface<TDevice> where TDevice : IDevice
 {
-    public event EventHandler<DeviceEventArgs>? ConnectedDevice;
-    public event EventHandler<DeviceEventArgs>? DisconnectedDevice;
-    
-    public IReadOnlyList<TDevice> Devices { get; }
+    public ReadOnlyReactiveCollection<TDevice> Devices { get; }
 
     public Task ActivateAsync();
 }

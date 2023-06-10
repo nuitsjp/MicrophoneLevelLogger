@@ -1,9 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Management;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
+using Reactive.Bindings;
 
 namespace Quietrum;
 
@@ -18,14 +20,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
 
     private readonly LocalDeviceInterface _localDeviceInterface;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    // [ObservableProperty] private IReadOnlyList<IDevice> _devices = new List<IDevice>();
-
-    private readonly ObservableCollection<IDevice> _devices = new();
-
-    public ReadOnlyObservableCollection<IDevice> Devices { get; }
+    public ReadOnlyReactiveCollection<IDevice> Devices { get; }
 
     /// <summary>
     /// すべてのマイクを扱うオーディオ インターフェースを作成する。
@@ -41,19 +36,10 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
         _settingsRepository = settingsRepository;
         _remoteDeviceServer = remoteDeviceServer;
         _localDeviceInterface = localDeviceInterface;
-        _localDeviceInterface.ConnectedDevice += OnConnectedDevice;
-        _localDeviceInterface.DisconnectedDevice += OnDisconnectedDevice;
-        Devices = new ReadOnlyObservableCollection<IDevice>(_devices);
-    }
+        Devices = _localDeviceInterface
+            .Devices
+            .ToReadOnlyReactiveCollection(scheduler: CurrentThreadScheduler.Instance);
 
-    private void OnConnectedDevice(object? sender, DeviceEventArgs e)
-    {
-        _devices.Add(e.Device);
-    }
-
-    private void OnDisconnectedDevice(object? sender, DeviceEventArgs e)
-    {
-        _devices.Remove(e.Device);
     }
 
     public async Task ActivateAsync()
