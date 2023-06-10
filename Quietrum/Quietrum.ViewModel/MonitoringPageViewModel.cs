@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Kamishibai;
@@ -128,38 +129,40 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     public async Task OnNavigatedAsync(PostForwardEventArgs args)
     {
         var audioInterface = await _audioInterfaceProvider.ResolveAsync();
-        audioInterface
-            .ObserveProperty(x => x.Devices)
-            .Subscribe(microphones =>
+        ((INotifyCollectionChanged)audioInterface.Devices).CollectionChanged += (sender, eventArgs) =>
+        {
+            List<DeviceViewModel> newViewModels = new(Devices);
+            if (eventArgs.NewItems is not null)
             {
-                List<DeviceViewModel> newViewModels = new(Devices);
                 // 接続されたIMicrophoneを追加する。
-                newViewModels.AddRange(
-                    microphones
-                        .Where(x => newViewModels.NotContains(viewModel => viewModel.Id == x.Id))
-                        .Select(x =>
-                        {
-                            var microphone = new DeviceViewModel(x, RecordingConfig);
-                            microphone.PropertyChanged += MicrophoneOnPropertyChanged;
-                            if (microphone.Measure)
-                            {
-                                microphone.StartMonitoring();
-                            }
-                            return microphone;
-                        }));
-                // 除去されたIMicrophoneを削除する
-                newViewModels.Where(x => microphones.NotContains(microphone => microphone.Id == x.Id))
-                    .ToList()
-                    .ForEach(viewModel =>
+                foreach (IDevice device in eventArgs.NewItems!)
+                {
+                    var microphone = new DeviceViewModel(device, RecordingConfig);
+                    microphone.PropertyChanged += MicrophoneOnPropertyChanged;
+                    if (microphone.Measure)
                     {
-                        viewModel.PropertyChanged -= MicrophoneOnPropertyChanged;
-                        newViewModels.Remove(viewModel);
-                    });
-                Devices = newViewModels
-                    .OrderBy(x => x.DataFlow.ToString())
-                    .ThenBy(x => x.Name)
-                    .ToList();
-            });
+                        microphone.StartMonitoring();
+                    }
+                    newViewModels.Add(microphone);
+                }
+            }
+
+            if (eventArgs.OldItems is not null)
+            {
+                foreach (IDevice device in eventArgs.OldItems)
+                {
+                    var viewModel = Devices.Single(x => x.Id == device.Id);
+                    viewModel.PropertyChanged -= MicrophoneOnPropertyChanged;
+                    newViewModels.Remove(viewModel);
+                }
+            }
+            Devices = newViewModels
+                .OrderBy(x => x.DataFlow.ToString())
+                .ThenBy(x => x.Name)
+                .ToList();
+
+        };
+        await audioInterface.ActivateAsync();
     }
 
     private void MicrophoneOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -169,7 +172,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
 
     public void Dispose()
     {
-        Devices.Dispose();
         Devices.Dispose();
         _compositeDisposable.Dispose();
     }

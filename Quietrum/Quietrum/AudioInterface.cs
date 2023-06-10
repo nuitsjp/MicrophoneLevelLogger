@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Management;
 using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -20,11 +21,11 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
     /// <summary>
     /// 
     /// </summary>
-    [ObservableProperty] private IReadOnlyList<IDevice> _devices = new List<IDevice>();
+    // [ObservableProperty] private IReadOnlyList<IDevice> _devices = new List<IDevice>();
 
-    private readonly List<RemoteDevice> _remoteDevices = new();
+    private readonly ObservableCollection<IDevice> _devices = new();
 
-    private Settings _settings;
+    public ReadOnlyObservableCollection<IDevice> Devices { get; }
 
     /// <summary>
     /// すべてのマイクを扱うオーディオ インターフェースを作成する。
@@ -42,41 +43,23 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
         _localDeviceInterface = localDeviceInterface;
         _localDeviceInterface.ConnectedDevice += OnConnectedDevice;
         _localDeviceInterface.DisconnectedDevice += OnDisconnectedDevice;
-        _settings = default!;
-        _remoteDeviceServer.RemoteDevicesChanged += (_, _) => ReloadDevices();
+        Devices = new ReadOnlyObservableCollection<IDevice>(_devices);
     }
 
     private void OnConnectedDevice(object? sender, DeviceEventArgs e)
     {
-        var devices = Devices.ToList();
-        devices.Add(e.Device);
-        Devices = devices;
+        _devices.Add(e.Device);
     }
 
     private void OnDisconnectedDevice(object? sender, DeviceEventArgs e)
     {
-        var devices = Devices.ToList();
-        devices.Remove(e.Device);
-        Devices = devices;
+        _devices.Remove(e.Device);
     }
 
     public async Task ActivateAsync()
     {
-        _settings = await _settingsRepository.LoadAsync();
-        _remoteDeviceServer.Activate();
+        //_remoteDeviceServer.Activate();
         await _localDeviceInterface.ActivateAsync();
-        ReloadDevices();
-    }
-
-    /// <summary>
-    /// すべてのマイクをリロードする。
-    /// </summary>
-    /// <returns></returns>
-    private void ReloadDevices()
-    {
-        Devices = _localDeviceInterface
-            .Devices
-            .ToList();
     }
 
     /// <summary>

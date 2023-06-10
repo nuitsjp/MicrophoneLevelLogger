@@ -36,7 +36,6 @@ public class AudioInterfaceProvider : IAudioInterfaceProvider
                 _settingsRepository, 
                 _remoteDeviceServer,
                 new LocalDeviceInterface(_settingsRepository));
-        await audioInterface.ActivateAsync();
         return audioInterface;
     }
 }

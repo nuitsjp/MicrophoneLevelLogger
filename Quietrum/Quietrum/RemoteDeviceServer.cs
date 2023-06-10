@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Reactive.Bindings;
 
 namespace Quietrum;
 
@@ -65,16 +66,6 @@ public interface IRemoteDeviceServer
     public IReadOnlyList<RemoteDevice> RemoteDevices { get; }
 
     public void Activate();
-}
-
-public interface IDeviceInterface<out TDevice> where TDevice : IDevice
-{
-    public event EventHandler<DeviceEventArgs>? ConnectedDevice;
-    public event EventHandler<DeviceEventArgs>? DisconnectedDevice;
-    
-    public IReadOnlyList<TDevice> Devices { get; }
-
-    public Task ActivateAsync();
 }
 
 public class DeviceEventArgs : EventArgs

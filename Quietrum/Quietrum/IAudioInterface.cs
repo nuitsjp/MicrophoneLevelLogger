@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Quietrum;
 
@@ -12,7 +13,7 @@ public interface IAudioInterface : INotifyPropertyChanged, IDisposable
     /// <summary>
     /// 
     /// </summary>
-    IReadOnlyList<IDevice> Devices { get; }
+    ReadOnlyObservableCollection<IDevice> Devices { get; }
 
     /// <summary>
     /// 現在有効なスピーカーを取得する。
