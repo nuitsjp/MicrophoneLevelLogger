@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,27 +10,30 @@ using Reactive.Bindings;
 
 namespace Quietrum;
 
-public partial class RemoteDeviceServer : ObservableObject, IRemoteDeviceServer, IDisposable
+public partial class RemoteDeviceInterface : ObservableObject, IDeviceInterface, IDisposable
 {
     public static readonly Port ServerPort = new(9876);
 
     private readonly TcpListener _tcpListener = new(IPAddress.Any, ServerPort.AsPrimitive());
     
     private readonly Task _task;
-    [ObservableProperty] private IReadOnlyList<RemoteDevice> _remoteDevices = new List<RemoteDevice>();
 
-    public RemoteDeviceServer()
+    private readonly ReactiveCollection<IDevice> _devices = new();
+
+    public RemoteDeviceInterface()
     {
         _task = new Task(OnListening);
+        Devices = _devices
+            .ToReadOnlyReactiveCollection(scheduler: CurrentThreadScheduler.Instance);
     }
 
-    public event EventHandler<EventArgs>? RemoteDevicesChanged;
+    public ReadOnlyReactiveCollection<IDevice> Devices { get; }
 
-    public void Activate()
+    public Task ActivateAsync()
     {
         _task.Start();
+        return Task.CompletedTask;
     }
-
 
     private void OnListening()
     {
@@ -40,10 +44,7 @@ public partial class RemoteDeviceServer : ObservableObject, IRemoteDeviceServer,
             while (true)
             {
                 var tcpClient = _tcpListener.AcceptTcpClient();
-                var newDevices = RemoteDevices.ToList();
-                newDevices.Add(new RemoteDevice(tcpClient));
-                RemoteDevices = newDevices;
-                RemoteDevicesChanged?.Invoke(this, EventArgs.Empty);
+                _devices.Add(new RemoteDevice(tcpClient));
             }
         }
         catch
@@ -57,23 +58,5 @@ public partial class RemoteDeviceServer : ObservableObject, IRemoteDeviceServer,
         _tcpListener.Stop();
         _task.Dispose();
     }
-}
 
-public interface IRemoteDeviceServer
-{
-    public event EventHandler<EventArgs> RemoteDevicesChanged;
-    
-    public IReadOnlyList<RemoteDevice> RemoteDevices { get; }
-
-    public void Activate();
-}
-
-public class DeviceEventArgs : EventArgs
-{
-    public DeviceEventArgs(IDevice device)
-    {
-        Device = device;
-    }
-
-    public IDevice Device { get; }
 }

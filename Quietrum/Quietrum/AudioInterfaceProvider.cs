@@ -10,19 +10,15 @@ public class AudioInterfaceProvider : IAudioInterfaceProvider
     /// </summary>
     private readonly ISettingsRepository _settingsRepository;
 
-    private readonly IRemoteDeviceServer _remoteDeviceServer;
-
     /// <summary>
     /// インスタンスを生成する。
     /// </summary>
     /// <param name="settingsRepository"></param>
     /// <param name="remoteDeviceServer"></param>
     public AudioInterfaceProvider(
-        ISettingsRepository settingsRepository, 
-        IRemoteDeviceServer remoteDeviceServer)
+        ISettingsRepository settingsRepository)
     {
         _settingsRepository = settingsRepository;
-        _remoteDeviceServer = remoteDeviceServer;
     }
 
     /// <summary>
@@ -34,8 +30,8 @@ public class AudioInterfaceProvider : IAudioInterfaceProvider
         var audioInterface = 
             new AudioInterface(
                 _settingsRepository, 
-                _remoteDeviceServer,
-                new LocalDeviceInterface(_settingsRepository));
+                new LocalDeviceInterface(_settingsRepository),
+                new RemoteDeviceInterface());
         return audioInterface;
     }
 }

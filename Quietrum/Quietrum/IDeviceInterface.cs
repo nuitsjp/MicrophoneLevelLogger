@@ -3,9 +3,9 @@ using Reactive.Bindings;
 
 namespace Quietrum;
 
-public interface IDeviceInterface<TDevice> where TDevice : IDevice
+public interface IDeviceInterface
 {
-    public ReadOnlyReactiveCollection<TDevice> Devices { get; }
+    public ReadOnlyReactiveCollection<IDevice> Devices { get; }
 
     public Task ActivateAsync();
 }

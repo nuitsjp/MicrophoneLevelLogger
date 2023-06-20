@@ -16,7 +16,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
 {
     private readonly ISettingsRepository _settingsRepository;
 
-    private readonly IRemoteDeviceServer _remoteDeviceServer;
+    private readonly RemoteDeviceInterface _remoteDeviceInterface;
 
     private readonly LocalDeviceInterface _localDeviceInterface;
 
@@ -26,26 +26,27 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
     /// すべてのマイクを扱うオーディオ インターフェースを作成する。
     /// </summary>
     /// <param name="settingsRepository"></param>
-    /// <param name="remoteDeviceServer"></param>
     /// <param name="localDeviceInterface"></param>
+    /// <param name="remoteDeviceInterface"></param>
     internal AudioInterface(
         ISettingsRepository settingsRepository, 
-        IRemoteDeviceServer remoteDeviceServer, 
-        LocalDeviceInterface localDeviceInterface)
+        LocalDeviceInterface localDeviceInterface,
+        RemoteDeviceInterface remoteDeviceInterface)
     {
         _settingsRepository = settingsRepository;
-        _remoteDeviceServer = remoteDeviceServer;
         _localDeviceInterface = localDeviceInterface;
+        _remoteDeviceInterface = remoteDeviceInterface;
         Devices = _localDeviceInterface
             .Devices
+            .Merge(_remoteDeviceInterface.Devices)
             .ToReadOnlyReactiveCollection(scheduler: CurrentThreadScheduler.Instance);
 
     }
 
     public async Task ActivateAsync()
     {
-        _remoteDeviceServer.Activate();
         await _localDeviceInterface.ActivateAsync();
+        await _remoteDeviceInterface.ActivateAsync();
     }
 
     /// <summary>

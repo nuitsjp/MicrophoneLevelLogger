@@ -7,7 +7,7 @@ using Reactive.Bindings;
 
 namespace Quietrum;
 
-public class LocalDeviceInterface : IDeviceInterface<IDevice>
+public class LocalDeviceInterface : IDeviceInterface
 {
     private readonly ManagementEventWatcher _watcher = new(
         new WqlEventQuery("__InstanceOperationEvent")

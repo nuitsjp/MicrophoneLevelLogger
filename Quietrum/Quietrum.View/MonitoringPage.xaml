@@ -40,6 +40,7 @@
             <TextBlock Text="{Binding RecordName}" Width="150"
                        VerticalAlignment="Center"/>
             <ComboBox ItemsSource="{Binding Speakers}"
+                      SelectedItem="{Binding SelectedSpeaker, Mode=TwoWay}"
                       DisplayMemberPath="Name"
                       Width="200"/>
             <ToggleButton
