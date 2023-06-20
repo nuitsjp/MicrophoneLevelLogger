@@ -44,7 +44,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
 
     public async Task ActivateAsync()
     {
-        //_remoteDeviceServer.Activate();
+        _remoteDeviceServer.Activate();
         await _localDeviceInterface.ActivateAsync();
     }
 
