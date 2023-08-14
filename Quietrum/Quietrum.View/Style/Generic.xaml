@@ -2,46 +2,77 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
     <ResourceDictionary.MergedDictionaries>
-                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Pink" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.CheckBox.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ListBox.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.RadioButton.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-    
-            <!-- TextBlock -->
-            <Style x:Key="TextBlockBase" TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody1TextBlock}">
-                <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="Margin" Value="5"/>
-            </Style>
-            <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}"/>
-            
-            <!-- TextBox -->
-            <Style x:Key="TextBoxBase" TargetType="TextBox">
-                <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="Margin" Value="5"/>
-            </Style>
-            
-            <!-- StackPanel -->
-            <Style TargetType="StackPanel">
-                <Setter Property="Margin" Value="10"/>
-            </Style>
+        <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Pink" />
+        <ResourceDictionary
+            Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+        <ResourceDictionary
+            Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+        <ResourceDictionary
+            Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.CheckBox.xaml" />
+        <ResourceDictionary
+            Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ListBox.xaml" />
+        <ResourceDictionary
+            Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+        <ResourceDictionary
+            Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.RadioButton.xaml" />
+        <ResourceDictionary
+            Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
+        <ResourceDictionary
+            Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 
-            <!-- Button -->
-            <Style x:Key="ButtonBase" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedDarkButton}">
-                <Setter Property="Width" Value="90"/>
-                <Setter Property="Margin" Value="5"/>
-            </Style>
-            <Style TargetType="Button" BasedOn="{StaticResource ButtonBase}"/>
+    <!-- TextBlock -->
+    <Style x:Key="TextBlockBase" 
+           TargetType="TextBlock" 
+           BasedOn="{StaticResource MaterialDesignBody1TextBlock}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="5" />
+    </Style>
+    <Style TargetType="TextBlock" 
+           BasedOn="{StaticResource TextBlockBase}" />
 
-            
-            <!-- ToggleButton -->
-            <Style x:Key="DefaultToggleButton" TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
-                <Setter Property="Margin" Value="5" />
-            </Style>
+    <!-- TextBox -->
+    <Style x:Key="TextBoxBase" 
+           TargetType="TextBox" 
+           BasedOn="{StaticResource MaterialDesignTextBox}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Margin" Value="5" />
+    </Style>
+    <Style TargetType="TextBox" 
+           BasedOn="{StaticResource TextBoxBase}" />
+
+    <!-- ComboBox -->
+    <Style x:Key="ComboBoxBase"
+           TargetType="ComboBox"
+           BasedOn="{StaticResource MaterialDesignComboBox}">
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Margin" Value="5" />
+    </Style>
+
+    <Style TargetType="ComboBox" 
+           BasedOn="{StaticResource ComboBoxBase}" />
+
+    <!-- StackPanel -->
+    <Style TargetType="StackPanel">
+        <Setter Property="Margin" Value="10" />
+    </Style>
+
+    <!-- Button -->
+    <Style x:Key="ButtonBase" 
+           TargetType="Button" 
+           BasedOn="{StaticResource MaterialDesignRaisedDarkButton}">
+        <Setter Property="Width" Value="90" />
+        <Setter Property="Margin" Value="5" />
+    </Style>
+    <Style TargetType="Button" 
+           BasedOn="{StaticResource ButtonBase}" />
+
+    <!-- ToggleButton -->
+    <Style x:Key="DefaultToggleButton" 
+           TargetType="ToggleButton"
+           BasedOn="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
+        <Setter Property="Margin" Value="5" />
+    </Style>
 </ResourceDictionary>

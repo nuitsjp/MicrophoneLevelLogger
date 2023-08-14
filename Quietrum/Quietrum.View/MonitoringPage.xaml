@@ -39,6 +39,9 @@
                 ToolTip="録音"/>
             <TextBlock Text="{Binding RecordName}" Width="150"
                        VerticalAlignment="Center"/>
+            <TextBlock Text="Recorder"/>
+            <TextBox Text="{Binding RecorderHost}"
+                     Width="150"/>
             <ComboBox ItemsSource="{Binding Speakers}"
                       SelectedItem="{Binding SelectedSpeaker, Mode=TwoWay}"
                       DisplayMemberPath="Name"

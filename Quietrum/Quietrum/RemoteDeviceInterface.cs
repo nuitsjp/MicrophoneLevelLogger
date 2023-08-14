@@ -29,10 +29,9 @@ public partial class RemoteDeviceInterface : ObservableObject, IDeviceInterface,
 
     public ReadOnlyReactiveCollection<IDevice> Devices { get; }
 
-    public Task ActivateAsync()
+    public async Task ActivateAsync()
     {
         _task.Start();
-        return Task.CompletedTask;
     }
 
     private void OnListening()
@@ -44,13 +43,22 @@ public partial class RemoteDeviceInterface : ObservableObject, IDeviceInterface,
             while (true)
             {
                 var tcpClient = _tcpListener.AcceptTcpClient();
-                _devices.Add(new RemoteDevice(tcpClient));
+                var remoteDevice = new RemoteDevice(tcpClient); 
+                remoteDevice.Disconnected += OnDisconnected;
+                _devices.Add(remoteDevice);
             }
         }
         catch
         {
             // stopped
         }
+    }
+
+    private void OnDisconnected(object? sender, EventArgs e)
+    {
+        RemoteDevice remoteDevice = (RemoteDevice)sender;
+        _devices.Remove(remoteDevice);
+        remoteDevice.Disconnected -= OnDisconnected;
     }
 
     public void Dispose()

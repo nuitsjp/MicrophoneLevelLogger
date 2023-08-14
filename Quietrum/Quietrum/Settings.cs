@@ -25,7 +25,7 @@ public class Settings
         TimeSpan recordingSpan,
         bool isEnableRemotePlaying,
         bool isEnableRemoteRecording, 
-        SpeakerId? selectedSpeakerId, 
+        DeviceId? selectedSpeakerId, 
         IReadOnlyList<MicrophoneConfig> microphoneConfigs)
     {
         MediaPlayerHost = mediaPlayerHost;
@@ -62,7 +62,7 @@ public class Settings
     /// </summary>
     public IReadOnlyList<MicrophoneConfig> MicrophoneConfigs => _microphoneConfigs;
 
-    public SpeakerId? SelectedSpeakerId { get; }
+    public DeviceId? SelectedSpeakerId { get; }
 
     public bool TryGetMicrophoneConfig(DeviceId id, out MicrophoneConfig microphoneConfig)
     {
