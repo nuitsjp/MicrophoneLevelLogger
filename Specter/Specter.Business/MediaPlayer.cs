@@ -35,7 +35,7 @@ public class MediaPlayer : IMediaPlayer
         IWavePlayer wavePlayer = new WasapiOut(mmDevice, AudioClientShareMode.Shared, false, 0);
 
         // ループ音源を作成する。
-        WaveStream waveStream = new LoopStream(new WaveFileReader(Quietrum.Properties.Resources.吾輩は猫である));
+        WaveStream waveStream = new LoopStream(new WaveFileReader(Specter.Business.Properties.Resources.吾輩は猫である));
 
         // 終了処理を登録する。
         token.Register(() =>

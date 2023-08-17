@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quietrum", "Quietrum\Quietrum.csproj", "{C52003E8-9440-4052-8073-B4FE44A08BB9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quietrum.ViewModel", "Quietrum.ViewModel\Quietrum.ViewModel.csproj", "{29700D9A-1A99-426C-8C95-1B3DC3844208}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quietrum.View", "Quietrum.View\Quietrum.View.csproj", "{2D49F7AE-3547-46B1-8F13-81C3D9119289}"
@@ -15,16 +13,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quietrum.Repository", "Quie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specter.Business", "..\Specter\Specter.Business\Specter.Business.csproj", "{8746523F-9B14-4D7B-9FB7-26F13C846AE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specter.System", "..\Specter\Specter.System\Specter.System.csproj", "{937A3D01-B876-4CFD-937B-D0CD5E544198}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C52003E8-9440-4052-8073-B4FE44A08BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C52003E8-9440-4052-8073-B4FE44A08BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C52003E8-9440-4052-8073-B4FE44A08BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C52003E8-9440-4052-8073-B4FE44A08BB9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{29700D9A-1A99-426C-8C95-1B3DC3844208}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{29700D9A-1A99-426C-8C95-1B3DC3844208}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29700D9A-1A99-426C-8C95-1B3DC3844208}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{8746523F-9B14-4D7B-9FB7-26F13C846AE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8746523F-9B14-4D7B-9FB7-26F13C846AE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8746523F-9B14-4D7B-9FB7-26F13C846AE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{937A3D01-B876-4CFD-937B-D0CD5E544198}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{937A3D01-B876-4CFD-937B-D0CD5E544198}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{937A3D01-B876-4CFD-937B-D0CD5E544198}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{937A3D01-B876-4CFD-937B-D0CD5E544198}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Specter\Specter.Business\Specter.Business.csproj" />
-    <ProjectReference Include="..\Quietrum\Quietrum.csproj" />
   </ItemGroup>
 
 </Project>

@@ -16,7 +16,6 @@
     <ProjectReference Include="..\Quietrum.Repository\Quietrum.Repository.csproj" />
     <ProjectReference Include="..\Quietrum.ViewModel\Quietrum.ViewModel.csproj" />
     <ProjectReference Include="..\Quietrum.View\Quietrum.View.csproj" />
-    <ProjectReference Include="..\Quietrum\Quietrum.csproj" />
   </ItemGroup>
 
 </Project>
