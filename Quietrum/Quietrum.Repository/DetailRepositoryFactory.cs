@@ -1,4 +1,6 @@
-﻿namespace Quietrum.Repository;
+﻿using Specter.Business;
+
+namespace Quietrum.Repository;
 
 /// <summary>
 /// IDetailWriterファクトリー

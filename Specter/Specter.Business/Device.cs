@@ -3,9 +3,8 @@ using System.Reactive.Subjects;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
-using MMDeviceEnumerator = NAudio.CoreAudioApi.MMDeviceEnumerator;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 /// <summary>
 /// マイク

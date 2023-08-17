@@ -1,7 +1,6 @@
-﻿using System.Security.Cryptography;
-using UnitGenerator;
+﻿using UnitGenerator;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 /// <summary>
 /// デシベル。音量の単位。

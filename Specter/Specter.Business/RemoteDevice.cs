@@ -1,13 +1,10 @@
-﻿using System.ComponentModel;
-using System.Linq.Expressions;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Reactive.Subjects;
-using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 public class RemoteDevice : ObservableObject, IDevice
 {

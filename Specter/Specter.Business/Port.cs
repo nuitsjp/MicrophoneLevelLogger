@@ -1,6 +1,6 @@
 ﻿using UnitGenerator;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 [UnitOf(typeof(int))]
 public partial struct Port

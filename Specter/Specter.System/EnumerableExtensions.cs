@@ -1,4 +1,4 @@
-﻿namespace Quietrum;
+﻿namespace Specter;
 
 /// <summary>
 /// IEnumerable拡張メソッド

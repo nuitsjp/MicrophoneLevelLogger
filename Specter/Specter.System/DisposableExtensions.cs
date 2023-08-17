@@ -1,4 +1,4 @@
-﻿namespace Quietrum;
+﻿namespace Specter;
 
 public static class DisposableExtensions
 {

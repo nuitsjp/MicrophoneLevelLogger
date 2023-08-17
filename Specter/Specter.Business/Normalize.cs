@@ -1,6 +1,6 @@
 ﻿using NAudio.Wave;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 public class Normalize
 {

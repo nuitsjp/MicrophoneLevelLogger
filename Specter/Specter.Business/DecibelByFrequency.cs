@@ -1,4 +1,4 @@
-﻿namespace Quietrum;
+﻿namespace Specter.Business;
 
 /// <summary>
 /// 周波数帯域別の音量

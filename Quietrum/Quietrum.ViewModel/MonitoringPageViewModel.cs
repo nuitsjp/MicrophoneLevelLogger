@@ -9,6 +9,8 @@ using Reactive.Bindings;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
 using ScottPlot;
+using Specter;
+using Specter.Business;
 
 namespace Quietrum.ViewModel;
 

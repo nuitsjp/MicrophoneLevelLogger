@@ -1,4 +1,4 @@
-﻿namespace Quietrum;
+﻿namespace Specter.Business;
 
 /// <summary>
 /// 周波数重み付け特性「A特性」

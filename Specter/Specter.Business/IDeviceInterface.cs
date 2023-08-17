@@ -1,7 +1,6 @@
-﻿using System.Collections.ObjectModel;
-using Reactive.Bindings;
+﻿using Reactive.Bindings;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 public interface IDeviceInterface
 {

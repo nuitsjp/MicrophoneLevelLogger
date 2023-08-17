@@ -1,4 +1,4 @@
-﻿namespace Quietrum;
+﻿namespace Specter.Business;
 
 /// <summary>
 /// 音源を再生するプレイヤー

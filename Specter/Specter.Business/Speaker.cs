@@ -1,6 +1,6 @@
 ﻿using NAudio.CoreAudioApi;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 /// <summary>
 /// スピーカー

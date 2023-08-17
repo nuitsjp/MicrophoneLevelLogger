@@ -1,4 +1,4 @@
-﻿namespace Quietrum;
+﻿namespace Specter.Business;
 
 /// <summary>
 /// 記録対象のマイクに対するレコーダー

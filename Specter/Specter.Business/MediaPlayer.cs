@@ -1,7 +1,7 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 /// <summary>
 /// メディアプレイヤー

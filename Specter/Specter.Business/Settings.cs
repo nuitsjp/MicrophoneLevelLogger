@@ -1,6 +1,4 @@
-﻿using NAudio.CoreAudioApi;
-
-namespace Quietrum;
+﻿namespace Specter.Business;
 
 /// <summary>
 /// MicrophoneLevelLoggerの各種設定

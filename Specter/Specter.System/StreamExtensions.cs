@@ -1,6 +1,6 @@
 ﻿using System.Reactive.Linq;
 
-namespace Quietrum;
+namespace Specter;
 
 public static class StreamExtensions
 {

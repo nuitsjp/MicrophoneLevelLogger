@@ -1,13 +1,9 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Management;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
+﻿using System.Reactive.Concurrency;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
 using Reactive.Bindings;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 /// <summary>
 /// マイク・スピーカーなどを統合したオーディオ関連のインターフェース

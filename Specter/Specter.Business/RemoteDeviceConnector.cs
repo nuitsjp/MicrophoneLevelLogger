@@ -3,7 +3,7 @@ using NAudio.Wave;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 /// <summary>
 /// ローカルの音声データを、リモートのサーバーに接続するためのコネクター。

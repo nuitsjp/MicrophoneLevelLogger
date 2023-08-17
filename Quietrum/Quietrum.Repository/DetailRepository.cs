@@ -1,4 +1,6 @@
-﻿namespace Quietrum.Repository;
+﻿using Specter.Business;
+
+namespace Quietrum.Repository;
 
 /// <summary>
 /// マイク別のサンプリング間隔ごとの最大音量を記録するライター

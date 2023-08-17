@@ -3,7 +3,7 @@ using System.Reactive.Linq;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 public static class ReactiveCollectionExtensions
 {

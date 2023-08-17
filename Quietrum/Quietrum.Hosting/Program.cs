@@ -5,6 +5,7 @@ using Quietrum;
 using Quietrum.Repository;
 using Quietrum.View;
 using Quietrum.ViewModel;
+using Specter.Business;
 
 var builder = KamishibaiApplication<App, MainWindow>.CreateBuilder();
 

@@ -1,14 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Reactive.Bindings;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 public partial class RemoteDeviceInterface : ObservableObject, IDeviceInterface, IDisposable
 {

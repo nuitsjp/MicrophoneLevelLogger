@@ -1,6 +1,6 @@
 ﻿using UnitGenerator;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 /// <summary>
 /// マイクID

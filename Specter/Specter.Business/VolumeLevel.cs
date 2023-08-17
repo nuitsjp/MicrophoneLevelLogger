@@ -1,6 +1,6 @@
 ﻿using UnitGenerator;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 /// <summary>
 /// 入出力レベル

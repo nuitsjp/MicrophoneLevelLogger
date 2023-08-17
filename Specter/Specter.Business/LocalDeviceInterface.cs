@@ -1,11 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Management;
 using System.Reactive.Concurrency;
 using NAudio.CoreAudioApi;
 using Reactive.Bindings;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 public class LocalDeviceInterface : IDeviceInterface
 {

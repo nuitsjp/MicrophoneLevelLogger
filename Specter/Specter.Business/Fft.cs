@@ -1,7 +1,7 @@
 ﻿using System.Buffers;
 using NAudio.Wave;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 /// <summary>
 /// 高速フーリエ変換

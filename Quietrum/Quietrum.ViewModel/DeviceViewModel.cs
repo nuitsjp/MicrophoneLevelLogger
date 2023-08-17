@@ -4,6 +4,8 @@ using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using Reactive.Bindings.Extensions;
 using Reactive.Bindings.TinyLinq;
+using Specter.Business;
+using WaveRecorder = Specter.Business.WaveRecorder;
 
 namespace Quietrum.ViewModel;
 

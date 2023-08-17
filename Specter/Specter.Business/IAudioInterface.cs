@@ -1,8 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Reactive.Bindings;
 
-namespace Quietrum;
+namespace Specter.Business;
 
 /// <summary>
 /// マイク・スピーカーなどを統合したオーディオ関連のインターフェース
