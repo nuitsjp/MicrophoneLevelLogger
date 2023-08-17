@@ -48,7 +48,16 @@
                       Width="200"/>
             <ToggleButton
                 Content="{materialDesign:PackIcon Kind=Connection}"
-                IsChecked="{Binding Connect}"
+                IsChecked="{Binding ConnectRecorder}"
+                Style="{StaticResource DefaultToggleButton}"
+                ToolTip="接続" />
+            
+            <TextBlock Text="Player"/>
+            <TextBox Text="{Binding PlayerHost}"
+                     Width="150"/>
+            <ToggleButton
+                Content="{materialDesign:PackIcon Kind=Connection}"
+                IsChecked="{Binding ConnectRecorder}"
                 Style="{StaticResource DefaultToggleButton}"
                 ToolTip="接続" />
         </StackPanel>

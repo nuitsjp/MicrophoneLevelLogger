@@ -24,8 +24,9 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     
     [ObservableProperty] private bool _monitor = true;
     [ObservableProperty] private bool _record;
-    [ObservableProperty] private bool _connect;
-    [ObservableProperty] private string _mediaPlayerHost;
+    [ObservableProperty] private bool _connectPlayer;
+    [ObservableProperty] private bool _connectRecorder;
+    [ObservableProperty] private string _playerHost;
     [ObservableProperty] private string _recorderHost;
     [ObservableProperty] private string _recordName = string.Empty;
     [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
@@ -47,7 +48,11 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .Skip(1)
             .Subscribe(OnRecord)
             .AddTo(_compositeDisposable);
-        this.ObserveProperty(x => x.Connect)
+        this.ObserveProperty(x => x.ConnectPlayer)
+            .Skip(1)
+            .Subscribe(OnConnectPlayer)
+            .AddTo(_compositeDisposable);
+        this.ObserveProperty(x => x.ConnectRecorder)
             .Skip(1)
             .Subscribe(OnConnect)
             .AddTo(_compositeDisposable);
@@ -59,7 +64,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .Skip(1)
             .Subscribe(OnSelectedSpeaker)
             .AddTo(_compositeDisposable);
-        this.ObserveProperty(x => x.MediaPlayerHost)
+        this.ObserveProperty(x => x.PlayerHost)
             .Skip(1)
             .Subscribe(OnChangedMediaPlayerHost)
             .AddTo(_compositeDisposable);
@@ -67,6 +72,11 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .Skip(1)
             .Subscribe(OnChangedRecorderHost)
             .AddTo(_compositeDisposable);
+    }
+
+    private void OnConnectPlayer(bool connectPlayer)
+    {
+        throw new NotImplementedException();
     }
 
     private async void OnChangedRecorderHost(string obj)
@@ -83,12 +93,12 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                 settings.MicrophoneConfigs));
     }
 
-    private async void OnChangedMediaPlayerHost(string mediaPlayerHost)
+    private async void OnChangedMediaPlayerHost(string playerHost)
     {
         var settings = await _settingsRepository.LoadAsync();
         await _settingsRepository.SaveAsync(
             new(
-                MediaPlayerHost,
+                PlayerHost,
                 settings.RecorderHost,
                 settings.RecordingSpan,
                 settings.IsEnableRemotePlaying,
@@ -206,7 +216,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     public async Task OnNavigatedAsync(PostForwardEventArgs args)
     {
         var settings = await _settingsRepository.LoadAsync();
-        MediaPlayerHost = settings.MediaPlayerHost;
+        PlayerHost = settings.MediaPlayerHost;
         RecorderHost = settings.RecorderHost;
         var audioInterface = await _audioInterfaceProvider.ResolveAsync();
         audioInterface.Devices

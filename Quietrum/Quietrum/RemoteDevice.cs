@@ -61,7 +61,7 @@ public class RemoteDevice : ObservableObject, IDevice
     }
 
     public DeviceId Id { get; }
-    public DataFlow DataFlow => DataFlow.Capture;
+    public DataFlow DataFlow => DataFlow.Render;
     public string Name { get; set; }
     public string SystemName { get; }
     public bool Measure { get; set; }
