@@ -39,22 +39,25 @@
                 ToolTip="録音"/>
             <TextBlock Text="{Binding RecordName}" Width="150"
                        VerticalAlignment="Center"/>
-            <TextBlock Text="Recorder"/>
+            <TextBlock Text="Playback device"/>
+            <ComboBox ItemsSource="{Binding Speakers}"
+                      SelectedItem="{Binding PlaybackDevice, Mode=TwoWay}"
+                      DisplayMemberPath="Name"
+                      Width="200"/>
+            <ToggleButton
+                Content="{materialDesign:PackIcon Kind=Play}"
+                IsChecked="{Binding PlayBack}"
+                Style="{StaticResource DefaultToggleButton}"
+                ToolTip="再生" 
+                Margin="10, 10, 30, 10"/>
+
+            <TextBlock Text="Host"/>
             <TextBox Text="{Binding RecorderHost}"
                      Width="150"/>
             <ComboBox ItemsSource="{Binding Speakers}"
                       SelectedItem="{Binding SelectedSpeaker, Mode=TwoWay}"
                       DisplayMemberPath="Name"
                       Width="200"/>
-            <ToggleButton
-                Content="{materialDesign:PackIcon Kind=Connection}"
-                IsChecked="{Binding ConnectRecorder}"
-                Style="{StaticResource DefaultToggleButton}"
-                ToolTip="接続" />
-            
-            <TextBlock Text="Player"/>
-            <TextBox Text="{Binding PlayerHost}"
-                     Width="150"/>
             <ToggleButton
                 Content="{materialDesign:PackIcon Kind=Connection}"
                 IsChecked="{Binding ConnectRecorder}"

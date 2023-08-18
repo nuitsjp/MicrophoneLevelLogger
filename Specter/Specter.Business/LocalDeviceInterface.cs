@@ -105,12 +105,20 @@ public class LocalDeviceInterface : IDeviceInterface
             await _settingsRepository.SaveAsync(_settings);
         }
 
-        var device = new Device(
-            microphoneId,
-            microphoneConfig.Name,
-            mmDevice.FriendlyName, 
-            microphoneConfig.Measure,
-            mmDevice);
+        IDevice device =
+            mmDevice.DataFlow == DataFlow.Capture
+                ? new CaptureDevice(
+                    microphoneId,
+                    microphoneConfig.Name,
+                    mmDevice.FriendlyName,
+                    microphoneConfig.Measure,
+                    mmDevice)
+                : new RenderDevice(
+                    microphoneId,
+                    microphoneConfig.Name,
+                    mmDevice.FriendlyName,
+                    microphoneConfig.Measure,
+                    mmDevice);
         device.PropertyChanged += MicrophoneOnPropertyChanged;
         return device;
     }

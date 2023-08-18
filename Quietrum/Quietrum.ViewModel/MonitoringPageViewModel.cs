@@ -26,15 +26,15 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     
     [ObservableProperty] private bool _monitor = true;
     [ObservableProperty] private bool _record;
-    [ObservableProperty] private bool _connectPlayer;
+    [ObservableProperty] private bool _playBack;
     [ObservableProperty] private bool _connectRecorder;
-    [ObservableProperty] private string _playerHost;
     [ObservableProperty] private string _recorderHost;
     [ObservableProperty] private string _recordName = string.Empty;
     [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
     [ObservableProperty] private IList<DeviceViewModel> _devices = new List<DeviceViewModel>();
     [ObservableProperty] private IList<DeviceViewModel> _speakers = new List<DeviceViewModel>();
     [ObservableProperty] private DeviceViewModel? _selectedSpeaker;
+    [ObservableProperty] private DeviceViewModel? _playbackDevice;
     
     public MonitoringPageViewModel(
         [Inject] IAudioInterfaceProvider audioInterfaceProvider, 
@@ -50,9 +50,9 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .Skip(1)
             .Subscribe(OnRecord)
             .AddTo(_compositeDisposable);
-        this.ObserveProperty(x => x.ConnectPlayer)
+        this.ObserveProperty(x => x.PlayBack)
             .Skip(1)
-            .Subscribe(OnConnectPlayer)
+            .Subscribe(OnPlayBack)
             .AddTo(_compositeDisposable);
         this.ObserveProperty(x => x.ConnectRecorder)
             .Skip(1)
@@ -66,19 +66,10 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .Skip(1)
             .Subscribe(OnSelectedSpeaker)
             .AddTo(_compositeDisposable);
-        this.ObserveProperty(x => x.PlayerHost)
-            .Skip(1)
-            .Subscribe(OnChangedMediaPlayerHost)
-            .AddTo(_compositeDisposable);
         this.ObserveProperty(x => x.RecorderHost)
             .Skip(1)
             .Subscribe(OnChangedRecorderHost)
             .AddTo(_compositeDisposable);
-    }
-
-    private void OnConnectPlayer(bool connectPlayer)
-    {
-        throw new NotImplementedException();
     }
 
     private async void OnChangedRecorderHost(string obj)
@@ -88,20 +79,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             new(
                 settings.MediaPlayerHost,
                 RecorderHost,
-                settings.RecordingSpan,
-                settings.IsEnableRemotePlaying,
-                settings.IsEnableRemoteRecording,
-                settings.SelectedSpeakerId,
-                settings.MicrophoneConfigs));
-    }
-
-    private async void OnChangedMediaPlayerHost(string playerHost)
-    {
-        var settings = await _settingsRepository.LoadAsync();
-        await _settingsRepository.SaveAsync(
-            new(
-                PlayerHost,
-                settings.RecorderHost,
                 settings.RecordingSpan,
                 settings.IsEnableRemotePlaying,
                 settings.IsEnableRemoteRecording,
@@ -129,23 +106,28 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     private async void OnDeviceChanged(IList<DeviceViewModel> obj)
     {
         Speakers = Devices.Where(x => x.DataFlow == DataFlow.Render).ToList();
-        if (SelectedSpeaker is not null)
+        SelectedSpeaker = await GetTargetDevice(SelectedSpeaker);
+        PlaybackDevice = await GetTargetDevice(PlaybackDevice);
+    }
+
+    private async Task<DeviceViewModel?> GetTargetDevice(DeviceViewModel? renderDevice)
+    {
+        if (renderDevice is not null)
         {
             // スピーカーがすでに選択済みの場合
-            var speaker = Speakers.SingleOrDefault(x => x.Id == SelectedSpeaker.Id);
-            
+            var device = Speakers.SingleOrDefault(x => x.Id == renderDevice.Id);
+
             // 変更されtらスピーカーの中に、選択済みのスピーカーが存在した場合は変更しない。
-            if (speaker is not null) return;
-            
+            if (device is not null) return renderDevice;
+
             // 変更されたスピーカー内に存在しない＝取り外されたため、先頭のスピーカーを選択状態とする。
-            SelectedSpeaker = Speakers.FirstOrDefault();
+            return Speakers.FirstOrDefault();
         }
 
         // 過去に選択されていたスピーカーのIDを取得する。
         var settings = await _settingsRepository.LoadAsync();
-        SelectedSpeaker = 
-            Speakers.SingleOrDefault(x => x.Id == settings.SelectedSpeakerId) 
-            ?? Speakers.FirstOrDefault();
+        return Speakers.SingleOrDefault(x => x.Id == settings.SelectedSpeakerId)
+               ?? Speakers.FirstOrDefault();
     }
 
     private void OnConnect(bool connect)
@@ -177,6 +159,29 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                 .ForEach(x => x.StopMonitoring());
         }
     }
+
+    private CancellationTokenSource _playBackCancellationTokenSource = new();
+    
+    private async void OnPlayBack(bool playBack)
+    {
+        if (playBack)
+        {
+            if (PlaybackDevice is null)
+            {
+                PlayBack = false;
+                return;
+            }
+
+            _playBackCancellationTokenSource = new();
+            await PlaybackDevice.PlayLoopingAsync(_playBackCancellationTokenSource.Token)!;
+        }
+        else
+        {
+            _playBackCancellationTokenSource.Cancel();
+        }
+        
+    }
+
 
     private void OnRecord(bool record)
     {
@@ -218,7 +223,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     public async Task OnNavigatedAsync(PostForwardEventArgs args)
     {
         var settings = await _settingsRepository.LoadAsync();
-        PlayerHost = settings.MediaPlayerHost;
         RecorderHost = settings.RecorderHost;
         var audioInterface = await _audioInterfaceProvider.ResolveAsync();
         audioInterface.Devices

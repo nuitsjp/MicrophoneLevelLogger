@@ -105,6 +105,11 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
             .Subscribe(OnNext);
     }
 
+    public Task PlayLoopingAsync(CancellationToken token)
+    {
+        return ((IRenderDevice)_device).PlayLoopingAsync(token);
+    }
+
     private RemoteDeviceConnector? _connector;
     public void Connect()
     {

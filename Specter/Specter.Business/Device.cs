@@ -9,7 +9,7 @@ namespace Specter.Business;
 /// <summary>
 /// マイク
 /// </summary>
-public partial class Device : ObservableObject, IDevice
+public abstract partial class Device : ObservableObject, IDevice
 {
     private readonly MMDevice _mmDevice;
 
@@ -33,7 +33,6 @@ public partial class Device : ObservableObject, IDevice
         SystemName = systemName;
         _measure = measure;
         _mmDevice = mmDevice;
-        DataFlow = _mmDevice.DataFlow;
         _mmDevice.AudioEndpointVolume.OnVolumeNotification += data =>
         {
             OnPropertyChanged(nameof(VolumeLevel));
@@ -48,7 +47,7 @@ public partial class Device : ObservableObject, IDevice
     /// <summary>
     /// DataFlow
     /// </summary>
-    public DataFlow DataFlow { get; }
+    public abstract DataFlow DataFlow { get; }
 
     /// <summary>
     /// 名称
