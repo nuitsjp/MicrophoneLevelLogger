@@ -25,9 +25,10 @@ public partial class RemoteDeviceInterface : ObservableObject, IDeviceInterface,
 
     public ReadOnlyReactiveCollection<IDevice> Devices { get; }
 
-    public async Task ActivateAsync()
+    public Task ActivateAsync()
     {
         _task.Start();
+        return Task.CompletedTask;
     }
 
     private void OnListening()
@@ -52,6 +53,8 @@ public partial class RemoteDeviceInterface : ObservableObject, IDeviceInterface,
 
     private void OnDisconnected(object? sender, EventArgs e)
     {
+        if(sender is null) return;
+        
         RemoteDevice remoteDevice = (RemoteDevice)sender;
         _devices.Remove(remoteDevice);
         remoteDevice.Disconnected -= OnDisconnected;

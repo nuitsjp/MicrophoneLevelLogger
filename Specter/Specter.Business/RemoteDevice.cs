@@ -8,42 +8,20 @@ namespace Specter.Business;
 
 public class RemoteDevice : ObservableObject, IDevice
 {
-    public static readonly byte Start = 1;
-    public static readonly byte Stop = 0;
-
-    public event EventHandler<EventArgs> Disconnected;
+    public event EventHandler<EventArgs>? Disconnected;
     
     private readonly TcpClient _tcpClient;
     private readonly NetworkStream _networkStream;
     private readonly Subject<WaveInEventArgs> _subject = new();
     private readonly Task _backgroundTask;
+    private bool _recording;
 
     public RemoteDevice(TcpClient tcpClient)
     {
         _tcpClient = tcpClient;
         _networkStream = tcpClient.GetStream();
         
-        _backgroundTask = Task.Run(() =>
-        {
-            try
-            {
-                int length;
-                var bytes = new byte[256];
-                while ((length = _networkStream.Read(bytes, 0, bytes.Length)) != 0)
-                {
-                    _subject.OnNext(new WaveInEventArgs(bytes, length));
-                }
-
-            }
-            catch
-            {
-                // TODO
-            }
-            finally
-            {
-                Close();
-            }
-        });
+        _backgroundTask = ReadAsync();
         
         Id = new DeviceId(_tcpClient.Client.RemoteEndPoint!.ToString()!);
         SystemName = Id.AsPrimitive();
@@ -65,16 +43,42 @@ public class RemoteDevice : ObservableObject, IDevice
     public VolumeLevel VolumeLevel { get; set; }
     public IObservable<WaveInEventArgs> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan)
     {
-        byte[] command = {Start};
-        _networkStream.Write(command);
+        _recording = true;
         return _subject;
+    }
+
+    private async Task ReadAsync()
+    {
+        try
+        {
+            var bytes = new byte[256];
+            while (true)
+            {
+                var length = await _networkStream.ReadAsync(bytes, 0, bytes.Length);
+                if (length == 0)
+                {
+                    _recording = false;
+                    break;
+                }
+                if (_recording)
+                {
+                    _subject.OnNext(new WaveInEventArgs(bytes, length));
+                }
+            }
+        }
+        catch
+        {
+            // TODO
+        }
+        finally
+        {
+            Close();
+        }
     }
 
     public void StopRecording()
     {
-        byte[] command = {Stop};
-        _networkStream.Write(command);
-        Close();
+        _recording = false;
     }
 
     private void Close()

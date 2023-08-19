@@ -28,7 +28,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     [ObservableProperty] private bool _record;
     [ObservableProperty] private bool _playBack;
     [ObservableProperty] private bool _connectRecorder;
-    [ObservableProperty] private string _recorderHost;
+    [ObservableProperty] private string _recorderHost = string.Empty;
     [ObservableProperty] private string _recordName = string.Empty;
     [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
     [ObservableProperty] private IList<DeviceViewModel> _devices = new List<DeviceViewModel>();
@@ -86,7 +86,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                 settings.MicrophoneConfigs));
     }
 
-    private async void OnSelectedSpeaker(DeviceViewModel speaker)
+    private async void OnSelectedSpeaker(DeviceViewModel? speaker)
     {
         if(speaker is null) return;
         

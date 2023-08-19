@@ -13,9 +13,7 @@ public class RemoteDeviceConnector : IDisposable
     private readonly IObservable<WaveInEventArgs> _source;
     private readonly TcpClient _tcpClient;
     private readonly string _address;
-    private NetworkStream _networkStream;
-    private IDisposable _disposable;
-
+    private NetworkStream? _networkStream;
     private readonly CompositeDisposable _compositeDisposable = new();
 
     public RemoteDeviceConnector(
@@ -31,28 +29,23 @@ public class RemoteDeviceConnector : IDisposable
     {
         _tcpClient.Connect(_address, RemoteDeviceInterface.ServerPort.AsPrimitive());
         _networkStream = _tcpClient.GetStream().AddTo(_compositeDisposable);
-        _networkStream
-            .ConvertStreamToReactive()
-            .Subscribe(x =>
+        _source.Subscribe(x =>
+        {
+            try
             {
-                // サーバーからのコマンドを受信し、音声データの送信を開始・停止する。
-                var command = x.Bytes[0];
-                if (command == RemoteDevice.Start)
-                {
-                    _source.Subscribe(x =>
-                    {
-                        _networkStream.Write(x.Buffer, 0, x.BytesRecorded);
-                    }).AddTo(_compositeDisposable);
-                }
-                else
-                {
-                    _disposable.Dispose();
-                }
-            });
+                _networkStream?.WriteAsync(x.Buffer, 0, x.BytesRecorded);
+            }
+            catch
+            {
+                // ignore
+            }
+        }).AddTo(_compositeDisposable);
     }
 
     public void Dispose()
     {
+        _tcpClient.Close();
+        _networkStream = null;
         _compositeDisposable.Dispose();
     }
 }

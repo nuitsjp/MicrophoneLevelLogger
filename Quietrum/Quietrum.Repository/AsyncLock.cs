@@ -17,12 +17,12 @@ public sealed class AsyncLock
         return wait.IsCompleted ?
             _releaser :
             wait.ContinueWith(
-                (_, state) => (IDisposable)state,
+                (_, state) => (IDisposable)state!,
                 _releaser.Result, 
                 System.Threading.CancellationToken.None,
                 TaskContinuationOptions.ExecuteSynchronously, 
                 TaskScheduler.Default
-            );
+            )!;
     }
     private sealed class Releaser : IDisposable
     {
