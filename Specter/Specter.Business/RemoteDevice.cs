@@ -8,6 +8,9 @@ namespace Specter.Business;
 
 public class RemoteDevice : ObservableObject, IRenderDevice
 {
+    public const byte StartCommand = 0;
+    public const byte StopCommand = 1;
+    
     public event EventHandler<EventArgs>? Disconnected;
     
     private readonly TcpClient _tcpClient;
@@ -83,28 +86,15 @@ public class RemoteDevice : ObservableObject, IRenderDevice
 
     public Task PlayLoopingAsync(CancellationToken token)
     {
-        // スピーカーからNAudioで再生するためのプレイヤーを生成する。
-        using var enumerator = new MMDeviceEnumerator();
-        var mmDevice = enumerator.GetDevice(Id.AsPrimitive());
-        IWavePlayer wavePlayer = new WasapiOut(mmDevice, AudioClientShareMode.Shared, false, 0);
-
-        // ループ音源を作成する。
-        WaveStream waveStream = new LoopStream(new WaveFileReader(Properties.Resources.吾輩は猫である));
 
         // 終了処理を登録する。
         token.Register(() =>
         {
-            // リソースを開放する。
-            wavePlayer.Stop();
-            wavePlayer.Dispose();
-            mmDevice.Dispose();
-            waveStream.Dispose();
+            _networkStream.WriteByte(StopCommand);
         });
 
-        // 出力に入力を接続して再生を開始する。
-        wavePlayer.Init(waveStream);
-        wavePlayer.Play();
-
+        _networkStream.WriteByte(StartCommand);
+        
         return Task.CompletedTask;
     }
 

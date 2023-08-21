@@ -139,7 +139,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
             Measure = true;
         }
         
-        _connector = new("localhost", _observable!);
+        _connector = new("localhost", _observable!, (IRenderDevice)_device);
         _connector.Connect();
     }
 
