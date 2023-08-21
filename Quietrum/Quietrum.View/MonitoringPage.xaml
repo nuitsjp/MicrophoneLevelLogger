@@ -39,7 +39,7 @@
                 ToolTip="録音"/>
             <TextBlock Text="{Binding RecordName}" Width="150"
                        VerticalAlignment="Center"/>
-            <TextBlock Text="Playback device"/>
+            <TextBlock Text="Playback Device"/>
             <ComboBox ItemsSource="{Binding Speakers}"
                       SelectedItem="{Binding PlaybackDevice, Mode=TwoWay}"
                       DisplayMemberPath="Name"
@@ -51,7 +51,7 @@
                 ToolTip="再生" 
                 Margin="10, 10, 30, 10"/>
 
-            <TextBlock Text="Host"/>
+            <TextBlock Text="Connect Host Address"/>
             <TextBox Text="{Binding RecorderHost}"
                      Width="150"/>
         </StackPanel>
