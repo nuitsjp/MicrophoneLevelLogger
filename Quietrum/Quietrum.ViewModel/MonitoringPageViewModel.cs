@@ -27,7 +27,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     [ObservableProperty] private bool _monitor = true;
     [ObservableProperty] private bool _record;
     [ObservableProperty] private bool _playBack;
-    [ObservableProperty] private bool _connectRecorder;
     [ObservableProperty] private string _recorderHost = string.Empty;
     [ObservableProperty] private string _recordName = string.Empty;
     [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
@@ -53,10 +52,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         this.ObserveProperty(x => x.PlayBack)
             .Skip(1)
             .Subscribe(OnPlayBack)
-            .AddTo(_compositeDisposable);
-        this.ObserveProperty(x => x.ConnectRecorder)
-            .Skip(1)
-            .Subscribe(OnConnect)
             .AddTo(_compositeDisposable);
         this.ObserveProperty(x => x.Devices)
             .Skip(1)
@@ -128,18 +123,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         var settings = await _settingsRepository.LoadAsync();
         return Speakers.SingleOrDefault(x => x.Id == settings.SelectedSpeakerId)
                ?? Speakers.FirstOrDefault();
-    }
-
-    private void OnConnect(bool connect)
-    {
-        if (connect)
-        {
-            SelectedSpeaker?.Connect();
-        }
-        else
-        {
-            SelectedSpeaker?.Disconnect();
-        }
     }
 
     private void OnMonitor(bool monitor)

@@ -54,15 +54,6 @@
             <TextBlock Text="Host"/>
             <TextBox Text="{Binding RecorderHost}"
                      Width="150"/>
-            <ComboBox ItemsSource="{Binding Speakers}"
-                      SelectedItem="{Binding SelectedSpeaker, Mode=TwoWay}"
-                      DisplayMemberPath="Name"
-                      Width="200"/>
-            <ToggleButton
-                Content="{materialDesign:PackIcon Kind=Connection}"
-                IsChecked="{Binding ConnectRecorder}"
-                Style="{StaticResource DefaultToggleButton}"
-                ToolTip="接続" />
         </StackPanel>
         <DataGrid Grid.Row="1" 
                   ItemsSource="{Binding Devices}" 
@@ -81,6 +72,16 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Volume Level" Binding="{Binding VolumeLevel}"/>
+                <DataGridTemplateColumn IsReadOnly="True" Header="Connect" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding Connected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEnabled="{Binding Connectable, Mode=OneWay}"
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="-30dB以上" Binding="{Binding Minus30dB}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="-40dB以上" Binding="{Binding Minus40dB}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="-50dB以上" Binding="{Binding Minus50dB}" IsReadOnly="True"/>

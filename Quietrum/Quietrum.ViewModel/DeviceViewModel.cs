@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
+using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
-using Reactive.Bindings.TinyLinq;
 using Specter.Business;
 using WaveRecorder = Specter.Business.WaveRecorder;
 
@@ -15,8 +15,10 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
     private readonly RecordingConfig _recordingConfig;
     private IObservable<WaveInEventArgs>? _observable;
     private IObservable<short[]>? _bufferedObservable;
+    private readonly CompositeDisposable _compositeDisposable = new();
     private IDisposable? _disposable;
     private WaveRecorder? _waveRecorder;
+    [ObservableProperty] private bool _connected;
     [ObservableProperty] private string _minus30dB = string.Empty;
     [ObservableProperty] private string _minus40dB = string.Empty;
     [ObservableProperty] private string _minus50dB = string.Empty;
@@ -27,14 +29,32 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
     {
         _device = device;
         _device.ObserveProperty(x => x.VolumeLevel)
-            .Subscribe(x => OnPropertyChanged(nameof(VolumeLevel)));
+            .Subscribe(_ => OnPropertyChanged(nameof(VolumeLevel)));
+        this.ObserveProperty(x => x.Connected)
+            .Skip(1)
+            .Subscribe(OnConnected)
+            .AddTo(_compositeDisposable);
+
         _recordingConfig = recordingConfig;
         LiveData = new double[(int)(_recordingConfig.RecordingSpan / _recordingConfig.RefreshRate.Interval)];
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
     }
 
+    private void OnConnected(bool connected)
+    {
+        if (connected)
+        {
+            Connect();
+        }
+        else
+        {
+            Disconnect();
+        }
+    }
+
     public DeviceId Id => _device.Id;
     public DataFlow DataFlow => _device.DataFlow;
+    public bool Connectable => DataFlow == DataFlow.Render;
 
     public string Name
     {
@@ -111,7 +131,8 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
     }
 
     private RemoteDeviceConnector? _connector;
-    public void Connect()
+
+    private void Connect()
     {
         if (Measure is false)
         {
@@ -122,7 +143,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         _connector.Connect();
     }
 
-    public void Disconnect()
+    private void Disconnect()
     {
         _connector?.Dispose();
         _connector = null;
