@@ -21,7 +21,7 @@ public abstract partial class Device : ObservableObject, IDevice
     /// <param name="systemName"></param>
     /// <param name="measure"></param>
     /// <param name="mmDevice"></param>
-    public Device(
+    protected Device(
         DeviceId id,
         string name,
         string systemName,

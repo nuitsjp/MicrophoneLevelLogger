@@ -24,16 +24,6 @@ namespace Specter.Business;
 /// </summary>
 public class FastFourierTransform
 {
-    /// <summary>
-    /// FFTの長さ
-    /// </summary>
-    private const int FftLength = 1024;
-
-    /// <summary>
-    /// (int)Math.Log(FftLength, 2.0)
-    /// </summary>
-    private const int LogSize = 10;
-
     private static readonly Hanning Hanning = new();
 
     private readonly double _sampleRate;
@@ -54,19 +44,5 @@ public class FastFourierTransform
         double[] freq = FftSharp.FFT.FrequencyScale(power.Length, _sampleRate);
 
         return AWeighting.Filter(power, freq);
-
-        // var fftBuffer = new Complex[FftLength];
-        //
-        // // 音声データをFFTバッファにコピーします。
-        // for (int i = 0; i < FftLength; i++)
-        // {
-        //     fftBuffer[i].X = audioData[i];
-        //     fftBuffer[i].Y = 0f;
-        // }
-        //
-        // // FFTを適用します。
-        // NAudio.Dsp.FastFourierTransform.FFT(true, LogSize, fftBuffer);
-        //
-        // return fftBuffer;
     }
 }
