@@ -10,27 +10,18 @@ public class Settings
     /// <summary>
     /// インスタンスを生成する。
     /// </summary>
-    /// <param name="mediaPlayerHost"></param>
     /// <param name="recorderHost"></param>
     /// <param name="recordingSpan"></param>
-    /// <param name="isEnableRemotePlaying"></param>
-    /// <param name="isEnableRemoteRecording"></param>
     /// <param name="playbackDeviceId"></param>
     /// <param name="microphoneConfigs"></param>
     public Settings(
-        string mediaPlayerHost,
         string recorderHost,
         TimeSpan recordingSpan,
-        bool isEnableRemotePlaying,
-        bool isEnableRemoteRecording, 
         DeviceId? playbackDeviceId, 
         IReadOnlyList<MicrophoneConfig> microphoneConfigs)
     {
-        MediaPlayerHost = mediaPlayerHost;
         RecorderHost = recorderHost;
         RecordingSpan = recordingSpan;
-        IsEnableRemotePlaying = isEnableRemotePlaying;
-        IsEnableRemoteRecording = isEnableRemoteRecording;
         PlaybackDeviceId = playbackDeviceId;
         _microphoneConfigs = microphoneConfigs.ToList();
     }
@@ -39,18 +30,6 @@ public class Settings
     /// 録音時間
     /// </summary>
     public TimeSpan RecordingSpan { get; }
-    /// <summary>
-    /// リモート再生を有効とする
-    /// </summary>
-    public bool IsEnableRemotePlaying { get; }
-    /// <summary>
-    /// リモート再生ホスト
-    /// </summary>
-    public string MediaPlayerHost { get; }
-    /// <summary>
-    /// リモート録音を有効とする
-    /// </summary>
-    public bool IsEnableRemoteRecording { get; }
     /// <summary>
     /// リモート録音ホスト
     /// </summary>

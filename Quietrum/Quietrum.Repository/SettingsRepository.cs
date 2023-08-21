@@ -18,12 +18,9 @@ public class SettingsRepository : RepositoryBase<Settings>, ISettingsRepository
         LoadAsync(
             FileInfo,
             () =>
-                new Settings(
-                    "localhost",
+                new (
                     "localhost",
                     TimeSpan.FromSeconds(30),
-                    false,
-                    false,
                     null,
                     new List<MicrophoneConfig>()));
 

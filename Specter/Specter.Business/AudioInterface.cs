@@ -71,11 +71,8 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
                 // スピーカーを外したりすると、デバイスが見つからなくなるのでその場合は削除してデフォルトを返す。
                 await _settingsRepository.SaveAsync(
                     new(
-                        settings.MediaPlayerHost,
                         settings.RecorderHost,
                         settings.RecordingSpan,
-                        settings.IsEnableRemotePlaying,
-                        settings.IsEnableRemoteRecording,
                         null,
                         settings.MicrophoneConfigs));
                 using var mmDevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);

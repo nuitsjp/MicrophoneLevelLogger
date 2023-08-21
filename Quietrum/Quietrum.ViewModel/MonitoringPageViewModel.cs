@@ -71,11 +71,8 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         var settings = await _settingsRepository.LoadAsync();
         await _settingsRepository.SaveAsync(
             new(
-                settings.MediaPlayerHost,
                 RecorderHost,
                 settings.RecordingSpan,
-                settings.IsEnableRemotePlaying,
-                settings.IsEnableRemoteRecording,
                 settings.PlaybackDeviceId,
                 settings.MicrophoneConfigs));
     }
@@ -87,12 +84,9 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         var settings = await _settingsRepository.LoadAsync();
         await _settingsRepository.SaveAsync(
             new(
-                settings.MediaPlayerHost,
                 settings.RecorderHost,
                 settings.RecordingSpan,
-                settings.IsEnableRemotePlaying,
-                settings.IsEnableRemoteRecording,
-                PlaybackDevice.Id,
+                PlaybackDevice?.Id,
                 settings.MicrophoneConfigs));
 
     }
