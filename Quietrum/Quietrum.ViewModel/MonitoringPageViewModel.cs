@@ -32,7 +32,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
     [ObservableProperty] private IList<DeviceViewModel> _devices = new List<DeviceViewModel>();
     [ObservableProperty] private IList<DeviceViewModel> _speakers = new List<DeviceViewModel>();
-    [ObservableProperty] private DeviceViewModel? _selectedSpeaker;
     [ObservableProperty] private DeviceViewModel? _playbackDevice;
     
     public MonitoringPageViewModel(
@@ -57,7 +56,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .Skip(1)
             .Subscribe(OnDeviceChanged)
             .AddTo(_compositeDisposable);
-        this.ObserveProperty(x => x.SelectedSpeaker)
+        this.ObserveProperty(x => x.PlaybackDevice)
             .Skip(1)
             .Subscribe(OnSelectedSpeaker)
             .AddTo(_compositeDisposable);
@@ -77,7 +76,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                 settings.RecordingSpan,
                 settings.IsEnableRemotePlaying,
                 settings.IsEnableRemoteRecording,
-                settings.SelectedSpeakerId,
+                settings.PlaybackDeviceId,
                 settings.MicrophoneConfigs));
     }
 
@@ -93,7 +92,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                 settings.RecordingSpan,
                 settings.IsEnableRemotePlaying,
                 settings.IsEnableRemoteRecording,
-                speaker.Id,
+                PlaybackDevice.Id,
                 settings.MicrophoneConfigs));
 
     }
@@ -101,7 +100,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     private async void OnDeviceChanged(IList<DeviceViewModel> obj)
     {
         Speakers = Devices.Where(x => x.DataFlow == DataFlow.Render).ToList();
-        SelectedSpeaker = await GetTargetDevice(SelectedSpeaker);
         PlaybackDevice = await GetTargetDevice(PlaybackDevice);
     }
 
@@ -121,7 +119,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
 
         // 過去に選択されていたスピーカーのIDを取得する。
         var settings = await _settingsRepository.LoadAsync();
-        return Speakers.SingleOrDefault(x => x.Id == settings.SelectedSpeakerId)
+        return Speakers.SingleOrDefault(x => x.Id == settings.PlaybackDeviceId)
                ?? Speakers.FirstOrDefault();
     }
 

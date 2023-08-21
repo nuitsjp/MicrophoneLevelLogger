@@ -15,7 +15,7 @@ public class Settings
     /// <param name="recordingSpan"></param>
     /// <param name="isEnableRemotePlaying"></param>
     /// <param name="isEnableRemoteRecording"></param>
-    /// <param name="selectedSpeakerId"></param>
+    /// <param name="playbackDeviceId"></param>
     /// <param name="microphoneConfigs"></param>
     public Settings(
         string mediaPlayerHost,
@@ -23,7 +23,7 @@ public class Settings
         TimeSpan recordingSpan,
         bool isEnableRemotePlaying,
         bool isEnableRemoteRecording, 
-        DeviceId? selectedSpeakerId, 
+        DeviceId? playbackDeviceId, 
         IReadOnlyList<MicrophoneConfig> microphoneConfigs)
     {
         MediaPlayerHost = mediaPlayerHost;
@@ -31,7 +31,7 @@ public class Settings
         RecordingSpan = recordingSpan;
         IsEnableRemotePlaying = isEnableRemotePlaying;
         IsEnableRemoteRecording = isEnableRemoteRecording;
-        SelectedSpeakerId = selectedSpeakerId;
+        PlaybackDeviceId = playbackDeviceId;
         _microphoneConfigs = microphoneConfigs.ToList();
     }
 
@@ -60,7 +60,7 @@ public class Settings
     /// </summary>
     public IReadOnlyList<MicrophoneConfig> MicrophoneConfigs => _microphoneConfigs;
 
-    public DeviceId? SelectedSpeakerId { get; }
+    public DeviceId? PlaybackDeviceId { get; }
 
     public bool TryGetMicrophoneConfig(DeviceId id, out MicrophoneConfig microphoneConfig)
     {

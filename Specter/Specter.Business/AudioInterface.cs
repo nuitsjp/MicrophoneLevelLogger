@@ -54,7 +54,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
         var settings = await _settingsRepository.LoadAsync();
         using var enumerator = new MMDeviceEnumerator();
         // 明示的に指定されていればそれを、指定されていない場合、OSの出力先へ出力する。
-        if (settings.SelectedSpeakerId is null)
+        if (settings.PlaybackDeviceId is null)
         {
             using var mmDevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
             return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
@@ -63,7 +63,7 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
         {
             try
             {
-                using var mmDevice = enumerator.GetDevice(settings.SelectedSpeakerId?.AsPrimitive());
+                using var mmDevice = enumerator.GetDevice(settings.PlaybackDeviceId?.AsPrimitive());
                 return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
             }
             catch
