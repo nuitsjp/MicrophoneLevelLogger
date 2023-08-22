@@ -26,19 +26,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <ToggleButton
-                Content="{materialDesign:PackIcon Kind=Microphone}"
-                IsChecked="{Binding Monitor}"
-                Style="{StaticResource DefaultToggleButton}"
-                ToolTip="マイク" />
-            <ToggleButton
-                Content="{materialDesign:PackIcon Kind=Record}"
-                IsChecked="{Binding Record}"
-                IsEnabled="{Binding Monitor}"
-                Style="{StaticResource DefaultToggleButton}"
-                ToolTip="録音"/>
-            <TextBlock Text="{Binding RecordName}" Width="150"
-                       VerticalAlignment="Center"/>
             <TextBlock Text="Playback Device"/>
             <ComboBox ItemsSource="{Binding Speakers}"
                       SelectedItem="{Binding PlaybackDevice, Mode=TwoWay}"
@@ -54,6 +41,15 @@
             <TextBlock Text="Connect Host Address"/>
             <TextBox Text="{Binding RecorderHost}"
                      Width="150"/>
+            
+            <ToggleButton
+                Content="{materialDesign:PackIcon Kind=Record}"
+                IsChecked="{Binding Record}"
+                IsEnabled="{Binding Monitor}"
+                Style="{StaticResource DefaultToggleButton}"
+                ToolTip="録音"/>
+            <TextBlock Text="{Binding RecordName}" Width="150"
+                       VerticalAlignment="Center"/>
         </StackPanel>
         <DataGrid Grid.Row="1" 
                   ItemsSource="{Binding Devices}" 

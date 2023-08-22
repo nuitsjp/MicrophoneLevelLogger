@@ -24,7 +24,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ISettingsRepository _settingsRepository;
     
-    [ObservableProperty] private bool _monitor = true;
     [ObservableProperty] private bool _record;
     [ObservableProperty] private bool _playBack;
     [ObservableProperty] private string _recorderHost = string.Empty;
@@ -40,10 +39,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _settingsRepository = settingsRepository;
-        this.ObserveProperty(x => x.Monitor)
-            .Skip(1)
-            .Subscribe(OnMonitor)
-            .AddTo(_compositeDisposable);
         this.ObserveProperty(x => x.Record)
             .Skip(1)
             .Subscribe(OnRecord)
@@ -115,24 +110,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         var settings = await _settingsRepository.LoadAsync();
         return Speakers.SingleOrDefault(x => x.Id == settings.PlaybackDeviceId)
                ?? Speakers.FirstOrDefault();
-    }
-
-    private void OnMonitor(bool monitor)
-    {
-        if (monitor)
-        {
-            Devices
-                .Where(x => x.Measure)
-                .ToList()
-                .ForEach(x => x.StartMonitoring());
-        }
-        else
-        {
-            Devices
-                .Where(x => x.Measure)
-                .ToList()
-                .ForEach(x => x.StopMonitoring());
-        }
     }
 
     private CancellationTokenSource _playBackCancellationTokenSource = new();
