@@ -35,6 +35,6 @@ public interface IDevice : IDisposable, INotifyPropertyChanged
     /// </summary>
     VolumeLevel VolumeLevel { get; set; }
 
-    IObservable<WaveInEventArgs> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan);
-    void StopRecording();
+    IObservable<WaveInEventArgs> StartMonitoring(WaveFormat waveFormat, TimeSpan bufferSpan);
+    void StopMonitoring();
 }

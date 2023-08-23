@@ -75,7 +75,7 @@ public abstract partial class Device : ObservableObject, IDevice
     }
 
     private IWaveIn? _waveIn;
-    public IObservable<WaveInEventArgs> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan)
+    public IObservable<WaveInEventArgs> StartMonitoring(WaveFormat waveFormat, TimeSpan bufferSpan)
     {
         var subject = new Subject<WaveInEventArgs>();
         _waveIn =
@@ -115,7 +115,7 @@ public abstract partial class Device : ObservableObject, IDevice
         return subject.AsObservable();
     }
 
-    public void StopRecording()
+    public void StopMonitoring()
     {
         _waveIn?.StopRecording();
     }

@@ -111,7 +111,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
 
     public void StartMonitoring()
     {
-        _observable = _device.StartRecording(_recordingConfig.WaveFormat, _recordingConfig.RefreshRate.Interval);
+        _observable = _device.StartMonitoring(_recordingConfig.WaveFormat, _recordingConfig.RefreshRate.Interval);
         _bufferedObservable = new BufferedObservable(
             _observable, 
             _recordingConfig.WaveFormat, 
@@ -154,7 +154,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
 
     public void StopMonitoring()
     {
-        _device.StopRecording();
+        _device.StopMonitoring();
         _disposable?.Dispose();
         _observable = null;
         _bufferedObservable = null;
@@ -187,7 +187,8 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
                 Minus30dB = $"{_decibelHistory.Count(x => -30d <= x) / (double)_decibelHistory.Count * 100d:#0.00}%";
                 Minus40dB = $"{_decibelHistory.Count(x => -40d <= x) / (double)_decibelHistory.Count * 100d:#0.00}%";
                 Minus50dB = $"{_decibelHistory.Count(x => -50d <= x) / (double)_decibelHistory.Count * 100d:#0.00}%";
-            });
+            })
+            .AddTo(_compositeDisposable);
     }
 
     public void StopRecording()
@@ -206,7 +207,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
 
     public void Dispose()
     {
-        _device.StopRecording();
+        _device.StopMonitoring();
         _device.Dispose();
     }
 }
