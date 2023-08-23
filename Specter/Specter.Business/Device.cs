@@ -75,9 +75,11 @@ public abstract partial class Device : ObservableObject, IDevice
     }
 
     private IWaveIn? _waveIn;
-    public IObservable<WaveInEventArgs> StartMonitoring(WaveFormat waveFormat, TimeSpan bufferSpan)
+    private readonly Subject<WaveInEventArgs> _waveInput = new();
+    public IObservable<WaveInEventArgs> WaveInput => _waveInput.AsObservable();
+
+    public void StartMonitoring(WaveFormat waveFormat, TimeSpan bufferSpan)
     {
-        var subject = new Subject<WaveInEventArgs>();
         _waveIn =
             DataFlow == DataFlow.Capture
                 ? new WasapiCapture(_mmDevice)
@@ -95,13 +97,13 @@ public abstract partial class Device : ObservableObject, IDevice
         {
             // var buffer = new byte[args.BytesRecorded];
             // Buffer.BlockCopy(args.Buffer, 0, buffer, 0, args.BytesRecorded);
-            subject.OnNext(args);
+            _waveInput.OnNext(args);
         };
         _waveIn.RecordingStopped += (_, _) =>
         {
             _waveIn?.Dispose();
             _waveIn = null;
-            subject.OnCompleted();
+            _waveInput.OnCompleted();
         };
 
         try
@@ -112,7 +114,6 @@ public abstract partial class Device : ObservableObject, IDevice
         {
             // ignore
         }
-        return subject.AsObservable();
     }
 
     public void StopMonitoring()

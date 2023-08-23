@@ -16,7 +16,6 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
 {
     private readonly IDevice _device;
     private readonly RecordingConfig _recordingConfig;
-    private IObservable<WaveInEventArgs>? _observable;
     private IObservable<short[]>? _bufferedObservable;
     private readonly CompositeDisposable _compositeDisposable = new();
     private IDisposable? _disposable;
@@ -111,9 +110,9 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
 
     public void StartMonitoring()
     {
-        _observable = _device.StartMonitoring(_recordingConfig.WaveFormat, _recordingConfig.RefreshRate.Interval);
+        _device.StartMonitoring(_recordingConfig.WaveFormat, _recordingConfig.RefreshRate.Interval);
         _bufferedObservable = new BufferedObservable(
-            _observable, 
+            _device.WaveInput, 
             _recordingConfig.WaveFormat, 
             _recordingConfig.RefreshRate);
         var normalize = new Normalize(_recordingConfig.WaveFormat);
@@ -142,7 +141,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
             Measure = true;
         }
         
-        _connector = new("localhost", _observable!, (IRenderDevice)_device);
+        _connector = new("localhost", (IRenderDevice)_device);
         _connector.Connect();
     }
 
@@ -156,7 +155,6 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
     {
         _device.StopMonitoring();
         _disposable?.Dispose();
-        _observable = null;
         _bufferedObservable = null;
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
     }
@@ -165,16 +163,11 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
 
     public void StartRecording(DirectoryInfo directoryInfo)
     {
-        if (_observable is null)
-        {
-            throw new InvalidOperationException();
-        }
-
         var fileInfo = new FileInfo(Path.Combine(directoryInfo.FullName, Name + ".wav"));
         _waveRecorder = new WaveRecorder(
+            _device,
             fileInfo,
-            _recordingConfig.WaveFormat,
-            _observable);
+            _recordingConfig.WaveFormat);
         _waveRecorder.StartRecording();
         _decibelHistory = new();
 

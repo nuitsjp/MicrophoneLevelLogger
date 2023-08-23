@@ -11,7 +11,6 @@ namespace Specter.Business;
 public class RemoteDeviceConnector : IDisposable
 {
     private readonly IRenderDevice _device;
-    private readonly IObservable<WaveInEventArgs> _source;
     private readonly TcpClient _tcpClient;
     private readonly string _address;
     private NetworkStream? _networkStream;
@@ -20,11 +19,9 @@ public class RemoteDeviceConnector : IDisposable
 
     public RemoteDeviceConnector(
         string address,
-        IObservable<WaveInEventArgs> source, 
         IRenderDevice device)
     {
         _address = address;
-        _source = source;
         _device = device;
         _tcpClient = new TcpClient().AddTo(_compositeDisposable);
     }
@@ -33,7 +30,9 @@ public class RemoteDeviceConnector : IDisposable
     {
         _tcpClient.Connect(_address, RemoteDeviceInterface.ServerPort.AsPrimitive());
         _networkStream = _tcpClient.GetStream().AddTo(_compositeDisposable);
-        _source.Subscribe(x =>
+        _device
+            .WaveInput
+            .Subscribe(x =>
         {
             try
             {

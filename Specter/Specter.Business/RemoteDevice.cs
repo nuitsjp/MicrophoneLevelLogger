@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
@@ -44,10 +45,11 @@ public class RemoteDevice : ObservableObject, IRenderDevice
     public string SystemName { get; }
     public bool Measure { get; set; }
     public VolumeLevel VolumeLevel { get; set; }
-    public IObservable<WaveInEventArgs> StartMonitoring(WaveFormat waveFormat, TimeSpan bufferSpan)
+    public IObservable<WaveInEventArgs> WaveInput => _subject.AsObservable();
+
+    public void StartMonitoring(WaveFormat waveFormat, TimeSpan bufferSpan)
     {
         _recording = true;
-        return _subject;
     }
 
     private async Task ReadAsync()

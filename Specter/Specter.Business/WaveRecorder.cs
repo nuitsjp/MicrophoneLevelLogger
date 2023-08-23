@@ -4,24 +4,26 @@ namespace Specter.Business;
 
 public class WaveRecorder
 {
-    private readonly IObservable<WaveInEventArgs> _observable;
+    private readonly IDevice _device;
     private readonly WaveFileWriter _fileWriter;
     private IDisposable? _disposable;
 
     public WaveRecorder(
+        IDevice device,
         FileInfo fileInfo,
-        WaveFormat waveFormat, 
-        IObservable<WaveInEventArgs> observable)
+        WaveFormat waveFormat)
     {
-        _observable = observable;
+        _device = device;
         _fileWriter = new WaveFileWriter(fileInfo.FullName, waveFormat);
     }
 
     public void StartRecording()
     {
-        _disposable = _observable.Subscribe(
-            onNext: e => _fileWriter.Write(e.Buffer, 0, e.BytesRecorded),
-            onCompleted: OnCompleted);
+        _disposable = _device
+            .WaveInput
+            .Subscribe(
+                onNext: e => _fileWriter.Write(e.Buffer, 0, e.BytesRecorded),
+                onCompleted: OnCompleted);
     }
 
     public void StopRecording()
