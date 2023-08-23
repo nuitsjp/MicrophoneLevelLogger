@@ -19,6 +19,7 @@ public class RemoteDevice : ObservableObject, IRenderDevice
     private readonly Subject<WaveInEventArgs> _subject = new();
     private readonly Task _backgroundTask;
     private bool _recording;
+    private IDisposable? _waveInUnsubscribe;
 
     public RemoteDevice(TcpClient tcpClient)
     {
@@ -46,10 +47,14 @@ public class RemoteDevice : ObservableObject, IRenderDevice
     public bool Measure { get; set; }
     public VolumeLevel VolumeLevel { get; set; }
     public IObservable<WaveInEventArgs> WaveInput => _subject.AsObservable();
+    private readonly Subject<Decibel> _inputLevel = new();
+    public IObservable<Decibel> InputLevel => _inputLevel.AsObservable();
 
-    public void StartMonitoring(WaveFormat waveFormat, TimeSpan bufferSpan)
+    public void StartMonitoring(WaveFormat waveFormat, RefreshRate refreshRate)
     {
         _recording = true;
+        _waveInUnsubscribe = new WaveInToInputLevelObservable(this, waveFormat, refreshRate)
+            .Subscribe(x => _inputLevel.OnNext(x));
     }
 
     private async Task ReadAsync()

@@ -36,7 +36,8 @@ public interface IDevice : IDisposable, INotifyPropertyChanged
     VolumeLevel VolumeLevel { get; set; }
     
     IObservable<WaveInEventArgs>　WaveInput { get; }
+    IObservable<Decibel>　InputLevel { get; }
 
-    void StartMonitoring(WaveFormat waveFormat, TimeSpan bufferSpan);
+    void StartMonitoring(WaveFormat waveFormat, RefreshRate refreshRate);
     void StopMonitoring();
 }

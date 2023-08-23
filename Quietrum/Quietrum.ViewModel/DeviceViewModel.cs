@@ -37,6 +37,8 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
             .Subscribe(OnConnected)
             .AddTo(_compositeDisposable);
 
+        _device.InputLevel
+            .Subscribe(OnNext);
         _recordingConfig = recordingConfig;
         LiveData = new double[(int)(_recordingConfig.RecordingSpan / _recordingConfig.RefreshRate.Interval)];
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
@@ -110,21 +112,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
 
     public void StartMonitoring()
     {
-        _device.StartMonitoring(_recordingConfig.WaveFormat, _recordingConfig.RefreshRate.Interval);
-        _bufferedObservable = new BufferedObservable(
-            _device.WaveInput, 
-            _recordingConfig.WaveFormat, 
-            _recordingConfig.RefreshRate);
-        var normalize = new Normalize(_recordingConfig.WaveFormat);
-        var fastTimeWeighting = new FastTimeWeighting(_recordingConfig.WaveFormat);
-        var fft = new FastFourierTransform(_recordingConfig.WaveFormat);
-        var converter = new DecibelConverter();
-        _disposable = _bufferedObservable
-            .Select(normalize.Filter)
-            .Select(fastTimeWeighting.Filter)
-            .Select(fft.Transform)
-            .Select(converter.Convert)
-            .Subscribe(OnNext);
+        _device.StartMonitoring(_recordingConfig.WaveFormat, _recordingConfig.RefreshRate);
     }
 
     public Task PlayLoopingAsync(CancellationToken token)
@@ -190,12 +178,12 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         _waveRecorder = null;
     }
 
-    private void OnNext(double decibel)
+    private void OnNext(Decibel decibel)
     {
         // "scroll" the whole chart to the left
         Array.Copy(LiveData, 1, LiveData, 0, LiveData.Length - 1);
-        LiveData[^1] = decibel;
-        _decibelHistory.Add(decibel);
+        LiveData[^1] = decibel.AsPrimitive();
+        _decibelHistory.Add(decibel.AsPrimitive());
     }
 
     public void Dispose()

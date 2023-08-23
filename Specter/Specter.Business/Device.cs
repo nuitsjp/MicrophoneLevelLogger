@@ -75,10 +75,13 @@ public abstract partial class Device : ObservableObject, IDevice
     }
 
     private IWaveIn? _waveIn;
+    private IDisposable? _waveInUnsubscribe;
     private readonly Subject<WaveInEventArgs> _waveInput = new();
     public IObservable<WaveInEventArgs> WaveInput => _waveInput.AsObservable();
+    private readonly Subject<Decibel> _inputLevel = new();
+    public IObservable<Decibel> InputLevel => _inputLevel.AsObservable();
 
-    public void StartMonitoring(WaveFormat waveFormat, TimeSpan bufferSpan)
+    public void StartMonitoring(WaveFormat waveFormat, RefreshRate refreshRate)
     {
         _waveIn =
             DataFlow == DataFlow.Capture
@@ -114,11 +117,16 @@ public abstract partial class Device : ObservableObject, IDevice
         {
             // ignore
         }
+
+        _waveInUnsubscribe =
+            new WaveInToInputLevelObservable(this, waveFormat, refreshRate)
+                .Subscribe(x => _inputLevel.OnNext(x));
     }
 
     public void StopMonitoring()
     {
         _waveIn?.StopRecording();
+        _waveInUnsubscribe?.Dispose();
     }
 
     /// <summary>
