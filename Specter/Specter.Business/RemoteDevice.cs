@@ -44,7 +44,7 @@ public class RemoteDevice : ObservableObject, IRenderDevice
     public string SystemName { get; }
     public bool Measure { get; set; }
     public VolumeLevel VolumeLevel { get; set; }
-    public IObservable<WaveInEventArgs> StartRecording(WaveFormat waveFormat, TimeSpan bufferSpan)
+    public IObservable<WaveInEventArgs> StartMonitoring(WaveFormat waveFormat, TimeSpan bufferSpan)
     {
         _recording = true;
         return _subject;
@@ -79,7 +79,7 @@ public class RemoteDevice : ObservableObject, IRenderDevice
         }
     }
 
-    public void StopRecording()
+    public void StopMonitoring()
     {
         _recording = false;
     }
