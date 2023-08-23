@@ -1,4 +1,7 @@
-﻿using System.Reactive.Linq;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
@@ -158,6 +161,8 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
     }
 
+    private ObservableCollection<double> _decibelHistory = new();
+
     public void StartRecording(DirectoryInfo directoryInfo)
     {
         if (_observable is null)
@@ -171,6 +176,18 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
             _recordingConfig.WaveFormat,
             _observable);
         _waveRecorder.StartRecording();
+        _decibelHistory = new();
+
+        var observable = Observable.FromEventPattern<NotifyCollectionChangedEventArgs>(_decibelHistory, "CollectionChanged");
+        observable
+            .Scan(0, (acc, _) => acc + 1) // カウントを増やす
+            .Where(count => count % 10 == 0) // 10で割り切れる場合のみ処理を行う
+            .Subscribe(_ =>
+            {
+                Minus30dB = $"{_decibelHistory.Count(x => -30d <= x) / (double)_decibelHistory.Count * 100d:#0.00}%";
+                Minus40dB = $"{_decibelHistory.Count(x => -40d <= x) / (double)_decibelHistory.Count * 100d:#0.00}%";
+                Minus50dB = $"{_decibelHistory.Count(x => -50d <= x) / (double)_decibelHistory.Count * 100d:#0.00}%";
+            });
     }
 
     public void StopRecording()
@@ -184,9 +201,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         // "scroll" the whole chart to the left
         Array.Copy(LiveData, 1, LiveData, 0, LiveData.Length - 1);
         LiveData[^1] = decibel;
-        // Minus30dB = $"{_buffer.Count(x => -30d < x) / (double)_buffer.Count * 100d:#0.00}%";
-        // Minus40dB = $"{_buffer.Count(x => -40d < x) / (double)_buffer.Count * 100d:#0.00}%";
-        // Minus50dB = $"{_buffer.Count(x => -50d < x) / (double)_buffer.Count * 100d:#0.00}%";
+        _decibelHistory.Add(decibel);
     }
 
     public void Dispose()
