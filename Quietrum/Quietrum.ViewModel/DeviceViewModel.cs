@@ -147,8 +147,9 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
     }
 
-    private ObservableCollection<double> _decibelHistory = new();
-
+    private static readonly Decibel Minus30Decibel = new(-30d);
+    private static readonly Decibel Minus40Decibel = new(-40d);
+    private static readonly Decibel Minus50Decibel = new(-50d);
     public void StartRecording(DirectoryInfo directoryInfo)
     {
         var fileInfo = new FileInfo(Path.Combine(directoryInfo.FullName, Name + ".wav"));
@@ -157,17 +158,15 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
             fileInfo,
             _recordingConfig.WaveFormat);
         _waveRecorder.StartRecording();
-        _decibelHistory = new();
 
-        var observable = Observable.FromEventPattern<NotifyCollectionChangedEventArgs>(_decibelHistory, "CollectionChanged");
-        observable
+        _device.InputLevel
             .Scan(0, (acc, _) => acc + 1) // カウントを増やす
             .Where(count => count % 10 == 0) // 10で割り切れる場合のみ処理を行う
             .Subscribe(_ =>
             {
-                Minus30dB = $"{_decibelHistory.Count(x => -30d <= x) / (double)_decibelHistory.Count * 100d:#0.00}%";
-                Minus40dB = $"{_decibelHistory.Count(x => -40d <= x) / (double)_decibelHistory.Count * 100d:#0.00}%";
-                Minus50dB = $"{_decibelHistory.Count(x => -50d <= x) / (double)_decibelHistory.Count * 100d:#0.00}%";
+                Minus30dB = $"{_waveRecorder.Decibels.Count(x => Minus30Decibel <= x) / (double)_waveRecorder.Decibels.Count * 100d:#0.00}%";
+                Minus40dB = $"{_waveRecorder.Decibels.Count(x => Minus40Decibel <= x) / (double)_waveRecorder.Decibels.Count * 100d:#0.00}%";
+                Minus50dB = $"{_waveRecorder.Decibels.Count(x => Minus50Decibel <= x) / (double)_waveRecorder.Decibels.Count * 100d:#0.00}%";
             })
             .AddTo(_compositeDisposable);
     }
@@ -183,7 +182,6 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         // "scroll" the whole chart to the left
         Array.Copy(LiveData, 1, LiveData, 0, LiveData.Length - 1);
         LiveData[^1] = decibel.AsPrimitive();
-        _decibelHistory.Add(decibel.AsPrimitive());
     }
 
     public void Dispose()
