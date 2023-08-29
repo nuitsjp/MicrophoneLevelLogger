@@ -17,6 +17,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
     private readonly IDevice _device;
     private readonly RecordingConfig _recordingConfig;
     private IObservable<short[]>? _bufferedObservable;
+    private readonly IWaveRecordIndexRepository _indexRepository;
     private readonly CompositeDisposable _compositeDisposable = new();
     private IDisposable? _disposable;
     private WaveRecorder? _waveRecorder;
@@ -27,7 +28,8 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
 
     public DeviceViewModel(
         IDevice device,
-        RecordingConfig recordingConfig)
+        RecordingConfig recordingConfig, 
+        IWaveRecordIndexRepository indexRepository)
     {
         _device = device;
         _device.ObserveProperty(x => x.VolumeLevel)
@@ -40,6 +42,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         _device.InputLevel
             .Subscribe(OnNext);
         _recordingConfig = recordingConfig;
+        _indexRepository = indexRepository;
         LiveData = new double[(int)(_recordingConfig.RecordingSpan / _recordingConfig.RefreshRate.Interval)];
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
     }
@@ -152,11 +155,11 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
     private static readonly Decibel Minus50Decibel = new(-50d);
     public void StartRecording(DirectoryInfo directoryInfo)
     {
-        var fileInfo = new FileInfo(Path.Combine(directoryInfo.FullName, Name + ".wav"));
         _waveRecorder = new WaveRecorder(
             _device,
-            fileInfo,
-            _recordingConfig.WaveFormat);
+            _recordingConfig.WaveFormat,
+            new DirectoryInfo(Path.Combine(directoryInfo.FullName, Name)),
+            _indexRepository);
         _waveRecorder.StartRecording();
 
         _device.InputLevel
@@ -164,6 +167,8 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
             .Where(count => count % 10 == 0) // 10で割り切れる場合のみ処理を行う
             .Subscribe(_ =>
             {
+                if (_waveRecorder is null) return;
+                
                 Minus30dB = $"{_waveRecorder.Decibels.Count(x => Minus30Decibel <= x) / (double)_waveRecorder.Decibels.Count * 100d:#0.00}%";
                 Minus40dB = $"{_waveRecorder.Decibels.Count(x => Minus40Decibel <= x) / (double)_waveRecorder.Decibels.Count * 100d:#0.00}%";
                 Minus50dB = $"{_waveRecorder.Decibels.Count(x => Minus50Decibel <= x) / (double)_waveRecorder.Decibels.Count * 100d:#0.00}%";

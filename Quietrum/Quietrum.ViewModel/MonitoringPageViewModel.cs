@@ -23,6 +23,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
 
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
     private readonly ISettingsRepository _settingsRepository;
+    private readonly IWaveRecordIndexRepository _waveRecordIndexRepository;
     
     [ObservableProperty] private bool _record;
     [ObservableProperty] private bool _playBack;
@@ -35,10 +36,12 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     
     public MonitoringPageViewModel(
         [Inject] IAudioInterfaceProvider audioInterfaceProvider, 
-        [Inject] ISettingsRepository settingsRepository)
+        [Inject] ISettingsRepository settingsRepository, 
+        [Inject] IWaveRecordIndexRepository waveRecordIndexRepository)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
         _settingsRepository = settingsRepository;
+        _waveRecordIndexRepository = waveRecordIndexRepository;
         this.ObserveProperty(x => x.Record)
             .Skip(1)
             .Subscribe(OnRecord)
@@ -188,7 +191,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                     // 接続されたIMicrophoneを追加する。
                     foreach (IDevice device in eventArgs.NewItems!)
                     {
-                        var microphone = new DeviceViewModel(device, RecordingConfig);
+                        var microphone = new DeviceViewModel(device, RecordingConfig, _waveRecordIndexRepository);
                         microphone.PropertyChanged += MicrophoneOnPropertyChanged;
                         if (microphone.Measure)
                         {
