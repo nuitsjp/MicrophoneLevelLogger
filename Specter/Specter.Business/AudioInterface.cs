@@ -45,59 +45,6 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
         await _remoteDeviceInterface.ActivateAsync();
     }
 
-    /// <summary>
-    /// 現在有効なスピーカーを取得する。
-    /// </summary>
-    /// <returns></returns>
-    public async Task<ISpeaker> GetSpeakerAsync()
-    {
-        var settings = await _settingsRepository.LoadAsync();
-        using var enumerator = new MMDeviceEnumerator();
-        // 明示的に指定されていればそれを、指定されていない場合、OSの出力先へ出力する。
-        if (settings.PlaybackDeviceId is null)
-        {
-            using var mmDevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-            return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
-        }
-        else
-        {
-            try
-            {
-                using var mmDevice = enumerator.GetDevice(settings.PlaybackDeviceId?.AsPrimitive());
-                return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
-            }
-            catch
-            {
-                // スピーカーを外したりすると、デバイスが見つからなくなるのでその場合は削除してデフォルトを返す。
-                await _settingsRepository.SaveAsync(
-                    new(
-                        settings.RecorderHost,
-                        settings.RecordingSpan,
-                        null,
-                        settings.MicrophoneConfigs));
-                using var mmDevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-                return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
-            }
-        }
-    }
-
-    /// <summary>
-    /// すべてのスピーカーを取得する。
-    /// </summary>
-    /// <returns></returns>
-    public IEnumerable<ISpeaker> GetSpeakers()
-    {
-        using var enumerator = new MMDeviceEnumerator();
-        var mmDevices = enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
-        foreach (var mmDevice in mmDevices)
-        {
-            using (mmDevice)
-            {
-                yield return new Speaker(new SpeakerId(mmDevice.ID), mmDevice.FriendlyName);
-            }
-        }
-    }
-    
     public void Dispose()
     {
         Devices.Dispose();

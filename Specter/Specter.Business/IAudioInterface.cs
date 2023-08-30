@@ -14,16 +14,4 @@ public interface IAudioInterface : INotifyPropertyChanged, IDisposable
     /// 
     /// </summary>
     ReadOnlyReactiveCollection<IDevice> Devices { get; }
-
-    /// <summary>
-    /// 現在有効なスピーカーを取得する。
-    /// </summary>
-    /// <returns></returns>
-    Task<ISpeaker> GetSpeakerAsync();
-
-    /// <summary>
-    /// すべてのスピーカーを取得する。
-    /// </summary>
-    /// <returns></returns>
-    IEnumerable<ISpeaker> GetSpeakers();
 }
