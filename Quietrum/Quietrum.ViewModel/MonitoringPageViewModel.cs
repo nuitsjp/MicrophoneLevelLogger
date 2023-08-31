@@ -72,7 +72,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                 RecorderHost,
                 settings.RecordingSpan,
                 settings.PlaybackDeviceId,
-                settings.MicrophoneConfigs));
+                settings.DeviceConfigs));
     }
 
     private async void OnSelectedSpeaker(DeviceViewModel? speaker)
@@ -85,7 +85,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                 settings.RecorderHost,
                 settings.RecordingSpan,
                 PlaybackDevice?.Id,
-                settings.MicrophoneConfigs));
+                settings.DeviceConfigs));
 
     }
 

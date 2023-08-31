@@ -1,8 +1,8 @@
 ﻿namespace Specter.Business;
 
-public class MicrophoneConfig
+public class DeviceConfig
 {
-    public MicrophoneConfig(
+    public DeviceConfig(
         DeviceId id, 
         string name, 
         bool measure)

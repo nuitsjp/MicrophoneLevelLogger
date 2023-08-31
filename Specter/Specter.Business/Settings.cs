@@ -5,7 +5,7 @@
 /// </summary>
 public class Settings
 {
-    private readonly List<MicrophoneConfig> _microphoneConfigs;
+    private readonly List<DeviceConfig> _deviceConfigs;
 
     /// <summary>
     /// インスタンスを生成する。
@@ -13,17 +13,17 @@ public class Settings
     /// <param name="recorderHost"></param>
     /// <param name="recordingSpan"></param>
     /// <param name="playbackDeviceId"></param>
-    /// <param name="microphoneConfigs"></param>
+    /// <param name="deviceConfigs"></param>
     public Settings(
         string recorderHost,
         TimeSpan recordingSpan,
         DeviceId? playbackDeviceId, 
-        IReadOnlyList<MicrophoneConfig> microphoneConfigs)
+        IReadOnlyList<DeviceConfig> deviceConfigs)
     {
         RecorderHost = recorderHost;
         RecordingSpan = recordingSpan;
         PlaybackDeviceId = playbackDeviceId;
-        _microphoneConfigs = microphoneConfigs.ToList();
+        _deviceConfigs = deviceConfigs.ToList();
     }
 
     /// <summary>
@@ -37,21 +37,21 @@ public class Settings
     /// <summary>
     /// マイク設定
     /// </summary>
-    public IReadOnlyList<MicrophoneConfig> MicrophoneConfigs => _microphoneConfigs;
+    public IReadOnlyList<DeviceConfig> DeviceConfigs => _deviceConfigs;
 
     public DeviceId? PlaybackDeviceId { get; }
 
-    public bool TryGetMicrophoneConfig(DeviceId id, out MicrophoneConfig microphoneConfig)
+    public bool TryGetMicrophoneConfig(DeviceId id, out DeviceConfig deviceConfig)
     {
-        var config = _microphoneConfigs.SingleOrDefault(x => x.Id == id);
-        microphoneConfig = config!;
+        var config = _deviceConfigs.SingleOrDefault(x => x.Id == id);
+        deviceConfig = config!;
         return config is not null;
     }
 
-    public MicrophoneConfig GetMicrophoneConfig(DeviceId id)
+    public DeviceConfig GetMicrophoneConfig(DeviceId id)
     {
-        return _microphoneConfigs.Single(x => x.Id == id);
+        return _deviceConfigs.Single(x => x.Id == id);
     }
 
-    public void AddMicrophoneConfig(MicrophoneConfig microphoneConfig) => _microphoneConfigs.Add(microphoneConfig);
+    public void AddMicrophoneConfig(DeviceConfig deviceConfig) => _deviceConfigs.Add(deviceConfig);
 }

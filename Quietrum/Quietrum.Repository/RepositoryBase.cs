@@ -11,7 +11,7 @@ public abstract class RepositoryBase<T> where T : class
         {
             if (fileInfo.Exists is false)
             {
-                await SaveAsync(fileInfo, getDefault());
+                await SaveInnerAsync(fileInfo, getDefault());
             }
 
             await using var stream = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read);
@@ -23,13 +23,18 @@ public abstract class RepositoryBase<T> where T : class
     {
         using (await Lock.LockAsync())
         {
-            if (fileInfo.Exists)
-            {
-                fileInfo.Delete();
-            }
-
-            await using var stream = new FileStream(fileInfo.FullName, FileMode.Create, FileAccess.Write);
-            await JsonSerializer.SerializeAsync(stream, value, JsonEnvironments.Options);
+            await SaveInnerAsync(fileInfo, value);
         }
+    }
+
+    private async Task SaveInnerAsync(FileInfo fileInfo, T value)
+    {
+        if (fileInfo.Exists)
+        {
+            fileInfo.Delete();
+        }
+
+        await using var stream = new FileStream(fileInfo.FullName, FileMode.Create, FileAccess.Write);
+        await JsonSerializer.SerializeAsync(stream, value, JsonEnvironments.Options);
     }
 }

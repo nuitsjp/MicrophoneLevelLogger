@@ -22,7 +22,7 @@ public class SettingsRepository : RepositoryBase<Settings>, ISettingsRepository
                     "localhost",
                     TimeSpan.FromSeconds(30),
                     null,
-                    new List<MicrophoneConfig>()));
+                    new List<DeviceConfig>()));
 
     /// <summary>
     /// Settingsを保存する。

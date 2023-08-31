@@ -100,7 +100,7 @@ public class LocalDeviceInterface : IDeviceInterface
         // 新たに接続されたマイクだった場合
         if (_settings.TryGetMicrophoneConfig(microphoneId, out var microphoneConfig) is false)
         {
-            microphoneConfig = new MicrophoneConfig(microphoneId, mmDevice.FriendlyName, true);
+            microphoneConfig = new DeviceConfig(microphoneId, mmDevice.FriendlyName, true);
             _settings.AddMicrophoneConfig(microphoneConfig);
             await _settingsRepository.SaveAsync(_settings);
         }
