@@ -1,5 +1,4 @@
 ﻿using System.Net.Sockets;
-using NAudio.Wave;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
 

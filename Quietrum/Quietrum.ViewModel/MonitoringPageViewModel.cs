@@ -1,14 +1,11 @@
-﻿using System.Collections.Specialized;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Kamishibai;
 using NAudio.CoreAudioApi;
-using Reactive.Bindings;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
-using ScottPlot;
 using Specter;
 using Specter.Business;
 
@@ -68,11 +65,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     {
         var settings = await _settingsRepository.LoadAsync();
         await _settingsRepository.SaveAsync(
-            new(
-                RecorderHost,
-                settings.RecordingSpan,
-                settings.PlaybackDeviceId,
-                settings.DeviceConfigs));
+            settings with { RecorderHost = RecorderHost });
     }
 
     private async void OnSelectedSpeaker(DeviceViewModel? speaker)
@@ -81,12 +74,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         
         var settings = await _settingsRepository.LoadAsync();
         await _settingsRepository.SaveAsync(
-            new(
-                settings.RecorderHost,
-                settings.RecordingSpan,
-                PlaybackDevice?.Id,
-                settings.DeviceConfigs));
-
+            settings with { PlaybackDeviceId = PlaybackDevice?.Id });
     }
 
     private async void OnDeviceChanged(IList<DeviceViewModel> obj)
@@ -128,7 +116,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             }
 
             _playBackCancellationTokenSource = new();
-            await PlaybackDevice.PlayLoopingAsync(_playBackCancellationTokenSource.Token)!;
+            await PlaybackDevice.PlayLoopingAsync(_playBackCancellationTokenSource.Token);
         }
         else
         {

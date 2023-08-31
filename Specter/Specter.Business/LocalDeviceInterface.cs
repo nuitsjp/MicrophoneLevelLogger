@@ -98,10 +98,12 @@ public class LocalDeviceInterface : IDeviceInterface
     {
         var microphoneId = new DeviceId(mmDevice.ID);
         // 新たに接続されたマイクだった場合
-        if (_settings.TryGetMicrophoneConfig(microphoneId, out var microphoneConfig) is false)
+        if (_settings.TryGetMicrophoneConfig(microphoneId, out var deviceConfig) is false)
         {
-            microphoneConfig = new DeviceConfig(microphoneId, mmDevice.FriendlyName, true);
-            _settings.AddMicrophoneConfig(microphoneConfig);
+            deviceConfig = new DeviceConfig(microphoneId, mmDevice.FriendlyName, true);
+            List<DeviceConfig> deviceConfigs = _settings.DeviceConfigs.ToList();
+            deviceConfigs.Add(deviceConfig);
+            _settings = _settings with { DeviceConfigs = deviceConfigs };
             await _settingsRepository.SaveAsync(_settings);
         }
 
@@ -109,15 +111,15 @@ public class LocalDeviceInterface : IDeviceInterface
             mmDevice.DataFlow == DataFlow.Capture
                 ? new CaptureDevice(
                     microphoneId,
-                    microphoneConfig.Name,
+                    deviceConfig.Name,
                     mmDevice.FriendlyName,
-                    microphoneConfig.Measure,
+                    deviceConfig.Measure,
                     mmDevice)
                 : new RenderDevice(
                     microphoneId,
-                    microphoneConfig.Name,
+                    deviceConfig.Name,
                     mmDevice.FriendlyName,
-                    microphoneConfig.Measure,
+                    deviceConfig.Measure,
                     mmDevice);
         device.PropertyChanged += MicrophoneOnPropertyChanged;
         return device;

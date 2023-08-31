@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
-using NAudio.Wave;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
 using Specter.Business;
@@ -16,10 +12,8 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
 {
     private readonly IDevice _device;
     private readonly RecordingConfig _recordingConfig;
-    private IObservable<short[]>? _bufferedObservable;
     private readonly IWaveRecordIndexRepository _indexRepository;
     private readonly CompositeDisposable _compositeDisposable = new();
-    private IDisposable? _disposable;
     private WaveRecorder? _waveRecorder;
     [ObservableProperty] private bool _connected;
     [ObservableProperty] private string _minus30dB = string.Empty;
@@ -145,8 +139,6 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
     public void StopMonitoring()
     {
         _device.StopMonitoring();
-        _disposable?.Dispose();
-        _bufferedObservable = null;
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
     }
 

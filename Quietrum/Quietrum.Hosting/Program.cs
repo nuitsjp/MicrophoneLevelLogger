@@ -1,7 +1,6 @@
 ﻿using Kamishibai;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Quietrum;
 using Quietrum.Repository;
 using Quietrum.View;
 using Quietrum.ViewModel;

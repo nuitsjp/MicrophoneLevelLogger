@@ -1,6 +1,5 @@
 ﻿using System.Reactive.Concurrency;
 using CommunityToolkit.Mvvm.ComponentModel;
-using NAudio.CoreAudioApi;
 using Reactive.Bindings;
 
 namespace Specter.Business;
