@@ -26,6 +26,13 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <ToggleButton
+                Content="{materialDesign:PackIcon Kind=Record}"
+                IsChecked="{Binding Record}"
+                IsEnabled="{Binding Monitor}"
+                Style="{StaticResource DefaultToggleButton}"
+                ToolTip="録音"/>
+
             <TextBlock Text="Playback Device"/>
             <ComboBox ItemsSource="{Binding Speakers}"
                       SelectedItem="{Binding PlaybackDevice, Mode=TwoWay}"
@@ -41,13 +48,7 @@
             <TextBlock Text="Connect Host Address"/>
             <TextBox Text="{Binding RecorderHost}"
                      Width="150"/>
-            
-            <ToggleButton
-                Content="{materialDesign:PackIcon Kind=Record}"
-                IsChecked="{Binding Record}"
-                IsEnabled="{Binding Monitor}"
-                Style="{StaticResource DefaultToggleButton}"
-                ToolTip="録音"/>
+
             <TextBlock Text="{Binding RecordName}" Width="150"
                        VerticalAlignment="Center"/>
         </StackPanel>
@@ -78,9 +79,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="-30dB以上" Binding="{Binding Minus30dB}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="-40dB以上" Binding="{Binding Minus40dB}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="-50dB以上" Binding="{Binding Minus50dB}" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
         <scottPlot:WpfPlot Grid.Row="2" x:Name="WpfPlot1" >
