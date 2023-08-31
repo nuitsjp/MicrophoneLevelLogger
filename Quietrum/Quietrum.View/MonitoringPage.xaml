@@ -44,7 +44,6 @@
                       VerticalAlignment="Center" 
                       Margin="5"/>
 
-            <TextBlock Text="Playback Device"/>
             <ComboBox ItemsSource="{Binding RenderDevices}"
                       SelectedItem="{Binding PlaybackDevice, Mode=TwoWay}"
                       DisplayMemberPath="Name"
