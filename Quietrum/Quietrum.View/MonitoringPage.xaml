@@ -26,21 +26,32 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Text="Record Device"/>
+            <ComboBox ItemsSource="{Binding CaptureDevices}"
+                      SelectedItem="{Binding RecordDevice, Mode=TwoWay}"
+                      DisplayMemberPath="Name"
+                      Width="200"/>
+
             <ToggleButton
                 Content="{materialDesign:PackIcon Kind=Record}"
                 IsChecked="{Binding Record}"
-                IsEnabled="{Binding Monitor}"
                 Style="{StaticResource DefaultToggleButton}"
-                ToolTip="録音"/>
+                ToolTip="録音"
+                Margin="5, 5, 10, 5"/>
+
+            <TextBlock Text="With Playback"/>
+            <CheckBox IsChecked="{Binding WithPlayback, Mode=TwoWay}" 
+                      VerticalAlignment="Center" 
+                      Margin="5"/>
 
             <TextBlock Text="Playback Device"/>
-            <ComboBox ItemsSource="{Binding Speakers}"
+            <ComboBox ItemsSource="{Binding RenderDevices}"
                       SelectedItem="{Binding PlaybackDevice, Mode=TwoWay}"
                       DisplayMemberPath="Name"
                       Width="200"/>
             <ToggleButton
                 Content="{materialDesign:PackIcon Kind=Play}"
-                IsChecked="{Binding PlayBack}"
+                IsChecked="{Binding Playback}"
                 Style="{StaticResource DefaultToggleButton}"
                 ToolTip="再生" 
                 Margin="10, 10, 30, 10"/>
@@ -64,7 +75,9 @@
                 <DataGridTemplateColumn IsReadOnly="True" Header="Measure" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox IsChecked="{Binding Measure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <CheckBox IsChecked="{Binding Measure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                      Margin="0"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

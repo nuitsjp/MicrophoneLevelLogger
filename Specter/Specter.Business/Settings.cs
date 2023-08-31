@@ -6,6 +6,7 @@
 public record Settings(
     string RecorderHost,
     TimeSpan RecordingSpan,
+    DeviceId? RecordDeviceId,
     DeviceId? PlaybackDeviceId, 
     IReadOnlyList<DeviceConfig> DeviceConfigs)
 {

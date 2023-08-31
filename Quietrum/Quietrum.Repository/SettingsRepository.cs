@@ -21,6 +21,7 @@ public class SettingsRepository : RepositoryBase<Settings>, ISettingsRepository
                     "localhost",
                     TimeSpan.FromSeconds(30),
                     null,
+                    null,
                     new List<DeviceConfig>()));
 
     /// <summary>

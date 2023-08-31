@@ -23,13 +23,16 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     private readonly IWaveRecordIndexRepository _waveRecordIndexRepository;
     
     [ObservableProperty] private bool _record;
-    [ObservableProperty] private bool _playBack;
+    [ObservableProperty] private bool _withPlayback;
+    [ObservableProperty] private bool _playback;
     [ObservableProperty] private string _recorderHost = string.Empty;
     [ObservableProperty] private string _recordName = string.Empty;
     [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
     [ObservableProperty] private IList<DeviceViewModel> _devices = new List<DeviceViewModel>();
-    [ObservableProperty] private IList<DeviceViewModel> _speakers = new List<DeviceViewModel>();
+    [ObservableProperty] private IList<DeviceViewModel> _renderDevices = new List<DeviceViewModel>();
+    [ObservableProperty] private IList<DeviceViewModel> _captureDevices = new List<DeviceViewModel>();
     [ObservableProperty] private DeviceViewModel? _playbackDevice;
+    [ObservableProperty] private DeviceViewModel? _recordDevice;
     
     public MonitoringPageViewModel(
         [Inject] IAudioInterfaceProvider audioInterfaceProvider, 
@@ -43,7 +46,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .Skip(1)
             .Subscribe(OnRecord)
             .AddTo(_compositeDisposable);
-        this.ObserveProperty(x => x.PlayBack)
+        this.ObserveProperty(x => x.Playback)
             .Skip(1)
             .Subscribe(OnPlayBack)
             .AddTo(_compositeDisposable);
@@ -79,28 +82,61 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
 
     private async void OnDeviceChanged(IList<DeviceViewModel> obj)
     {
-        Speakers = Devices.Where(x => x.DataFlow == DataFlow.Render).ToList();
-        PlaybackDevice = await GetTargetDevice(PlaybackDevice);
+        RenderDevices = Devices.Where(x => x.DataFlow == DataFlow.Render).ToList();
+        PlaybackDevice = await GetPlaybackDevice(PlaybackDevice);
+
+        CaptureDevices = Devices.Where(x => x.DataFlow == DataFlow.Capture).ToList();
+        RecordDevice = await GetRecordDevice(RecordDevice);
     }
 
-    private async Task<DeviceViewModel?> GetTargetDevice(DeviceViewModel? renderDevice)
+    /// <summary>
+    /// 再生デバイスを取得する。
+    /// </summary>
+    /// <param name="playbackDevice"></param>
+    /// <returns></returns>
+    private async Task<DeviceViewModel?> GetPlaybackDevice(DeviceViewModel? playbackDevice)
     {
-        if (renderDevice is not null)
+        if (playbackDevice is not null)
         {
-            // スピーカーがすでに選択済みの場合
-            var device = Speakers.SingleOrDefault(x => x.Id == renderDevice.Id);
+            // 再生デバイスがすでに選択済みの場合
+            var device = RenderDevices.SingleOrDefault(x => x.Id == playbackDevice.Id);
 
-            // 変更されtらスピーカーの中に、選択済みのスピーカーが存在した場合は変更しない。
-            if (device is not null) return renderDevice;
+            // 変更されtら再生デバイスの中に、選択済みの再生デバイスが存在した場合は変更しない。
+            if (device is not null) return playbackDevice;
 
-            // 変更されたスピーカー内に存在しない＝取り外されたため、先頭のスピーカーを選択状態とする。
-            return Speakers.FirstOrDefault();
+            // 変更された再生デバイス内に存在しない＝取り外されたため、先頭の再生デバイスを選択状態とする。
+            return RenderDevices.FirstOrDefault();
         }
 
-        // 過去に選択されていたスピーカーのIDを取得する。
+        // 過去に選択されていた再生デバイスのIDを取得する。
         var settings = await _settingsRepository.LoadAsync();
-        return Speakers.SingleOrDefault(x => x.Id == settings.PlaybackDeviceId)
-               ?? Speakers.FirstOrDefault();
+        return RenderDevices.SingleOrDefault(x => x.Id == settings.PlaybackDeviceId)
+               ?? RenderDevices.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// 録音デバイスを取得する。
+    /// </summary>
+    /// <param name="recordDevice"></param>
+    /// <returns></returns>
+    private async Task<DeviceViewModel?> GetRecordDevice(DeviceViewModel? recordDevice)
+    {
+        if (recordDevice is not null)
+        {
+            // 録音デバイスがすでに選択済みの場合
+            var device = CaptureDevices.SingleOrDefault(x => x.Id == recordDevice.Id);
+
+            // 変更された録音デバイスの中に、選択済みの録音デバイスが存在した場合は変更しない。
+            if (device is not null) return recordDevice;
+
+            // 変更された録音デバイス内に存在しない＝取り外されたため、先頭の録音デバイスを選択状態とする。
+            return CaptureDevices.FirstOrDefault();
+        }
+
+        // 過去に選択されていた録音デバイスのIDを取得する。
+        var settings = await _settingsRepository.LoadAsync();
+        return CaptureDevices.SingleOrDefault(x => x.Id == settings.PlaybackDeviceId)
+               ?? CaptureDevices.FirstOrDefault();
     }
 
     private CancellationTokenSource _playBackCancellationTokenSource = new();
@@ -111,7 +147,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         {
             if (PlaybackDevice is null)
             {
-                PlayBack = false;
+                Playback = false;
                 return;
             }
 

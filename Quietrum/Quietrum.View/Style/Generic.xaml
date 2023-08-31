@@ -43,6 +43,16 @@
     <Style TargetType="TextBox" 
            BasedOn="{StaticResource TextBoxBase}" />
 
+    <!-- CheckBox -->
+    <Style x:Key="CheckBoxBase" 
+           TargetType="CheckBox" 
+           BasedOn="{StaticResource MaterialDesignCheckBox}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style TargetType="CheckBox" 
+           BasedOn="{StaticResource CheckBoxBase}" />
+
     <!-- ComboBox -->
     <Style x:Key="ComboBoxBase"
            TargetType="ComboBox"

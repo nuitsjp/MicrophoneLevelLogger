@@ -16,9 +16,6 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
     private readonly CompositeDisposable _compositeDisposable = new();
     private WaveRecorder? _waveRecorder;
     [ObservableProperty] private bool _connected;
-    [ObservableProperty] private string _minus30dB = string.Empty;
-    [ObservableProperty] private string _minus40dB = string.Empty;
-    [ObservableProperty] private string _minus50dB = string.Empty;
 
     public DeviceViewModel(
         IDevice device,
@@ -142,9 +139,6 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
     }
 
-    private static readonly Decibel Minus30Decibel = new(-30d);
-    private static readonly Decibel Minus40Decibel = new(-40d);
-    private static readonly Decibel Minus50Decibel = new(-50d);
     public void StartRecording(DirectoryInfo directoryInfo)
     {
         _waveRecorder = new WaveRecorder(
@@ -153,19 +147,6 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
             new DirectoryInfo(Path.Combine(directoryInfo.FullName, Name)),
             _indexRepository);
         _waveRecorder.StartRecording();
-
-        _device.InputLevel
-            .Scan(0, (acc, _) => acc + 1) // カウントを増やす
-            .Where(count => count % 10 == 0) // 10で割り切れる場合のみ処理を行う
-            .Subscribe(_ =>
-            {
-                if (_waveRecorder is null) return;
-                
-                Minus30dB = $"{_waveRecorder.Decibels.Count(x => Minus30Decibel <= x) / (double)_waveRecorder.Decibels.Count * 100d:#0.00}%";
-                Minus40dB = $"{_waveRecorder.Decibels.Count(x => Minus40Decibel <= x) / (double)_waveRecorder.Decibels.Count * 100d:#0.00}%";
-                Minus50dB = $"{_waveRecorder.Decibels.Count(x => Minus50Decibel <= x) / (double)_waveRecorder.Decibels.Count * 100d:#0.00}%";
-            })
-            .AddTo(_compositeDisposable);
     }
 
     public void StopRecording()
