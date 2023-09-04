@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>Quietrum.View</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Kamishibai.View" Version="2.0.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
+    <PackageReference Include="ReactiveProperty" Version="9.1.2" />
+    <PackageReference Include="ScottPlot.WPF" Version="4.1.64" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Specter.ViewModel\Specter.ViewModel.csproj" />
+  </ItemGroup>
+
+</Project>

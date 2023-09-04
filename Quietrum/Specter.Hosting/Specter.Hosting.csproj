@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+		<EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+		<RootNamespace>Quietrum.Hosting</RootNamespace>
+	    </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Kamishibai.Hosting" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Specter.Repository\Specter.Repository.csproj" />
+    <ProjectReference Include="..\Specter.ViewModel\Specter.ViewModel.csproj" />
+    <ProjectReference Include="..\Specter.View\Specter.View.csproj" />
+  </ItemGroup>
+
+</Project>
