@@ -1,4 +1,6 @@
-﻿namespace Specter.Business;
+﻿using System.IO;
+
+namespace Specter.Business;
 
 /// <summary>
 /// IDetailWriterファクトリー

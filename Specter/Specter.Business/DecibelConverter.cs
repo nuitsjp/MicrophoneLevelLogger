@@ -1,4 +1,6 @@
-﻿namespace Specter.Business;
+﻿using System;
+
+namespace Specter.Business;
 
 public class DecibelConverter
 {

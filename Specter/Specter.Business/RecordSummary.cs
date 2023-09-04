@@ -1,4 +1,8 @@
-﻿namespace Specter.Business;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Specter.Business;
 
 /// <summary>
 /// 記録サマリー

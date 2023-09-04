@@ -1,4 +1,8 @@
-﻿namespace Specter.Business;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+
+namespace Specter.Business;
 
 /// <summary>
 /// RecordSummaryのリポジトリー

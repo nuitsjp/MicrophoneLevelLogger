@@ -1,4 +1,6 @@
-﻿namespace Specter.Business;
+﻿using System.Threading.Tasks;
+
+namespace Specter.Business;
 
 /// <summary>
 /// Settingsのリポジトリー

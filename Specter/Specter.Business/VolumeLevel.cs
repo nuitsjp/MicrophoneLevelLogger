@@ -1,4 +1,5 @@
-﻿using UnitGenerator;
+﻿using System;
+using UnitGenerator;
 
 namespace Specter.Business;
 

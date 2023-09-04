@@ -1,4 +1,7 @@
-﻿namespace Specter.Business;
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+namespace Specter.Business;
 
 /// <summary>
 /// マイクのレコーダー

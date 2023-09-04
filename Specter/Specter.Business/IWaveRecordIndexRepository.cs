@@ -1,4 +1,7 @@
-﻿namespace Specter.Business;
+﻿using System.IO;
+using System.Threading.Tasks;
+
+namespace Specter.Business;
 
 public interface IWaveRecordIndexRepository
 {
