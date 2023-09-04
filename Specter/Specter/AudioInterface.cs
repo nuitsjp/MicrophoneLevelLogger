@@ -10,8 +10,6 @@ namespace Specter.Business;
 /// </summary>
 public partial class AudioInterface : ObservableObject, IAudioInterface
 {
-    private readonly ISettingsRepository _settingsRepository;
-
     private readonly RemoteDeviceInterface _remoteDeviceInterface;
 
     private readonly LocalDeviceInterface _localDeviceInterface;
@@ -21,15 +19,12 @@ public partial class AudioInterface : ObservableObject, IAudioInterface
     /// <summary>
     /// すべてのマイクを扱うオーディオ インターフェースを作成する。
     /// </summary>
-    /// <param name="settingsRepository"></param>
     /// <param name="localDeviceInterface"></param>
     /// <param name="remoteDeviceInterface"></param>
     internal AudioInterface(
-        ISettingsRepository settingsRepository, 
         LocalDeviceInterface localDeviceInterface,
         RemoteDeviceInterface remoteDeviceInterface)
     {
-        _settingsRepository = settingsRepository;
         _localDeviceInterface = localDeviceInterface;
         _remoteDeviceInterface = remoteDeviceInterface;
         Devices = _localDeviceInterface
