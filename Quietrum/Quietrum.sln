@@ -11,9 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quietrum.Hosting", "Quietru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quietrum.Repository", "Quietrum.Repository\Quietrum.Repository.csproj", "{FBF25321-8EE6-4FE2-BC7A-C7DA3995B243}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specter.Business", "..\Specter\Specter.Business\Specter.Business.csproj", "{8746523F-9B14-4D7B-9FB7-26F13C846AE9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specter.System", "..\Specter\Specter.System\Specter.System.csproj", "{937A3D01-B876-4CFD-937B-D0CD5E544198}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specter", "..\Specter\Specter\Specter.csproj", "{8746523F-9B14-4D7B-9FB7-26F13C846AE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +39,6 @@ Global
 		{8746523F-9B14-4D7B-9FB7-26F13C846AE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8746523F-9B14-4D7B-9FB7-26F13C846AE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8746523F-9B14-4D7B-9FB7-26F13C846AE9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{937A3D01-B876-4CFD-937B-D0CD5E544198}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{937A3D01-B876-4CFD-937B-D0CD5E544198}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{937A3D01-B876-4CFD-937B-D0CD5E544198}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{937A3D01-B876-4CFD-937B-D0CD5E544198}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

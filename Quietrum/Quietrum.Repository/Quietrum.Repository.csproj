@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Specter\Specter.Business\Specter.Business.csproj" />
+      <ProjectReference Include="..\..\Specter\Specter\Specter.csproj" />
     </ItemGroup>
 
 </Project>
