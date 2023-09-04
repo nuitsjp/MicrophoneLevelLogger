@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:Specter.View"
         xmlns:kamishibai="clr-namespace:Kamishibai;assembly=Kamishibai.View"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewModel="clr-namespace:Specter.ViewModel;assembly=Specter.ViewModel"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance {x:Type local:DesignMainWindowViewModel}, IsDesignTimeCreatable=True}"
         Title="Quietrum" Height="1024" Width="1280">
     <Window.Resources>
         <ResourceDictionary Source="Style/Generic.xaml"/>
@@ -24,17 +26,18 @@
                 <ListBox
                         Margin="0 16 0 16"
                         SelectedItem="{Binding SelectedMenuItem}"
-                        ItemsSource="{Binding SampleItems}"
+                        ItemsSource="{Binding MenuItems}"
+                        PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
                         AutomationProperties.Name="DemoPagesListBox"
                         Style="{StaticResource MaterialDesignNavigationPrimaryListBox}">
                     <ListBox.Resources>
                         <Style TargetType="ScrollBar" BasedOn="{StaticResource MaterialDesignScrollBarMinimal}"/>
                     </ListBox.Resources>
-                    <!-- <ListBox.ItemTemplate> -->
-                    <!--     <DataTemplate DataType="viewModel:MenuItem"> -->
-                    <!--         <TextBlock Text="{Binding Name}" Margin="24 4 0 4" AutomationProperties.AutomationId="DemoItemPage"/> -->
-                    <!--     </DataTemplate> -->
-                    <!-- </ListBox.ItemTemplate> -->
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type viewModel:MenuItem}">
+                            <TextBlock Text="{Binding Name}" Margin="24 4 0 4" AutomationProperties.AutomationId="DemoItemPage"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </DockPanel>
         </materialDesign:DrawerHost.LeftDrawerContent>

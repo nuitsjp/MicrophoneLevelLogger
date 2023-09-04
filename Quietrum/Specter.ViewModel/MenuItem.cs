@@ -1,6 +1,6 @@
 ﻿namespace Specter.ViewModel;
 
-public class MenuItem
+public record MenuItem(string Name, Type ViewModel)
 {
     
 }
