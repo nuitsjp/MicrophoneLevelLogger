@@ -24,14 +24,14 @@ public partial class MainWindow : Window
             dependencyObject = VisualTreeHelper.GetParent(dependencyObject);
         }
 
-        MenuToggleButton.IsChecked = false;
+        //MenuToggleButton.IsChecked = false;
     }
 }
 
 public class DesignMainWindowViewModel : MainWindowViewModel
 {
     public DesignMainWindowViewModel(IPresentationService presentationService) 
-        : base(default!)
+        : base(default!, default!, default!)
     {
     }
 }

@@ -203,7 +203,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     {
         var settings = await _settingsRepository.LoadAsync();
         RecorderHost = settings.RecorderHost;
-        var audioInterface = await _audioInterfaceProvider.ResolveAsync();
+        var audioInterface = _audioInterfaceProvider.Resolve();
         audioInterface.Devices
             .CollectionChangedAsObservable()
             .ObserveOn(CurrentThreadScheduler.Instance)

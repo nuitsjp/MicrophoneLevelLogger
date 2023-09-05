@@ -12,11 +12,12 @@ public class AudioInterfaceProvider : IAudioInterfaceProvider
     /// </summary>
     private readonly ISettingsRepository _settingsRepository;
 
+    private IAudioInterface? _audioInterface;
+
     /// <summary>
     /// インスタンスを生成する。
     /// </summary>
     /// <param name="settingsRepository"></param>
-    /// <param name="remoteDeviceServer"></param>
     public AudioInterfaceProvider(
         ISettingsRepository settingsRepository)
     {
@@ -27,14 +28,11 @@ public class AudioInterfaceProvider : IAudioInterfaceProvider
     /// IAudioInterfaceを解決する。
     /// </summary>
     /// <returns></returns>
-    public async Task<IAudioInterface> ResolveAsync()
+    public IAudioInterface Resolve()
     {
-        var audioInterface = 
+        return _audioInterface ??= 
             new AudioInterface(
-                _settingsRepository, 
                 new LocalDeviceInterface(_settingsRepository),
                 new RemoteDeviceInterface());
-        await Task.CompletedTask;
-        return audioInterface;
     }
 }

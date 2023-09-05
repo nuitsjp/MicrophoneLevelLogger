@@ -107,7 +107,6 @@ public abstract partial class Device : ObservableObject, IDevice
         {
             _waveIn?.Dispose();
             _waveIn = null;
-            _waveInput.OnCompleted();
         };
 
         try
@@ -138,6 +137,8 @@ public abstract partial class Device : ObservableObject, IDevice
 
     public void Dispose()
     {
+        _waveInput.OnCompleted();
+        _inputLevel.OnCompleted();
         _mmDevice.Dispose();
     }
 }

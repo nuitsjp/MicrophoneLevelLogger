@@ -11,5 +11,5 @@ public interface IAudioInterfaceProvider
     /// IAudioInterfaceを解決する。
     /// </summary>
     /// <returns></returns>
-    Task<IAudioInterface> ResolveAsync();
+    IAudioInterface Resolve();
 }

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Quietrum.View;
+namespace Specter.View;
 
 public partial class SettingsPage : UserControl
 {

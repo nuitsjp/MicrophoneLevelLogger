@@ -1,7 +1,6 @@
 ﻿using Kamishibai;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Quietrum.View;
 using Specter.Repository;
 using Specter.View;
 using Specter.ViewModel;

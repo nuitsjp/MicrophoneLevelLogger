@@ -14,13 +14,12 @@ public partial class RemoteDeviceInterface : ObservableObject, IDeviceInterface,
 
     private readonly TcpListener _tcpListener = new(IPAddress.Any, ServerPort.AsPrimitive());
     
-    private readonly Task _task;
+    private Task? _task;
 
     private readonly ReactiveCollection<IDevice> _devices = new();
 
     public RemoteDeviceInterface()
     {
-        _task = new Task(OnListening);
         Devices = _devices
             .ToReadOnlyReactiveCollection(scheduler: CurrentThreadScheduler.Instance);
     }
@@ -29,6 +28,7 @@ public partial class RemoteDeviceInterface : ObservableObject, IDeviceInterface,
 
     public Task ActivateAsync()
     {
+        _task = new Task(OnListening);
         _task.Start();
         return Task.CompletedTask;
     }
@@ -65,7 +65,7 @@ public partial class RemoteDeviceInterface : ObservableObject, IDeviceInterface,
     public void Dispose()
     {
         _tcpListener.Stop();
-        _task.Dispose();
+        _task?.Dispose();
     }
 
 }

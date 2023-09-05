@@ -1,41 +1,37 @@
-﻿using System.Reactive.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Kamishibai;
 using Reactive.Bindings.Disposables;
-using Reactive.Bindings.Extensions;
+using Specter.Business;
 
 namespace Specter.ViewModel;
 
-public partial class MainWindowViewModel : ObservableObject, IDisposable
+[Navigate]
+public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAware, IDisposable
 {
     private readonly CompositeDisposable _compositeDisposable = new();
 
-    private readonly IPresentationService _presentationService;
-
-    [ObservableProperty] private MenuItem _selectedMenuItem; 
-
     public MainWindowViewModel(
-        [Inject] IPresentationService presentationService)
+        [Inject] IAudioInterfaceProvider audioInterfaceProvider,
+        [Inject] ISettingsRepository settingsRepository,
+        [Inject] IWaveRecordIndexRepository waveRecordIndexRepository)
     {
-        _presentationService = presentationService;
-        this.ObserveProperty(x => x.SelectedMenuItem)
-            .Where(x => x is not null)
-            .Subscribe(x =>
-            {
-                _presentationService.NavigateAsync(x.ViewModel);
-            })
-            .AddTo(_compositeDisposable);
-        SelectedMenuItem = MenuItems.First();
+        MonitoringPage =
+            new MonitoringPageViewModel(
+                audioInterfaceProvider,
+                settingsRepository,
+                waveRecordIndexRepository);
     }
+    
+    public MonitoringPageViewModel MonitoringPage { get; }
 
-    public IReadOnlyList<MenuItem> MenuItems { get; } = new List<MenuItem>
-    {
-        new ("Monitoring", typeof(MonitoringPageViewModel)),
-        new ("Settings", typeof(SettingsPageViewModel))
-    };
 
     public void Dispose()
     {
         _compositeDisposable.Dispose();
+    }
+
+    public async Task OnNavigatedAsync(PostForwardEventArgs args)
+    {
+        await MonitoringPage.OnNavigatedAsync(args);
     }
 }
