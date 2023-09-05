@@ -31,6 +31,9 @@
                       SelectedItem="{Binding RecordDevice, Mode=TwoWay}"
                       DisplayMemberPath="Name"
                       Width="200"/>
+            <ComboBox ItemsSource="{Binding Directions}"
+                      SelectedItem="{Binding SelectedDirection, Mode=TwoWay}"
+                      Width="100"/>
 
             <ToggleButton
                 Content="{materialDesign:PackIcon Kind=Record}"

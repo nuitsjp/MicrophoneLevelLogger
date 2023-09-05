@@ -33,6 +33,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     [ObservableProperty] private IList<DeviceViewModel> _captureDevices = new List<DeviceViewModel>();
     [ObservableProperty] private DeviceViewModel? _playbackDevice;
     [ObservableProperty] private DeviceViewModel? _recordDevice;
+    [ObservableProperty] private Direction _selectedDirection = Direction.Front;
     
     public MonitoringPageViewModel(
         [Inject] IAudioInterfaceProvider audioInterfaceProvider, 
@@ -63,6 +64,8 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .Subscribe(OnChangedRecorderHost)
             .AddTo(_compositeDisposable);
     }
+
+    public Direction[] Directions { get; } = new[] { Direction.Front, Direction.Rear, Direction.Left, Direction.Right };
 
     private async void OnChangedRecorderHost(string obj)
     {
