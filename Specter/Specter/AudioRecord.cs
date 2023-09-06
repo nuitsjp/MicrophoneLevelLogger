@@ -1,8 +1,8 @@
 ﻿namespace Specter.Business;
 
 public record AudioRecord(
-    string TargetDeviceName,
+    DeviceId TargetDeviceId,
     Direction Direction,
     DateTime StartTime,
     DateTime StopTime,
-    DeviceRecord[] DeviceRecords);
+    IReadOnlyList<DeviceRecord> DeviceRecords);

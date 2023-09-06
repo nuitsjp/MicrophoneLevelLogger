@@ -8,7 +8,8 @@ namespace Specter.Repository;
 public class DeviceRecorder : IDeviceRecorder
 {
     private readonly CompositeDisposable _compositeDisposable = new();
-    private readonly DirectoryInfo _directoryInfo;
+    private readonly FileInfo _waveFile;
+    private readonly FileInfo _inputLevelFile;
     private readonly IDevice _device;
     private readonly WaveFileWriter _waveWriter;
     private readonly BinaryWriter _inputLevelWriter;
@@ -20,15 +21,17 @@ public class DeviceRecorder : IDeviceRecorder
     {
         _device = device;
         
-        _directoryInfo = new DirectoryInfo(Path.Combine(parent.FullName, _device.Name));
-        _directoryInfo.Create();
-        
+        var directoryInfo = new DirectoryInfo(Path.Combine(parent.FullName, _device.Name));
+        directoryInfo.Create();
+
+        _waveFile = new(Path.Combine(directoryInfo.FullName, "record.wav"));
         _waveWriter = 
-            new WaveFileWriter(Path.Combine(_directoryInfo.FullName, "input.wav"), waveFormat)
+            new WaveFileWriter(_waveFile.FullName, waveFormat)
                 .AddTo(_compositeDisposable);
+
+        _inputLevelFile = new(Path.Combine(directoryInfo.FullName, "record.ilv"));
         _inputLevelWriter =
-            new BinaryWriter(
-                    File.Create(Path.Combine(_directoryInfo.FullName, "input.bin")))
+            new BinaryWriter(File.Create(_inputLevelFile.FullName))
                 .AddTo(_compositeDisposable);
     }
 
@@ -51,7 +54,19 @@ public class DeviceRecorder : IDeviceRecorder
     public DeviceRecord Stop()
     {
         OnCompleted();
-        return new(_directoryInfo, _device.Name, _decibels.ToArray());
+        return new(
+            _device.Id,
+            _device.Name,
+            _device.SystemName,
+            _waveFile,
+            _inputLevelFile,
+            _decibels.Min(),
+            new Decibel(_decibels.Average(x => x.AsPrimitive())),
+            _decibels.Max(),
+            (double)_decibels.Count(x => -30d < x.AsPrimitive()) / _decibels.Count,
+            (double)_decibels.Count(x => -40d < x.AsPrimitive()) / _decibels.Count,
+            (double)_decibels.Count(x => -50d < x.AsPrimitive()) / _decibels.Count
+        );
     }
     
     private void OnCompleted()
@@ -61,4 +76,9 @@ public class DeviceRecorder : IDeviceRecorder
         _compositeDisposable.Dispose();
         _compositeDisposable.Clear();
     }
+}
+
+public interface IDecibelsWriter
+{
+    
 }

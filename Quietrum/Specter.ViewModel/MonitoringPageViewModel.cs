@@ -6,7 +6,6 @@ using Kamishibai;
 using NAudio.CoreAudioApi;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
-using Specter;
 using Specter.Business;
 
 namespace Specter.ViewModel;
@@ -178,7 +177,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     }
 
     private IAudioRecorder? _audioRecorder;
-    private async void StartRecording()
+    private void StartRecording()
     {
         _audioRecorder = _audioRecorderProvider
             .Resolve(
@@ -191,7 +190,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         _audioRecorder.Start();
     }
 
-    private async void StopRecording()
+    private void StopRecording()
     {
         _audioRecorder?.Stop();
         _audioRecorder = null;

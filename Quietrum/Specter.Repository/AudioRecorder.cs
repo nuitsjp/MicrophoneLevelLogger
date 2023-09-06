@@ -51,7 +51,7 @@ public class AudioRecorder : IAudioRecorder
         }
 
         return new AudioRecord(
-            _targetDevice.Name,
+            _targetDevice.Id,
             _direction,
             _startDateTime,
             DateTime.Now,
