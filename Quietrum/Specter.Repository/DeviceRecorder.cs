@@ -8,10 +8,8 @@ namespace Specter.Repository;
 public class DeviceRecorder : IDeviceRecorder
 {
     private readonly CompositeDisposable _compositeDisposable = new();
-    private readonly FileInfo _waveFile;
-    private readonly FileInfo _inputLevelFile;
     private readonly IDevice _device;
-    private readonly WaveFileWriter _waveWriter;
+    private readonly WaveWriter _waveWriter;
     private readonly IDecibelsWriter _inputLevelWriter;
     private readonly List<Decibel> _decibels = new();
     public DeviceRecorder(
@@ -21,15 +19,12 @@ public class DeviceRecorder : IDeviceRecorder
     {
         _device = device;
         
-        var directoryInfo = new DirectoryInfo(Path.Combine(parent.FullName, _device.Name));
-        directoryInfo.Create();
-
-        _waveFile = new(Path.Combine(directoryInfo.FullName, "record.wav"));
+        FileInfo _waveFile = new(Path.Combine(parent.FullName, $"{device.Name}.wav"));
         _waveWriter = 
-            new WaveFileWriter(_waveFile.FullName, waveFormat)
+            new WaveWriter(parent.FullName, device, waveFormat)
                 .AddTo(_compositeDisposable);
 
-        _inputLevelFile = new(Path.Combine(directoryInfo.FullName, "record.ilv"));
+        FileInfo _inputLevelFile = new(Path.Combine(parent.FullName, $"{device.Name}.ilv"));
         _inputLevelWriter =
             new DecibelsWriter(File.Create(_inputLevelFile.FullName))
                 .AddTo(_compositeDisposable);
@@ -69,7 +64,6 @@ public class DeviceRecorder : IDeviceRecorder
     
     private void OnCompleted()
     {
-        _waveWriter.Flush();
         _compositeDisposable.Dispose();
         _compositeDisposable.Clear();
     }
