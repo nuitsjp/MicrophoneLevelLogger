@@ -15,6 +15,9 @@
         <TabItem Header="Monitoring">
             <local:MonitoringPage DataContext="{Binding Path=MonitoringPage}"/>
         </TabItem>
+        <TabItem Header="Analysis">
+            <local:AnalysisPage DataContext="{Binding Path=AnalysisPage}"/>
+        </TabItem>
         <TabItem Header="Settings">
             <local:SettingsPage/>
         </TabItem>
