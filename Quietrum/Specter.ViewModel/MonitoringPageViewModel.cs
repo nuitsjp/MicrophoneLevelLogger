@@ -19,8 +19,8 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     public RecordingConfig RecordingConfig { get; } = RecordingConfig.Default;
 
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
+    private readonly IAudioRecorderProvider _audioRecorderProvider;
     private readonly ISettingsRepository _settingsRepository;
-    private readonly IWaveRecordIndexRepository _waveRecordIndexRepository;
     
     [ObservableProperty] private bool _record;
     [ObservableProperty] private bool _withPlayback;
@@ -37,12 +37,12 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     
     public MonitoringPageViewModel(
         [Inject] IAudioInterfaceProvider audioInterfaceProvider, 
-        [Inject] ISettingsRepository settingsRepository, 
-        [Inject] IWaveRecordIndexRepository waveRecordIndexRepository)
+        [Inject] IAudioRecorderProvider audioRecorderProvider, 
+        [Inject] ISettingsRepository settingsRepository)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
+        _audioRecorderProvider = audioRecorderProvider;
         _settingsRepository = settingsRepository;
-        _waveRecordIndexRepository = waveRecordIndexRepository;
         this.ObserveProperty(x => x.Record)
             .Skip(1)
             .Subscribe(OnRecord)
@@ -177,29 +177,24 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         }
     }
 
-    private void StartRecording()
+    private IAudioRecorder? _audioRecorder;
+    private async void StartRecording()
     {
-        const string recordNameFormat = "yyyy.MM.dd-HH.mm.ss";
-        do
-        {
-            RecordName = DateTime.Now.ToString(recordNameFormat);
-        } while (Directory.Exists(RecordName));
-
-        var directory = new DirectoryInfo(RecordName);
-        directory.Create();
-
-        Devices
-            .Where(x => x.Measure)
-            .ToList()
-            .ForEach(x => x.StartRecording(directory));
+        _audioRecorder = _audioRecorderProvider
+            .Resolve(
+                RecordDevice!.Device,
+                SelectedDirection,
+                Devices
+                    .Where(x => x.Measure)
+                    .Select(x => x.Device),
+                RecordingConfig.WaveFormat);
+        _audioRecorder.Start();
     }
 
-    private void StopRecording()
+    private async void StopRecording()
     {
-        Devices
-            .Where(x => x.Measure)
-            .ToList()
-            .ForEach(x => x.StopRecording());
+        _audioRecorder?.Stop();
+        _audioRecorder = null;
     }
 
     public async Task OnNavigatedAsync(PostForwardEventArgs args)
@@ -218,7 +213,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                     // 接続されたIMicrophoneを追加する。
                     foreach (IDevice device in eventArgs.NewItems!)
                     {
-                        var microphone = new DeviceViewModel(device, RecordingConfig, _waveRecordIndexRepository);
+                        var microphone = new DeviceViewModel(device, RecordingConfig);
                         microphone.PropertyChanged += MicrophoneOnPropertyChanged;
                         if (microphone.Measure)
                         {

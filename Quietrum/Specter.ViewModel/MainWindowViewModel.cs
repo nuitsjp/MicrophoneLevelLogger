@@ -12,14 +12,14 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
 
     public MainWindowViewModel(
         [Inject] IAudioInterfaceProvider audioInterfaceProvider,
-        [Inject] ISettingsRepository settingsRepository,
-        [Inject] IWaveRecordIndexRepository waveRecordIndexRepository)
+        [Inject] IAudioRecorderProvider audioRecorderProvider, 
+        [Inject] ISettingsRepository settingsRepository)
     {
         MonitoringPage =
             new MonitoringPageViewModel(
                 audioInterfaceProvider,
-                settingsRepository,
-                waveRecordIndexRepository);
+                audioRecorderProvider,
+                settingsRepository);
     }
     
     public MonitoringPageViewModel MonitoringPage { get; }

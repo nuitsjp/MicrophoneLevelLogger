@@ -4,39 +4,35 @@ using NAudio.CoreAudioApi;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
 using Specter.Business;
-using WaveRecorder = Specter.Business.WaveRecorder;
 
 namespace Specter.ViewModel;
 
 public partial class DeviceViewModel : ObservableObject, IDisposable
 {
-    private readonly IDevice _device;
     private readonly RecordingConfig _recordingConfig;
-    private readonly IWaveRecordIndexRepository _indexRepository;
     private readonly CompositeDisposable _compositeDisposable = new();
-    private WaveRecorder? _waveRecorder;
     [ObservableProperty] private bool _connected;
 
     public DeviceViewModel(
         IDevice device,
-        RecordingConfig recordingConfig, 
-        IWaveRecordIndexRepository indexRepository)
+        RecordingConfig recordingConfig)
     {
-        _device = device;
-        _device.ObserveProperty(x => x.VolumeLevel)
+        Device = device;
+        Device.ObserveProperty(x => x.VolumeLevel)
             .Subscribe(_ => OnPropertyChanged(nameof(VolumeLevel)));
         this.ObserveProperty(x => x.Connected)
             .Skip(1)
             .Subscribe(OnConnected)
             .AddTo(_compositeDisposable);
 
-        _device.InputLevel
+        Device.InputLevel
             .Subscribe(OnNext);
         _recordingConfig = recordingConfig;
-        _indexRepository = indexRepository;
         LiveData = new double[(int)(_recordingConfig.RecordingSpan / _recordingConfig.RefreshRate.Interval)];
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
     }
+
+    public IDevice Device { get; }
 
     private void OnConnected(bool connected)
     {
@@ -50,35 +46,35 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         }
     }
 
-    public DeviceId Id => _device.Id;
-    public DataFlow DataFlow => _device.DataFlow;
+    public DeviceId Id => Device.Id;
+    public DataFlow DataFlow => Device.DataFlow;
     public bool Connectable => DataFlow == DataFlow.Render;
 
     public string Name
     {
-        get => _device.Name;
+        get => Device.Name;
         set
         {
-            _device.Name = value;
+            Device.Name = value;
             OnPropertyChanged();
         }
     }
 
-    public string SystemName => _device.SystemName;
+    public string SystemName => Device.SystemName;
 
     /// <summary>
     /// 入力レベル
     /// </summary>
     public string VolumeLevel
     {
-        get => (_device.VolumeLevel.AsPrimitive() * 100).ToString("0");
+        get => (Device.VolumeLevel.AsPrimitive() * 100).ToString("0");
         set
         {
             if(int.TryParse(value, out var intValue))
             {
                 if (intValue is >= 0 and <= 100)
                 {
-                    _device.VolumeLevel = new VolumeLevel(intValue / 100f);
+                    Device.VolumeLevel = new VolumeLevel(intValue / 100f);
                 }
             }
             OnPropertyChanged();
@@ -87,11 +83,11 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
 
     public bool Measure
     {
-        get => _device.Measure;
+        get => Device.Measure;
         set
         {
-            _device.Measure = value;
-            if (_device.Measure)
+            Device.Measure = value;
+            if (Device.Measure)
             {
                 StartMonitoring();
             }
@@ -106,12 +102,12 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
 
     public void StartMonitoring()
     {
-        _device.StartMonitoring(_recordingConfig.WaveFormat, _recordingConfig.RefreshRate);
+        Device.StartMonitoring(_recordingConfig.WaveFormat, _recordingConfig.RefreshRate);
     }
 
     public Task PlayLoopingAsync(CancellationToken token)
     {
-        return ((IRenderDevice)_device).PlayLoopingAsync(token);
+        return ((IRenderDevice)Device).PlayLoopingAsync(token);
     }
 
     private RemoteDeviceConnector? _connector;
@@ -123,7 +119,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
             Measure = true;
         }
         
-        _connector = new("localhost", (IRenderDevice)_device);
+        _connector = new("localhost", (IRenderDevice)Device);
         _connector.Connect();
     }
 
@@ -135,24 +131,8 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
 
     public void StopMonitoring()
     {
-        _device.StopMonitoring();
+        Device.StopMonitoring();
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());
-    }
-
-    public void StartRecording(DirectoryInfo directoryInfo)
-    {
-        _waveRecorder = new WaveRecorder(
-            _device,
-            _recordingConfig.WaveFormat,
-            new DirectoryInfo(Path.Combine(directoryInfo.FullName, Name)),
-            _indexRepository);
-        _waveRecorder.StartRecording();
-    }
-
-    public void StopRecording()
-    {
-        _waveRecorder?.StopRecording();
-        _waveRecorder = null;
     }
 
     private void OnNext(Decibel decibel)
@@ -164,7 +144,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
 
     public void Dispose()
     {
-        _device.StopMonitoring();
-        _device.Dispose();
+        Device.StopMonitoring();
+        Device.Dispose();
     }
 }
