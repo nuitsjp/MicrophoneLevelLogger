@@ -18,8 +18,6 @@ public record DeviceRecord(
     DeviceId Id,
     string Name,
     string SystemName,
-    FileInfo WaveFile,
-    FileInfo InputLevelFile,
     Decibel Min,
     Decibel Avg,
     Decibel Max,

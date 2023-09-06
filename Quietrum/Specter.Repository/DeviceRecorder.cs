@@ -58,8 +58,6 @@ public class DeviceRecorder : IDeviceRecorder
             _device.Id,
             _device.Name,
             _device.SystemName,
-            _waveFile,
-            _inputLevelFile,
             _decibels.Min(),
             new Decibel(_decibels.Average(x => x.AsPrimitive())),
             _decibels.Max(),

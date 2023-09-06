@@ -3,5 +3,5 @@
 public interface IAudioRecorder
 {
     void Start();
-    AudioRecord Stop();
+    Task<AudioRecord> StopAsync();
 }

@@ -190,9 +190,11 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         _audioRecorder.Start();
     }
 
-    private void StopRecording()
+    private async void StopRecording()
     {
-        _audioRecorder?.Stop();
+        if(_audioRecorder is null) return;
+        
+        await _audioRecorder.StopAsync();
         _audioRecorder = null;
     }
 

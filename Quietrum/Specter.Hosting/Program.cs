@@ -8,6 +8,7 @@ using Specter.Business;
 
 var builder = KamishibaiApplication<App, MainWindow>.CreateBuilder();
 
+builder.Services.AddSingleton<IAudioRecordRepository, AudioRecordRepository>();
 builder.Services.AddSingleton<IAudioInterfaceProvider, AudioInterfaceProvider>();
 builder.Services.AddSingleton<IAudioRecorderProvider, AudioRecorderProvider>();
 builder.Services.AddTransient<ISettingsRepository, SettingsRepository>();
