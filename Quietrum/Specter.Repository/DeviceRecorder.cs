@@ -12,7 +12,7 @@ public class DeviceRecorder : IDeviceRecorder
     private readonly FileInfo _inputLevelFile;
     private readonly IDevice _device;
     private readonly WaveFileWriter _waveWriter;
-    private readonly BinaryWriter _inputLevelWriter;
+    private readonly IDecibelsWriter _inputLevelWriter;
     private readonly List<Decibel> _decibels = new();
     public DeviceRecorder(
         DirectoryInfo parent,
@@ -31,7 +31,7 @@ public class DeviceRecorder : IDeviceRecorder
 
         _inputLevelFile = new(Path.Combine(directoryInfo.FullName, "record.ilv"));
         _inputLevelWriter =
-            new BinaryWriter(File.Create(_inputLevelFile.FullName))
+            new DecibelsWriter(File.Create(_inputLevelFile.FullName))
                 .AddTo(_compositeDisposable);
     }
 
@@ -45,7 +45,7 @@ public class DeviceRecorder : IDeviceRecorder
         _device.InputLevel
             .Subscribe(x =>
             {
-                _inputLevelWriter.Write(x.AsPrimitive());
+                _inputLevelWriter.Write(x);
                 _decibels.Add(x);
             })
             .AddTo(_compositeDisposable);
@@ -72,13 +72,7 @@ public class DeviceRecorder : IDeviceRecorder
     private void OnCompleted()
     {
         _waveWriter.Flush();
-        _inputLevelWriter.Flush();
         _compositeDisposable.Dispose();
         _compositeDisposable.Clear();
     }
-}
-
-public interface IDecibelsWriter
-{
-    
 }
