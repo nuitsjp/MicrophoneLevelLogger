@@ -6,6 +6,7 @@ namespace Specter.Repository;
 public class AudioRecordRepository : IAudioRecordRepository
 {
     private static readonly string RootDirectory = "Record";
+    private static readonly string AudioRecordFile = "AudioRecord.json";
     
     public async Task SaveAsync(AudioRecord audioRecord)
     {
@@ -13,7 +14,7 @@ public class AudioRecordRepository : IAudioRecordRepository
         var filePath = Path.Combine(
             RootDirectory,
             $"{audioRecord.StartTime:yyyy.MM.dd-HH.mm.ss}_{targetDevice.Name}_{audioRecord.Direction}",
-            "AudioRecord.json");
+            AudioRecordFile);
         
         var directoryName = Path.GetDirectoryName(filePath)!;
         if (!Directory.Exists(directoryName))
@@ -23,8 +24,21 @@ public class AudioRecordRepository : IAudioRecordRepository
         await JsonSerializer.SerializeAsync(stream, audioRecord, JsonEnvironments.Options);
     }
 
-    public Task<IEnumerable<AudioRecord>> LoadAsync()
+    public async Task<IEnumerable<AudioRecord>> LoadAsync()
     {
-        throw new NotImplementedException();
+        var directories = Directory.GetDirectories(RootDirectory);
+
+        List<AudioRecord> records = new();
+        foreach (var directory in directories)
+        {
+            var file = Path.Combine(directory, AudioRecordFile);
+            if (File.Exists(file) is false)
+                continue;
+            
+            await using var stream = new FileStream(file, FileMode.Open, FileAccess.Read);
+            records.Add((await JsonSerializer.DeserializeAsync<AudioRecord>(stream, JsonEnvironments.Options))!);
+        }
+
+        return records;
     }
 }

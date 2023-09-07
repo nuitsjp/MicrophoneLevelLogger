@@ -5,14 +5,30 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModel="clr-namespace:Specter.ViewModel;assembly=Specter.ViewModel"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:business="clr-namespace:Specter.Business;assembly=Specter"
+             xmlns:converter="clr-namespace:Specter.View.Converter"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal" 
+             TextOptions.TextRenderingMode="Auto"        
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type viewModel:AnalysisPageViewModel}, IsDesignTimeCreatable=True}"
              d:DesignHeight="1024" d:DesignWidth="1280">
     <UserControl.Resources>
-        <ResourceDictionary Source="Style/Generic.xaml"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Style/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <converter:DecibelConverter x:Key="DecibelConverter"/>
+        </ResourceDictionary>
     </UserControl.Resources>    
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -21,37 +37,41 @@
                     Command="{Binding ReloadCommand}"/>
         </StackPanel>
         
-        <DataGrid Grid.Row="1" 
-                  ItemsSource="{Binding Devices}" 
-                  AutoGenerateColumns="False"
-                  Height="300"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="DataFlow" Binding="{Binding DataFlow}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="(SystemName)" Binding="{Binding SystemName}" IsReadOnly="True"/>
-                <DataGridTemplateColumn IsReadOnly="True" Header="Measure" Width="Auto">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding Measure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                      HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                      Margin="0"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Volume Level" Binding="{Binding VolumeLevel}"/>
-                <DataGridTemplateColumn IsReadOnly="True" Header="Connect" Width="Auto">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding Connected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                      IsEnabled="{Binding Connectable, Mode=OneWay}"
-                                      HorizontalAlignment="Center" 
-                                      VerticalAlignment="Center" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="500"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <DataGrid Grid.Column="0" 
+                      ItemsSource="{Binding AudioRecords}" 
+                      SelectedItem="{Binding SelectedAudioRecord}"
+                      AutoGenerateColumns="False"
+                      Height="300"
+                      Margin="5"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Time" Binding="{Binding StartTime, StringFormat=yyyy/MM/dd HH:mm:ss}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Device" Binding="{Binding Device}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Direction" Binding="{Binding Direction}" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid Grid.Column="1" 
+                      ItemsSource="{Binding SelectedAudioRecord.Devices}" 
+                      AutoGenerateColumns="False"
+                      Height="300"
+                      Margin="5"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Min" Binding="{Binding Min, Converter={StaticResource DecibelConverter}, ConverterParameter='{}{0:0.00}'}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Avg" Binding="{Binding Avg, Converter={StaticResource DecibelConverter}, ConverterParameter='{}{0:0.00}'}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Max" Binding="{Binding Max, Converter={StaticResource DecibelConverter}, ConverterParameter='{}{0:0.00}'}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="-30db" Binding="{Binding Minus30db, StringFormat=0.00%}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="-40db" Binding="{Binding Minus40db, StringFormat=0.00%}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="-50db" Binding="{Binding Minus50db, StringFormat=0.00%}" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
 
     </Grid>
 </UserControl>
