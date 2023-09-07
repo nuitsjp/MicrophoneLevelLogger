@@ -54,7 +54,7 @@ public partial class AnalysisPage : UserControl
                 yMin: -90, yMax: 0);
             WpfPlot1.Plot.XAxis.SetBoundary(0, maximumLength);
             WpfPlot1.Plot.YAxis.SetBoundary(-90, 0);
-            //WpfPlot1.Plot.XAxis.TickLabelFormat(x => $"{(((config.RecordingLength - x) * -1 * ViewModel.RecordingConfig.RefreshRate.Interval.TotalMilliseconds) / 1000d):#0.0[s]}");
+            WpfPlot1.Plot.XAxis.TickLabelFormat(x => $"{(x / (RecordingConfig.Default.WaveFormat.SampleRate / 1000)):#0.0[s]}");
             WpfPlot1.Configuration.LockVerticalAxis = true;
             WpfPlot1.Plot.Legend(location:Alignment.UpperLeft);
             WpfPlot1.Refresh();
