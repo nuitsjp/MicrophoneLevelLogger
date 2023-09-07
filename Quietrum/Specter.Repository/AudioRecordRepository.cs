@@ -7,13 +7,19 @@ public class AudioRecordRepository : IAudioRecordRepository
 {
     private static readonly string RootDirectory = "Record";
     private static readonly string AudioRecordFile = "AudioRecord.json";
+
+    public static string GetAudioRecordPath(AudioRecord audioRecord)
+    {
+        var targetDevice = audioRecord.DeviceRecords.Single(x => x.Id == audioRecord.TargetDeviceId);
+        return Path.Combine(
+            RootDirectory,
+            $"{audioRecord.StartTime:yyyy.MM.dd-HH.mm.ss}_{targetDevice.Name}_{audioRecord.Direction}");
+    }
     
     public async Task SaveAsync(AudioRecord audioRecord)
     {
-        var targetDevice = audioRecord.DeviceRecords.Single(x => x.Id == audioRecord.TargetDeviceId);
         var filePath = Path.Combine(
-            RootDirectory,
-            $"{audioRecord.StartTime:yyyy.MM.dd-HH.mm.ss}_{targetDevice.Name}_{audioRecord.Direction}",
+            GetAudioRecordPath(audioRecord),
             AudioRecordFile);
         
         var directoryName = Path.GetDirectoryName(filePath)!;

@@ -1,6 +1,6 @@
 using Specter.Business;
 
-namespace Specter.Repository;
+namespace Specter;
 
 public interface IDecibelsWriter : IDisposable
 {

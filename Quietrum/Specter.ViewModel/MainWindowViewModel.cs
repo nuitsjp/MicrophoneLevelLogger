@@ -14,7 +14,8 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
         [Inject] IAudioInterfaceProvider audioInterfaceProvider,
         [Inject] IAudioRecorderProvider audioRecorderProvider, 
         [Inject] ISettingsRepository settingsRepository,
-        [Inject] IAudioRecordRepository audioRecordRepository)
+        [Inject] IAudioRecordRepository audioRecordRepository,
+        [Inject] IDecibelsReaderProvider decibelsReaderProvider)
     {
         MonitoringPage =
             new (
@@ -23,7 +24,8 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
                 settingsRepository);
         AnalysisPage = 
             new(
-                audioRecordRepository);
+                audioRecordRepository,
+                decibelsReaderProvider);
     }
     
     public MonitoringPageViewModel MonitoringPage { get; }
