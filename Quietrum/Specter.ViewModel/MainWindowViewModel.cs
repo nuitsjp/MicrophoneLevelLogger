@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Kamishibai;
 using Reactive.Bindings.Disposables;
+using Specter.ViewModel.AnalysisPage;
+using Specter.ViewModel.MonitoringPage;
 
 namespace Specter.ViewModel;
 

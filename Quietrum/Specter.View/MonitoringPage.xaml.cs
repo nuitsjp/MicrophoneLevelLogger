@@ -5,6 +5,7 @@ using System.Windows.Threading;
 using Reactive.Bindings.Extensions;
 using ScottPlot;
 using Specter.ViewModel;
+using Specter.ViewModel.MonitoringPage;
 
 namespace Specter.View
 {

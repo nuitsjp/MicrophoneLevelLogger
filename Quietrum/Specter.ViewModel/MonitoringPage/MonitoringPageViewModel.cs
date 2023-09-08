@@ -7,7 +7,7 @@ using NAudio.CoreAudioApi;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
 
-namespace Specter.ViewModel;
+namespace Specter.ViewModel.MonitoringPage;
 
 [Navigate]
 // ReSharper disable once ClassNeverInstantiated.Global

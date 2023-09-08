@@ -6,6 +6,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:viewModel1="clr-namespace:Specter.ViewModel;assembly=Specter.ViewModel"
         xmlns:scottPlot="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
+        xmlns:monitoringPage="clr-namespace:Specter.ViewModel.MonitoringPage;assembly=Specter.ViewModel"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -14,7 +15,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance {x:Type viewModel1:MonitoringPageViewModel}, IsDesignTimeCreatable=True}"
+        d:DataContext="{d:DesignInstance {x:Type monitoringPage:MonitoringPageViewModel}, IsDesignTimeCreatable=True}"
         d:DesignHeight="1024" d:DesignWidth="1280">
     <UserControl.Resources>
         <ResourceDictionary Source="Style/Generic.xaml"/>

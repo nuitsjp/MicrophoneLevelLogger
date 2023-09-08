@@ -5,6 +5,7 @@ using Specter;
 using Specter.Repository;
 using Specter.View;
 using Specter.ViewModel;
+using Specter.ViewModel.MonitoringPage;
 
 var builder = KamishibaiApplication<App, MainWindow>.CreateBuilder();
 

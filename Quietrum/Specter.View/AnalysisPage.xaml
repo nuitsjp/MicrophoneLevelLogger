@@ -7,6 +7,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:converter="clr-namespace:Specter.View.Converter"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:analysisPage="clr-namespace:Specter.ViewModel.AnalysisPage;assembly=Specter.ViewModel"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
              TextElement.FontSize="13"
@@ -16,7 +17,7 @@
              FontFamily="{DynamicResource MaterialDesignFont}"
              GotFocus="AnalysisPage_OnGotFocus"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type viewModel:AnalysisPageViewModel}, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance {x:Type analysisPage:AnalysisPageViewModel}, IsDesignTimeCreatable=True}"
              d:DesignHeight="1024" d:DesignWidth="1280">
     <UserControl.Resources>
         <ResourceDictionary>

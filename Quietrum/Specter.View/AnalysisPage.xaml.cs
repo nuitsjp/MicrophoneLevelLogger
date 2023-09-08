@@ -5,6 +5,7 @@ using Specter.ViewModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Controls;
+using Specter.ViewModel.AnalysisPage;
 
 namespace Specter.View;
 
