@@ -12,13 +12,11 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
 
     private readonly CompositeDisposable _compositeDisposable = new();
     private readonly ReactiveCollection<AudioRecord> _audioRecords = new();
-    private readonly FileSystemWatcher _fileSystemWatcher = new();
     public ReadOnlyReactiveCollection<AudioRecord> AudioRecords { get; }
 
     public AudioRecordInterface()
     {
         _audioRecords.AddTo(_compositeDisposable);
-        _fileSystemWatcher.AddTo(_compositeDisposable);
         
         AudioRecords = _audioRecords.ToReadOnlyReactiveCollection();
     }
@@ -35,33 +33,7 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
             _audioRecords.Add(record);
         }
         
-        // 監視するディレクトリを設定
-        _fileSystemWatcher.Path = RootDirectory;
-
-        // 監視するファイルのパターン（この場合は.txtファイル）
-        _fileSystemWatcher.Filter = $@"*.json";
-        
-        // サブディレクトリも監視する
-        _fileSystemWatcher.IncludeSubdirectories = true;
-
-
-        // イベントハンドラを追加
-        _fileSystemWatcher.Created += FileSystemWatcherOnCreated;
-        _fileSystemWatcher.Deleted += FileSystemWatcherOnDeleted;
-
-        // 監視を開始
-        _fileSystemWatcher.EnableRaisingEvents = true;
-
         Activated = true;
-    }
-
-    private void FileSystemWatcherOnDeleted(object sender, FileSystemEventArgs e)
-    {
-    }
-
-    private async void FileSystemWatcherOnCreated(object sender, FileSystemEventArgs e)
-    {
-        _audioRecords.Add(await LoadAsync(e.FullPath));
     }
 
     public static string GetAudioRecordPath(AudioRecord audioRecord)
@@ -84,6 +56,7 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         
         await using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write);
         await JsonSerializer.SerializeAsync(stream, audioRecord, JsonEnvironments.Options);
+        _audioRecords.Add(audioRecord);
     }
 
     public async Task<IEnumerable<AudioRecord>> LoadAsync()
@@ -105,25 +78,8 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
 
     private async Task<AudioRecord> LoadAsync(string file)
     {
-        await using var stream = OpenStream(file);
+        await using var stream = new FileStream(file, FileMode.Open, FileAccess.Read);
         return (await JsonSerializer.DeserializeAsync<AudioRecord>(stream, JsonEnvironments.Options))!;
-    }
-
-    private static FileStream OpenStream(string path)
-    {
-        // 書き込み中に読み込みが発生する可能性があるため、リトライを行う。
-        while (true)
-        {
-            try
-            {
-                return new FileStream(path, FileMode.Open, FileAccess.Read);
-            }
-            catch (IOException)
-            {
-                // 書き込みの完了を待機する。
-                Thread.Sleep(TimeSpan.FromMilliseconds(100));
-            }
-        }
     }
 
     public void Dispose()
