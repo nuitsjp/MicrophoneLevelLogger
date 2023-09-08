@@ -37,7 +37,7 @@ public partial class AnalysisPage : UserControl
                 maximumLength = Math.Max(maximumLength, signal.Length);
                 WpfPlot1.Plot.AddSignal(
                     signal, 
-                    label:analysisDevice.Device);
+                    label:$"{analysisDevice.StartTime:yyyy/MM/dd HH:mm}：{analysisDevice.Device} {analysisDevice.Direction}");
             }
                     
             WpfPlot1.Plot.AxisAutoX(margin: 0);
