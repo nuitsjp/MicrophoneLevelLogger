@@ -10,7 +10,6 @@ namespace Specter.ViewModel.AnalysisPage;
 
 public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer
 {
-    private readonly IAudioRecordRepository _audioRecordRepository;
     private readonly IDecibelsReaderProvider _decibelsReaderProvider;
     private readonly IAudioRecordInterface _audioRecordInterface;
     private readonly ReactiveCollection<AudioRecordViewModel> _audioRecords = new();
@@ -18,11 +17,9 @@ public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer
     [ObservableProperty] private AudioRecordViewModel _selectedAudioRecord;
 
     public AnalysisPageViewModel(
-        IAudioRecordRepository audioRecordRepository, 
         IDecibelsReaderProvider decibelsReaderProvider, 
         IAudioRecordInterface audioRecordInterface)
     {
-        _audioRecordRepository = audioRecordRepository;
         _decibelsReaderProvider = decibelsReaderProvider;
         _audioRecordInterface = audioRecordInterface;
         AudioRecords = _audioRecords.ToReadOnlyReactiveCollection();
