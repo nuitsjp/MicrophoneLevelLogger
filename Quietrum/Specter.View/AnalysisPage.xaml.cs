@@ -60,4 +60,8 @@ public partial class AnalysisPage : UserControl
             WpfPlot1.Refresh();
         });
     }
+
+    private void AnalysisPage_OnGotFocus(object sender, RoutedEventArgs e)
+    {
+    }
 }

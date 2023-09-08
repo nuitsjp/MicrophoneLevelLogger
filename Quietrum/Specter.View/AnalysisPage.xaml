@@ -15,6 +15,7 @@
              TextOptions.TextRenderingMode="Auto"        
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
+             GotFocus="AnalysisPage_OnGotFocus"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type viewModel:AnalysisPageViewModel}, IsDesignTimeCreatable=True}"
              d:DesignHeight="1024" d:DesignWidth="1280">
@@ -49,11 +50,11 @@
                       ItemsSource="{Binding AudioRecords}" 
                       SelectedItem="{Binding SelectedAudioRecord}"
                       AutoGenerateColumns="False"
-                      Height="300"
+                      Height="200"
                       Margin="5"
                       ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Time" Binding="{Binding StartTime, StringFormat=yyyy/MM/dd HH:mm:ss}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Time" Binding="{Binding StartTime, StringFormat=yyyy/MM/dd HH:mm}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Device" Binding="{Binding Device}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Direction" Binding="{Binding Direction}" IsReadOnly="True"/>
                 </DataGrid.Columns>
@@ -62,7 +63,7 @@
                        ItemsSource="{Binding SelectedAudioRecord.Devices}" 
                        SelectedItem="{Binding SelectedAudioRecord.SelectedDevice}"
                        AutoGenerateColumns="False"
-                       Height="300"
+                       Height="200"
                        Margin="5"
                        ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <DataGrid.Columns>
@@ -89,11 +90,11 @@
         <DataGrid Grid.Row="2" 
                   ItemsSource="{Binding AnalysisDevices}" 
                   AutoGenerateColumns="False"
-                  Height="300"
+                  Height="200"
                   Margin="5"
                   ScrollViewer.VerticalScrollBarVisibility="Auto">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Time" Binding="{Binding StartTime, StringFormat=yyyy/MM/dd HH:mm:ss}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Time" Binding="{Binding StartTime, StringFormat=yyyy/MM/dd HH:mm}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Device" Binding="{Binding Device}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Direction" Binding="{Binding Direction}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Min" Binding="{Binding Min, Converter={StaticResource DecibelConverter}, ConverterParameter='{}{0:0.00}'}" IsReadOnly="True"/>
