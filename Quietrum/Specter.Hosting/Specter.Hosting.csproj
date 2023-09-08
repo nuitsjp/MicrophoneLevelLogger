@@ -6,7 +6,6 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 		<EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
-		<RootNamespace>Quietrum.Hosting</RootNamespace>
 	    </PropertyGroup>
 
   <ItemGroup>
