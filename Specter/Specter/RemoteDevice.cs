@@ -1,14 +1,11 @@
-﻿using System;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Threading;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
-namespace Specter.Business;
+namespace Specter;
 
 public class RemoteDevice : ObservableObject, IRenderDevice
 {

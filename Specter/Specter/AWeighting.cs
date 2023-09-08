@@ -1,4 +1,4 @@
-﻿namespace Specter.Business;
+﻿namespace Specter;
 
 /// <summary>
 /// 周波数重み付け特性「A特性」

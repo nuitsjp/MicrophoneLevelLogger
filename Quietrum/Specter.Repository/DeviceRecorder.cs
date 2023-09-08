@@ -1,7 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using NAudio.Wave;
 using Reactive.Bindings.Extensions;
-using Specter.Business;
 
 namespace Specter.Repository;
 

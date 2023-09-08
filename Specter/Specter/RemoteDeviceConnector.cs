@@ -1,10 +1,8 @@
-﻿using System;
-using System.Net.Sockets;
-using System.Threading;
+﻿using System.Net.Sockets;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
 
-namespace Specter.Business;
+namespace Specter;
 
 /// <summary>
 /// ローカルの音声データを、リモートのサーバーに接続するためのコネクター。

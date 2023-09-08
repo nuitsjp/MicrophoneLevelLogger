@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-using Reactive.Bindings;
+﻿using Reactive.Bindings;
 
-namespace Specter.Business;
+namespace Specter;
 
 public interface IDeviceInterface
 {

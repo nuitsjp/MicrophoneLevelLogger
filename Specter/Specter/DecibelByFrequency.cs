@@ -1,4 +1,4 @@
-﻿namespace Specter.Business;
+﻿namespace Specter;
 
 /// <summary>
 /// 周波数帯域別の音量

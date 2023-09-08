@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Management;
 using System.Reactive.Concurrency;
-using System.Threading.Tasks;
 using NAudio.CoreAudioApi;
 using Reactive.Bindings;
 
-namespace Specter.Business;
+namespace Specter;
 
 public class LocalDeviceInterface : IDeviceInterface
 {

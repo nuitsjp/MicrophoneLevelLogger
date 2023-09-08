@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
-namespace Specter.Business;
+namespace Specter;
 
 /// <summary>
 /// マイク

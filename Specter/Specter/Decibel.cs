@@ -1,6 +1,6 @@
 ﻿using UnitGenerator;
 
-namespace Specter.Business;
+namespace Specter;
 
 /// <summary>
 /// デシベル。音量の単位。

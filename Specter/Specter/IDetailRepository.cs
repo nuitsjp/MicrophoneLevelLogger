@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Specter.Business;
+﻿namespace Specter;
 
 /// <summary>
 /// マイク別のサンプリング間隔ごとの最大音量を記録するライター

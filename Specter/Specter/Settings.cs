@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Specter.Business;
+﻿namespace Specter;
 
 /// <summary>
 /// MicrophoneLevelLoggerの各種設定

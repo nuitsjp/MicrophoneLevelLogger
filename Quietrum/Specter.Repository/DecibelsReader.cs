@@ -1,5 +1,3 @@
-using Specter.Business;
-
 namespace Specter.Repository;
 
 public class DecibelsReader : IDecibelsReader

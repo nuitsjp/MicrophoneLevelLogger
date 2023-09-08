@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace Specter.Business;
+﻿namespace Specter;
 
 public interface IRenderDevice : IDevice
 {

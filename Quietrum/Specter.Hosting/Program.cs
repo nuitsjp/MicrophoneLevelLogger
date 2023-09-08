@@ -5,7 +5,6 @@ using Specter;
 using Specter.Repository;
 using Specter.View;
 using Specter.ViewModel;
-using Specter.Business;
 
 var builder = KamishibaiApplication<App, MainWindow>.CreateBuilder();
 

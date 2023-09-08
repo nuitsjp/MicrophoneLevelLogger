@@ -1,6 +1,6 @@
 ﻿using NAudio.CoreAudioApi;
 
-namespace Specter.Business;
+namespace Specter;
 
 public class CaptureDevice : Device, ICaptureDevice
 {

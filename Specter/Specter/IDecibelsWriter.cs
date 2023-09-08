@@ -1,5 +1,3 @@
-using Specter.Business;
-
 namespace Specter;
 
 public interface IDecibelsWriter : IDisposable

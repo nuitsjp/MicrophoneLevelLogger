@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Specter.Business;
+﻿namespace Specter;
 
 /// <summary>
 /// IAudioInterfaceのプロバイダー

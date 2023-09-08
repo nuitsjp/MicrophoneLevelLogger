@@ -1,9 +1,8 @@
 ﻿using System.Reactive.Concurrency;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Reactive.Bindings;
 
-namespace Specter.Business;
+namespace Specter;
 
 /// <summary>
 /// マイク・スピーカーなどを統合したオーディオ関連のインターフェース

@@ -1,6 +1,6 @@
 ﻿using NAudio.Wave;
 
-namespace Specter.Business;
+namespace Specter;
 
 public class FastTimeWeighting
 {

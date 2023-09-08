@@ -1,6 +1,4 @@
-﻿using Specter.Business;
-
-namespace Specter.Repository;
+﻿namespace Specter.Repository;
 
 /// <summary>
 /// IDetailWriterファクトリー

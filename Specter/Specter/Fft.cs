@@ -1,8 +1,7 @@
-﻿using System;
-using System.Buffers;
+﻿using System.Buffers;
 using NAudio.Wave;
 
-namespace Specter.Business;
+namespace Specter;
 
 /// <summary>
 /// 高速フーリエ変換

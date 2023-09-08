@@ -1,4 +1,4 @@
-﻿namespace Specter.Business;
+﻿namespace Specter;
 
 public interface IDeviceRecorder
 {

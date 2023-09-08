@@ -1,6 +1,6 @@
 ﻿using NAudio.Wave;
 
-namespace Specter.Business;
+namespace Specter;
 
 /// <summary>
 /// 元音源ストリームをループで再生するためのストリーム。

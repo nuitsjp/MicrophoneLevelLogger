@@ -3,7 +3,7 @@ using System.Reactive.Linq;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
-namespace Specter.Business;
+namespace Specter;
 
 public static class ReactiveCollectionExtensions
 {

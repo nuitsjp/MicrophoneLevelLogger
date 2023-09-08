@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Kamishibai;
 using Reactive.Bindings.Disposables;
-using Specter.Business;
 
 namespace Specter.ViewModel;
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Threading;
 using ScottPlot;
 using Specter.ViewModel;
 using System.Collections.Specialized;

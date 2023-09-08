@@ -1,4 +1,4 @@
-﻿namespace Specter.Business;
+﻿namespace Specter;
 
 /// <summary>
 /// 帯域別の重み

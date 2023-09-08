@@ -1,7 +1,7 @@
 ﻿using FftSharp.Windows;
 using NAudio.Wave;
 
-namespace Specter.Business;
+namespace Specter;
 
 /// <summary>
 /// From:ChatGPT

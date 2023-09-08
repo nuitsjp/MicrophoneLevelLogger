@@ -1,8 +1,7 @@
-﻿using System;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using NAudio.Wave;
 
-namespace Specter.Business;
+namespace Specter;
 
 public class WaveInToInputLevelObservable : IObservable<Decibel>
 {

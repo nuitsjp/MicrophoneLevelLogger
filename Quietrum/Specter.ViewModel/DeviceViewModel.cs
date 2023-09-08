@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NAudio.CoreAudioApi;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
-using Specter.Business;
 
 namespace Specter.ViewModel;
 

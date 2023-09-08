@@ -1,6 +1,6 @@
 ﻿using UnitGenerator;
 
-namespace Specter.Business;
+namespace Specter;
 
 /// <summary>
 /// マイクID

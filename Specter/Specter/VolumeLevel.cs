@@ -1,7 +1,6 @@
-﻿using System;
-using UnitGenerator;
+﻿using UnitGenerator;
 
-namespace Specter.Business;
+namespace Specter;
 
 /// <summary>
 /// 入出力レベル

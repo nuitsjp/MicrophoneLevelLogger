@@ -1,7 +1,6 @@
-﻿using System;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 
-namespace Specter.Business;
+namespace Specter;
 
 public class Normalize
 {

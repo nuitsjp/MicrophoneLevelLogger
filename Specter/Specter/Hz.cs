@@ -1,6 +1,6 @@
 ﻿using UnitGenerator;
 
-namespace Specter.Business;
+namespace Specter;
 
 [UnitOf(typeof(double), UnitGenerateOptions.Comparable)]
 public partial struct Hz

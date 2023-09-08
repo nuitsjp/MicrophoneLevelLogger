@@ -1,9 +1,7 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using NAudio.CoreAudioApi;
+﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
-namespace Specter.Business;
+namespace Specter;
 
 public class RenderDevice : Device, IRenderDevice
 {
