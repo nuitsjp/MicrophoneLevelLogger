@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Kamishibai.View" Version="2.0.0" />
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="ReactiveProperty" Version="9.1.2" />
     <PackageReference Include="ScottPlot.WPF" Version="4.1.64" />
   </ItemGroup>

@@ -8,6 +8,7 @@
              xmlns:converter="clr-namespace:Specter.View.Converter"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:analysisPage="clr-namespace:Specter.ViewModel.AnalysisPage;assembly=Specter.ViewModel"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
              TextElement.FontSize="13"
@@ -29,6 +30,11 @@
             <system:Double x:Key="IconSize">24</system:Double>
         </ResourceDictionary>
     </UserControl.Resources>    
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Loaded">
+            <b:InvokeCommandAction Command="{Binding ActivateCommand}" />
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -38,7 +44,7 @@
         </Grid.RowDefinitions>
         <StackPanel HorizontalAlignment="Left">
             <Button Content="{materialDesign:PackIcon Kind=Reload}"
-                    Command="{Binding ReloadCommand}"/>
+                    Command="{Binding ActivateCommand}"/>
         </StackPanel>
         
         <Grid Grid.Row="1">
@@ -90,7 +96,7 @@
         <DataGrid Grid.Row="2" 
                   ItemsSource="{Binding AnalysisDevices}" 
                   AutoGenerateColumns="False"
-                  Height="200"
+                  Height="150"
                   Margin="5"
                   ScrollViewer.VerticalScrollBarVisibility="Auto">
             <DataGrid.Columns>
