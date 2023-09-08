@@ -4,11 +4,11 @@ namespace Specter.Repository;
 
 public class AudioRecorderProvider : IAudioRecorderProvider
 {
-    private readonly IAudioRecordRepository _audioRecordRepository;
+    private readonly IAudioRecordInterface _audioRecordInterface;
 
-    public AudioRecorderProvider(IAudioRecordRepository audioRecordRepository)
+    public AudioRecorderProvider(IAudioRecordInterface audioRecordInterface)
     {
-        _audioRecordRepository = audioRecordRepository;
+        _audioRecordInterface = audioRecordInterface;
     }
 
     public IAudioRecorder Resolve(
@@ -22,6 +22,6 @@ public class AudioRecorderProvider : IAudioRecorderProvider
             direction,
             monitoringDevices,
             waveFormat,
-            _audioRecordRepository);
+            _audioRecordInterface);
     }
 }

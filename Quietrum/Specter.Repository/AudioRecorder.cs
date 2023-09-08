@@ -12,7 +12,7 @@ public class AudioRecorder : IAudioRecorder
     private readonly List<IDevice> _monitoringDevices;
     private readonly List<IDeviceRecorder> _deviceRecorders = new();
     private readonly WaveFormat _waveFormat;
-    private readonly IAudioRecordRepository _audioRecordRepository;
+    private readonly IAudioRecordInterface _audioRecordInterface;
 
     private DateTime _startDateTime;
 
@@ -21,13 +21,13 @@ public class AudioRecorder : IAudioRecorder
         Direction direction, 
         IEnumerable<IDevice> monitoringDevices,
         WaveFormat waveFormat, 
-        IAudioRecordRepository audioRecordRepository)
+        IAudioRecordInterface audioRecordInterface)
     {
         _targetDevice = targetDevice;
         _monitoringDevices = monitoringDevices.ToList();
         _direction = direction;
         _waveFormat = waveFormat;
-        _audioRecordRepository = audioRecordRepository;
+        _audioRecordInterface = audioRecordInterface;
     }
 
     public void Start()
@@ -59,7 +59,7 @@ public class AudioRecorder : IAudioRecorder
             DateTime.Now,
             deviceRecords.ToArray());
 
-        await _audioRecordRepository.SaveAsync(audioRecord);
+        await _audioRecordInterface.SaveAsync(audioRecord);
         
         return audioRecord;
     }

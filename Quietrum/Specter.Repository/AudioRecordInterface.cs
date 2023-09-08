@@ -64,6 +64,28 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         _audioRecords.Add(await LoadAsync(e.FullPath));
     }
 
+    public static string GetAudioRecordPath(AudioRecord audioRecord)
+    {
+        var targetDevice = audioRecord.DeviceRecords.Single(x => x.Id == audioRecord.TargetDeviceId);
+        return Path.Combine(
+            RootDirectory,
+            $"{audioRecord.StartTime:yyyy.MM.dd-HH.mm.ss}_{targetDevice.Name}_{audioRecord.Direction}");
+    }
+
+    public async Task SaveAsync(AudioRecord audioRecord)
+    {
+        var filePath = Path.Combine(
+            GetAudioRecordPath(audioRecord),
+            AudioRecordFile);
+        
+        var directoryName = Path.GetDirectoryName(filePath)!;
+        if (!Directory.Exists(directoryName))
+            Directory.CreateDirectory(directoryName);
+        
+        await using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+        await JsonSerializer.SerializeAsync(stream, audioRecord, JsonEnvironments.Options);
+    }
+
     public async Task<IEnumerable<AudioRecord>> LoadAsync()
     {
         var directories = Directory.GetDirectories(RootDirectory);
@@ -83,8 +105,25 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
 
     private async Task<AudioRecord> LoadAsync(string file)
     {
-        await using var stream = new FileStream(file, FileMode.Open, FileAccess.Read);
-        return await JsonSerializer.DeserializeAsync<AudioRecord>(stream, JsonEnvironments.Options);
+        await using var stream = OpenStream(file);
+        return (await JsonSerializer.DeserializeAsync<AudioRecord>(stream, JsonEnvironments.Options))!;
+    }
+
+    private static FileStream OpenStream(string path)
+    {
+        // 書き込み中に読み込みが発生する可能性があるため、リトライを行う。
+        while (true)
+        {
+            try
+            {
+                return new FileStream(path, FileMode.Open, FileAccess.Read);
+            }
+            catch (IOException)
+            {
+                // 書き込みの完了を待機する。
+                Thread.Sleep(TimeSpan.FromMilliseconds(100));
+            }
+        }
     }
 
     public void Dispose()
