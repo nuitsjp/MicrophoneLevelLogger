@@ -33,6 +33,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     [ObservableProperty] private DeviceViewModel? _playbackDevice;
     [ObservableProperty] private DeviceViewModel? _recordDevice;
     [ObservableProperty] private Direction _selectedDirection = Direction.Front;
+    [ObservableProperty] private int _recordingSpan;
     
     private readonly DispatcherTimer _recordTimer = new DispatcherTimer();
     
@@ -64,10 +65,21 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .Skip(1)
             .Subscribe(OnChangedRecorderHost)
             .AddTo(_compositeDisposable);
+        this.ObserveProperty(x => x.RecordingSpan)
+            .Skip(1)
+            .Subscribe(OnRecordingSpan)
+            .AddTo(_compositeDisposable);
         _recordTimer.Tick += (sender, args) =>
         {
             Record = false;
         };
+    }
+
+    private async void OnRecordingSpan(int recordingSpan)
+    {
+        var settings = await _settingsRepository.LoadAsync();
+        await _settingsRepository.SaveAsync(
+            settings with { RecordingSpan = TimeSpan.FromSeconds(recordingSpan)});
     }
 
     public Direction[] Directions { get; } = new[] { Direction.Front, Direction.Rear, Direction.Left, Direction.Right };
@@ -194,7 +206,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                 RecordingConfig.WaveFormat);
         _audioRecorder.Start();
         
-        _recordTimer.Interval = TimeSpan.FromSeconds(30);
+        _recordTimer.Interval = TimeSpan.FromSeconds(RecordingSpan);
         _recordTimer.Start();
     }
 
@@ -213,6 +225,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     {
         var settings = await _settingsRepository.LoadAsync();
         RecorderHost = settings.RecorderHost;
+        RecordingSpan = (int)settings.RecordingSpan.TotalSeconds;
         var audioInterface = _audioInterfaceProvider.Resolve();
         audioInterface.Devices
             .CollectionChangedAsObservable()

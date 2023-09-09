@@ -24,10 +24,11 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <TextBlock Text="Record Device"/>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10, 10, 10, 0">
+            <TextBlock Text="Record Device" />
             <ComboBox ItemsSource="{Binding CaptureDevices}"
                       SelectedItem="{Binding RecordDevice, Mode=TwoWay}"
                       DisplayMemberPath="Name"
@@ -40,9 +41,10 @@
                 Content="{materialDesign:PackIcon Kind=Record}"
                 IsChecked="{Binding Record}"
                 Style="{StaticResource DefaultToggleButton}"
-                ToolTip="録音"
-                Margin="5, 5, 10, 5"/>
+                ToolTip="録音"/>
 
+            <Rectangle Width="20" />
+            
             <TextBlock Text="With Playback"/>
             <CheckBox IsChecked="{Binding WithPlayback, Mode=TwoWay}" 
                       VerticalAlignment="Center" 
@@ -52,21 +54,22 @@
                       SelectedItem="{Binding PlaybackDevice, Mode=TwoWay}"
                       DisplayMemberPath="Name"
                       Width="200"/>
-            <ToggleButton
-                Content="{materialDesign:PackIcon Kind=Play}"
-                IsChecked="{Binding Playback}"
-                Style="{StaticResource DefaultToggleButton}"
-                ToolTip="再生" 
-                Margin="10, 10, 30, 10"/>
-
+            <ToggleButton Content="{materialDesign:PackIcon Kind=Play}"
+                          IsChecked="{Binding Playback}"
+                          Style="{StaticResource DefaultToggleButton}"
+                          ToolTip="再生"/>
+            
+            <Rectangle Width="20" />
+            
+            <TextBlock Text="Recording Span"/>
+            <TextBox Text="{Binding RecordingSpan, Mode=TwoWay}" Width="50"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10, 0, 10, 0">
             <TextBlock Text="Connect Host Address"/>
             <TextBox Text="{Binding RecorderHost}"
                      Width="150"/>
-
-            <TextBlock Text="{Binding RecordName}" Width="150"
-                       VerticalAlignment="Center"/>
         </StackPanel>
-        <DataGrid Grid.Row="1" 
+        <DataGrid Grid.Row="2" 
                   ItemsSource="{Binding Devices}" 
                   AutoGenerateColumns="False"
                   Height="300"
@@ -97,7 +100,7 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <scottPlot:WpfPlot Grid.Row="2" x:Name="WpfPlot1" >
+        <scottPlot:WpfPlot Grid.Row="3" x:Name="WpfPlot1" >
 
         </scottPlot:WpfPlot>
     </Grid>

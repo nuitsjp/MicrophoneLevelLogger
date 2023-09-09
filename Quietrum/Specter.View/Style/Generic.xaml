@@ -69,7 +69,6 @@
 
     <!-- StackPanel -->
     <Style TargetType="StackPanel">
-        <Setter Property="Margin" Value="10" />
     </Style>
 
     <!-- Button -->
@@ -86,6 +85,6 @@
     <Style x:Key="DefaultToggleButton" 
            TargetType="ToggleButton"
            BasedOn="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
-        <Setter Property="Margin" Value="5" />
+        <Setter Property="Margin" Value="5, 0" />
     </Style>
 </ResourceDictionary>
