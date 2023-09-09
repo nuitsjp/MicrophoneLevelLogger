@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Kamishibai;
 using NAudio.CoreAudioApi;
@@ -33,6 +34,8 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     [ObservableProperty] private DeviceViewModel? _recordDevice;
     [ObservableProperty] private Direction _selectedDirection = Direction.Front;
     
+    private readonly DispatcherTimer _recordTimer = new DispatcherTimer();
+    
     public MonitoringPageViewModel(
         [Inject] IAudioInterfaceProvider audioInterfaceProvider, 
         [Inject] IAudioRecorderProvider audioRecorderProvider, 
@@ -61,6 +64,10 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .Skip(1)
             .Subscribe(OnChangedRecorderHost)
             .AddTo(_compositeDisposable);
+        _recordTimer.Tick += (sender, args) =>
+        {
+            Record = false;
+        };
     }
 
     public Direction[] Directions { get; } = new[] { Direction.Front, Direction.Rear, Direction.Left, Direction.Right };
@@ -162,7 +169,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         
     }
 
-
     private void OnRecord(bool record)
     {
         if (record)
@@ -187,11 +193,17 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                     .Select(x => x.Device),
                 RecordingConfig.WaveFormat);
         _audioRecorder.Start();
+        
+        _recordTimer.Interval = TimeSpan.FromSeconds(30);
+        _recordTimer.Start();
     }
 
     private async void StopRecording()
     {
         if(_audioRecorder is null) return;
+
+        if (_recordTimer.IsEnabled)
+            _recordTimer.Stop();
         
         await _audioRecorder.StopAsync();
         _audioRecorder = null;
