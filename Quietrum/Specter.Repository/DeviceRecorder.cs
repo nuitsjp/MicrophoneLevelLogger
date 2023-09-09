@@ -48,17 +48,32 @@ public class DeviceRecorder : IDeviceRecorder
     public DeviceRecord Stop()
     {
         OnCompleted();
-        return new(
-            _device.Id,
-            _device.Name,
-            _device.SystemName,
-            _decibels.Min(),
-            new Decibel(_decibels.Average(x => x.AsPrimitive())),
-            _decibels.Max(),
-            (double)_decibels.Count(x => -30d < x.AsPrimitive()) / _decibels.Count,
-            (double)_decibels.Count(x => -40d < x.AsPrimitive()) / _decibels.Count,
-            (double)_decibels.Count(x => -50d < x.AsPrimitive()) / _decibels.Count
-        );
+        if (_decibels.Any())
+        {
+            return new(
+                _device.Id,
+                _device.Name,
+                _device.SystemName,
+                _decibels.Min(),
+                new Decibel(_decibels.Average(x => x.AsPrimitive())),
+                _decibels.Max(),
+                (double)_decibels.Count(x => -30d < x.AsPrimitive()) / _decibels.Count,
+                (double)_decibels.Count(x => -40d < x.AsPrimitive()) / _decibels.Count,
+                (double)_decibels.Count(x => -50d < x.AsPrimitive()) / _decibels.Count);
+        }
+        else
+        {
+            return new(
+                _device.Id,
+                _device.Name,
+                _device.SystemName,
+                Decibel.Minimum,
+                Decibel.Minimum,
+                Decibel.Minimum,
+                0,
+                0,
+                0);
+        }
     }
     
     private void OnCompleted()

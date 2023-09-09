@@ -61,6 +61,9 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
 
     public async Task<IEnumerable<AudioRecord>> LoadAsync()
     {
+        if (Directory.Exists(RootDirectory) is false)
+            Directory.CreateDirectory(RootDirectory);
+        
         var directories = Directory.GetDirectories(RootDirectory);
 
         List<AudioRecord> records = new();
