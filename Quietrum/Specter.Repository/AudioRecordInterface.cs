@@ -92,7 +92,7 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         }
     }
 
-    public static string GetAudioRecordPath(AudioRecord audioRecord)
+    private static string GetAudioRecordPath(AudioRecord audioRecord)
     {
         var targetDevice = audioRecord.DeviceRecords.Single(x => x.Id == audioRecord.TargetDeviceId);
         return Path.Combine(
