@@ -37,18 +37,45 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         Activated = true;
     }
 
-    public IAudioRecorder BeginRecording(
+    public IAudioRecording BeginRecording(
         IDevice targetDevice,
         Direction direction,
         IEnumerable<IDevice> monitoringDevices,
         WaveFormat waveFormat)
     {
-        return new AudioRecorder(
-            targetDevice,
-            direction,
-            monitoringDevices,
-            waveFormat,
-            this);
+        var startDateTime = DateTime.Now;
+        var directoryInfo = new DirectoryInfo(Path.Combine(RootDirectory,
+            $"{startDateTime:yyyy.MM.dd-HH.mm.ss}_{targetDevice.Name}_{direction}"));
+        directoryInfo.Create();
+
+        var deviceRecorders = monitoringDevices
+            .Select(x => new DeviceRecorder(directoryInfo, x, waveFormat))
+            .Cast<IDeviceRecorder>()
+            .ToList();
+        deviceRecorders.ForEach(x => x.Start());
+        
+
+        var audioRecorder = new AudioRecording();
+
+        audioRecorder.EndRecordingCommand.Subscribe(async () =>
+        {
+            List<DeviceRecord> deviceRecords = new();
+            foreach (var deviceRecorder in deviceRecorders)
+            {
+                deviceRecords.Add(deviceRecorder.Stop());
+            }
+
+            var audioRecord = new AudioRecord(
+                targetDevice.Id,
+                direction,
+                startDateTime,
+                DateTime.Now,
+                deviceRecords.ToArray());
+
+            await SaveAsync(audioRecord);
+        });
+        
+        return audioRecorder;
     }
 
     public static string GetAudioRecordPath(AudioRecord audioRecord)
@@ -105,67 +132,13 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         _compositeDisposable.Dispose();
     }
 
-    private class AudioRecorder : IAudioRecorder
+    private class AudioRecording : IAudioRecording
     {
-        private static readonly DirectoryInfo RootDirectory = new("Record");
+        public AsyncReactiveCommand EndRecordingCommand { get; } = new();
 
-        private DirectoryInfo? _directoryInfo;
-        private readonly IDevice _targetDevice;
-        private readonly Direction _direction;
-        private readonly List<IDevice> _monitoringDevices;
-        private readonly List<IDeviceRecorder> _deviceRecorders = new();
-        private readonly WaveFormat _waveFormat;
-        private readonly IAudioRecordInterface _audioRecordInterface;
-
-        private DateTime _startDateTime;
-
-        public AudioRecorder(
-            IDevice targetDevice,
-            Direction direction,
-            IEnumerable<IDevice> monitoringDevices,
-            WaveFormat waveFormat,
-            IAudioRecordInterface audioRecordInterface)
+        public async Task EndRecordingAsync()
         {
-            _targetDevice = targetDevice;
-            _monitoringDevices = monitoringDevices.ToList();
-            _direction = direction;
-            _waveFormat = waveFormat;
-            _audioRecordInterface = audioRecordInterface;
-        }
-
-        public void Start()
-        {
-            _startDateTime = DateTime.Now;
-            _directoryInfo = new DirectoryInfo(Path.Combine(RootDirectory.FullName,
-                $"{DateTime.Now:yyyy.MM.dd-HH.mm.ss}_{_targetDevice.Name}_{_direction}"));
-            _directoryInfo.Create();
-            _deviceRecorders.AddRange(
-                _monitoringDevices
-                    .Select(x => new DeviceRecorder(_directoryInfo, x, _waveFormat)));
-            foreach (var deviceRecorder in _deviceRecorders)
-            {
-                deviceRecorder.Start();
-            }
-        }
-
-        public async Task<AudioRecord> StopAsync()
-        {
-            List<DeviceRecord> deviceRecords = new();
-            foreach (var deviceRecorder in _deviceRecorders)
-            {
-                deviceRecords.Add(deviceRecorder.Stop());
-            }
-
-            var audioRecord = new AudioRecord(
-                _targetDevice.Id,
-                _direction,
-                _startDateTime,
-                DateTime.Now,
-                deviceRecords.ToArray());
-
-            await _audioRecordInterface.SaveAsync(audioRecord);
-
-            return audioRecord;
+            await EndRecordingCommand.ExecuteAsync();
         }
     }
 }
