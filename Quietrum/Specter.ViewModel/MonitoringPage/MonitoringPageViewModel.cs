@@ -193,10 +193,10 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         }
     }
 
-    private IAudioRecorder? _audioRecorder;
+    private IAudioRecording? _audioRecording;
     private void StartRecording()
     {
-        _audioRecorder = _audioRecordInterface
+        _audioRecording = _audioRecordInterface
             .BeginRecording(
                 RecordDevice!.Device,
                 SelectedDirection,
@@ -204,7 +204,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                     .Where(x => x.Measure)
                     .Select(x => x.Device),
                 RecordingConfig.WaveFormat);
-        _audioRecorder.Start();
         
         _recordTimer.Interval = TimeSpan.FromSeconds(RecordingSpan);
         _recordTimer.Start();
@@ -212,13 +211,13 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
 
     private async void StopRecording()
     {
-        if(_audioRecorder is null) return;
+        if(_audioRecording is null) return;
 
         if (_recordTimer.IsEnabled)
             _recordTimer.Stop();
         
-        await _audioRecorder.StopAsync();
-        _audioRecorder = null;
+        await _audioRecording.EndRecordingAsync();
+        _audioRecording = null;
     }
 
     public async Task OnNavigatedAsync(PostForwardEventArgs args)

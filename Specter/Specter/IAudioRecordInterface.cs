@@ -9,7 +9,7 @@ public interface IAudioRecordInterface
     Task ActivateAsync();
     ReadOnlyReactiveCollection<AudioRecord> AudioRecords { get; } 
     
-    IAudioRecorder BeginRecording(
+    IAudioRecording BeginRecording(
         IDevice targetDevice, 
         Direction direction, 
         IEnumerable<IDevice> monitoringDevices,

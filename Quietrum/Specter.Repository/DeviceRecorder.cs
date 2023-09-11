@@ -4,7 +4,7 @@ using Reactive.Bindings.Extensions;
 
 namespace Specter.Repository;
 
-public class DeviceRecorder : IDeviceRecorder
+public class DeviceRecorder
 {
     private readonly CompositeDisposable _compositeDisposable = new();
     private readonly IDevice _device;

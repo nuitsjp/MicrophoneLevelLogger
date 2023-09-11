@@ -50,7 +50,6 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
 
         var deviceRecorders = monitoringDevices
             .Select(x => new DeviceRecorder(directoryInfo, x, waveFormat))
-            .Cast<IDeviceRecorder>()
             .ToList();
         deviceRecorders.ForEach(x => x.Start());
         
