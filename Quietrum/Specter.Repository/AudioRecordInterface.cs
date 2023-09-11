@@ -51,15 +51,13 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         var deviceRecorders = monitoringDevices
             .Select(device =>
             {
-                var waveWriter = 
-                    new WaveWriter(directoryInfo.FullName, device, waveFormat)
-                        .AddTo(_compositeDisposable);
+                var waveFile = Path.Combine(directoryInfo.FullName, $"{device.Name}.wav");
+                var inputLevelFile = File.Create(Path.Combine(directoryInfo.FullName, $"{device.Name}.ilv"));
 
-                var inputLevelWriter =
-                    new BinaryWriter(File.Create(Path.Combine(directoryInfo.FullName, $"{device.Name}.ilv")))
-                        .AddTo(_compositeDisposable);
-
-                return new DeviceRecorder(device, waveWriter, inputLevelWriter);
+                return new DeviceRecorder(
+                    device, 
+                    new WaveFileWriter(waveFile, waveFormat), 
+                    new BinaryWriter(inputLevelFile));
             })
             .ToList();
         deviceRecorders.ForEach(x => x.Start());

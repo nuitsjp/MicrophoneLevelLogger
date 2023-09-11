@@ -8,10 +8,10 @@ public class DeviceRecorder
 {
     private readonly CompositeDisposable _compositeDisposable = new();
     private readonly IDevice _device;
-    private readonly IWaveWriter _waveWriter;
+    private readonly WaveFileWriter _waveWriter;
     private readonly BinaryWriter _inputLevelWriter;
     private readonly List<Decibel> _decibels = new();
-    public DeviceRecorder(IDevice device, IWaveWriter waveWriter, BinaryWriter inputLevelWriter)
+    public DeviceRecorder(IDevice device, WaveFileWriter waveWriter, BinaryWriter inputLevelWriter)
     {
         _device = device;
         _waveWriter = waveWriter;
