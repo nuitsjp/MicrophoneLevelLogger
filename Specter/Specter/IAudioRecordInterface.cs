@@ -1,4 +1,5 @@
-﻿using Reactive.Bindings;
+﻿using NAudio.Wave;
+using Reactive.Bindings;
 
 namespace Specter;
 
@@ -8,6 +9,12 @@ public interface IAudioRecordInterface
     Task ActivateAsync();
     ReadOnlyReactiveCollection<AudioRecord> AudioRecords { get; } 
     
+    IAudioRecorder BeginRecording(
+        IDevice targetDevice, 
+        Direction direction, 
+        IEnumerable<IDevice> monitoringDevices,
+        WaveFormat waveFormat);
+
     Task SaveAsync(AudioRecord audioRecord);
     Task<IEnumerable<AudioRecord>> LoadAsync();
 }

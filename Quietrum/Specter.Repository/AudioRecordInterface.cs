@@ -1,5 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using System.Text.Json;
+using NAudio.Wave;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
@@ -34,6 +35,20 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         }
         
         Activated = true;
+    }
+
+    public IAudioRecorder BeginRecording(
+        IDevice targetDevice, 
+        Direction direction, 
+        IEnumerable<IDevice> monitoringDevices,
+        WaveFormat waveFormat)
+    {
+        return new AudioRecorder(
+            targetDevice,
+            direction,
+            monitoringDevices,
+            waveFormat,
+            this);
     }
 
     public static string GetAudioRecordPath(AudioRecord audioRecord)

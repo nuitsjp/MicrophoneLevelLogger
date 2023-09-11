@@ -18,7 +18,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     public RecordingConfig RecordingConfig { get; } = RecordingConfig.Default;
 
     private readonly IAudioInterfaceProvider _audioInterfaceProvider;
-    private readonly IAudioRecorderProvider _audioRecorderProvider;
+    private readonly IAudioRecordInterface _audioRecordInterface;
     private readonly ISettingsRepository _settingsRepository;
     
     [ObservableProperty] private bool _record;
@@ -39,11 +39,11 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     
     public MonitoringPageViewModel(
         [Inject] IAudioInterfaceProvider audioInterfaceProvider, 
-        [Inject] IAudioRecorderProvider audioRecorderProvider, 
+        [Inject] IAudioRecordInterface audioRecordInterface, 
         [Inject] ISettingsRepository settingsRepository)
     {
         _audioInterfaceProvider = audioInterfaceProvider;
-        _audioRecorderProvider = audioRecorderProvider;
+        _audioRecordInterface = audioRecordInterface;
         _settingsRepository = settingsRepository;
         this.ObserveProperty(x => x.Record)
             .Skip(1)
@@ -196,8 +196,8 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     private IAudioRecorder? _audioRecorder;
     private void StartRecording()
     {
-        _audioRecorder = _audioRecorderProvider
-            .Resolve(
+        _audioRecorder = _audioRecordInterface
+            .BeginRecording(
                 RecordDevice!.Device,
                 SelectedDirection,
                 Devices

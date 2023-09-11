@@ -8,7 +8,7 @@ public class DeviceRecorder : IDeviceRecorder
 {
     private readonly CompositeDisposable _compositeDisposable = new();
     private readonly IDevice _device;
-    private readonly WaveWriter _waveWriter;
+    private readonly IWaveWriter _waveWriter;
     private readonly IDecibelsWriter _inputLevelWriter;
     private readonly List<Decibel> _decibels = new();
     public DeviceRecorder(
