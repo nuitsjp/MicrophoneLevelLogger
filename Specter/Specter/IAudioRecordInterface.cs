@@ -14,7 +14,4 @@ public interface IAudioRecordInterface
         Direction direction, 
         IEnumerable<IDevice> monitoringDevices,
         WaveFormat waveFormat);
-
-    Task SaveAsync(AudioRecord audioRecord);
-    Task<IEnumerable<AudioRecord>> LoadAsync();
 }
