@@ -9,9 +9,9 @@ public class DeviceRecorder
     private readonly CompositeDisposable _compositeDisposable = new();
     private readonly IDevice _device;
     private readonly IWaveWriter _waveWriter;
-    private readonly IDecibelsWriter _inputLevelWriter;
+    private readonly BinaryWriter _inputLevelWriter;
     private readonly List<Decibel> _decibels = new();
-    public DeviceRecorder(IDevice device, IWaveWriter waveWriter, IDecibelsWriter inputLevelWriter)
+    public DeviceRecorder(IDevice device, IWaveWriter waveWriter, BinaryWriter inputLevelWriter)
     {
         _device = device;
         _waveWriter = waveWriter;
@@ -28,7 +28,7 @@ public class DeviceRecorder
         _device.InputLevel
             .Subscribe(x =>
             {
-                _inputLevelWriter.Write(x);
+                _inputLevelWriter.Write(x.AsPrimitive());
                 _decibels.Add(x);
             })
             .AddTo(_compositeDisposable);

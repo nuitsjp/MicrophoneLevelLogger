@@ -56,7 +56,7 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
                         .AddTo(_compositeDisposable);
 
                 var inputLevelWriter =
-                    new DecibelsWriter(File.Create(Path.Combine(directoryInfo.FullName, $"{device.Name}.ilv")))
+                    new BinaryWriter(File.Create(Path.Combine(directoryInfo.FullName, $"{device.Name}.ilv")))
                         .AddTo(_compositeDisposable);
 
                 return new DeviceRecorder(device, waveWriter, inputLevelWriter);
