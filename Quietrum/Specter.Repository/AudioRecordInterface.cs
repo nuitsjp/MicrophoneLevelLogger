@@ -49,7 +49,18 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         directoryInfo.Create();
 
         var deviceRecorders = monitoringDevices
-            .Select(x => new DeviceRecorder(directoryInfo, x, waveFormat))
+            .Select(device =>
+            {
+                var waveWriter = 
+                    new WaveWriter(directoryInfo.FullName, device, waveFormat)
+                        .AddTo(_compositeDisposable);
+
+                var inputLevelWriter =
+                    new DecibelsWriter(File.Create(Path.Combine(directoryInfo.FullName, $"{device.Name}.ilv")))
+                        .AddTo(_compositeDisposable);
+
+                return new DeviceRecorder(device, waveWriter, inputLevelWriter);
+            })
             .ToList();
         deviceRecorders.ForEach(x => x.Start());
         

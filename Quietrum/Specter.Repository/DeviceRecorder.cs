@@ -11,22 +11,11 @@ public class DeviceRecorder
     private readonly IWaveWriter _waveWriter;
     private readonly IDecibelsWriter _inputLevelWriter;
     private readonly List<Decibel> _decibels = new();
-    public DeviceRecorder(
-        DirectoryInfo parent,
-        IDevice device, 
-        WaveFormat waveFormat)
+    public DeviceRecorder(IDevice device, IWaveWriter waveWriter, IDecibelsWriter inputLevelWriter)
     {
         _device = device;
-        
-        FileInfo _waveFile = new(Path.Combine(parent.FullName, $"{device.Name}.wav"));
-        _waveWriter = 
-            new WaveWriter(parent.FullName, device, waveFormat)
-                .AddTo(_compositeDisposable);
-
-        FileInfo _inputLevelFile = new(Path.Combine(parent.FullName, $"{device.Name}.ilv"));
-        _inputLevelWriter =
-            new DecibelsWriter(File.Create(_inputLevelFile.FullName))
-                .AddTo(_compositeDisposable);
+        _waveWriter = waveWriter;
+        _inputLevelWriter = inputLevelWriter;
     }
 
     public void Start()
