@@ -33,7 +33,12 @@ public partial class AnalysisPage : UserControl
             int maximumLength = 0;
             foreach (var analysisDevice in ViewModel.AnalysisDevices)
             {
-                var signal = analysisDevice.GetInputLevels().Select(x => x.AsPrimitive()).ToArray();
+                var signal = ViewModel
+                    .ReadInputLevels(
+                        analysisDevice.AudioRecord,
+                        analysisDevice.DeviceRecord)
+                    .Select(x => x.AsPrimitive())
+                    .ToArray();
                 maximumLength = Math.Max(maximumLength, signal.Length);
                 WpfPlot1.Plot.AddSignal(
                     signal, 

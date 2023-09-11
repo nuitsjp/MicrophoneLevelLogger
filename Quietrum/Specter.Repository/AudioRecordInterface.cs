@@ -77,6 +77,21 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         return audioRecorder;
     }
 
+    public IEnumerable<Decibel> ReadInputLevels(
+        AudioRecord audioRecord,
+        DeviceRecord deviceRecord)
+    {
+        var file = Path.Combine(
+            GetAudioRecordPath(audioRecord),
+            $"{deviceRecord.Name}.ilv");
+
+        var reader = new BinaryReader(File.OpenRead(file));
+        while (reader.BaseStream.Position < reader.BaseStream.Length)
+        {
+            yield return new Decibel(reader.ReadDouble());
+        }
+    }
+
     public static string GetAudioRecordPath(AudioRecord audioRecord)
     {
         var targetDevice = audioRecord.DeviceRecords.Single(x => x.Id == audioRecord.TargetDeviceId);

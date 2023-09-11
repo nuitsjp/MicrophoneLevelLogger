@@ -14,4 +14,8 @@ public interface IAudioRecordInterface
         Direction direction, 
         IEnumerable<IDevice> monitoringDevices,
         WaveFormat waveFormat);
+
+    IEnumerable<Decibel> ReadInputLevels(
+        AudioRecord audioRecord,
+        DeviceRecord deviceRecord);
 }

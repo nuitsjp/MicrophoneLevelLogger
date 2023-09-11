@@ -2,15 +2,12 @@
 
 public class AnalysisDeviceViewModel
 {
-    private readonly IDecibelsReaderProvider _decibelsReaderProvider;
     public AnalysisDeviceViewModel(
         AudioRecordViewModel audioRecord, 
-        DeviceRecordViewModel deviceRecord, 
-        IDecibelsReaderProvider decibelsReaderProvider)
+        DeviceRecordViewModel deviceRecord)
     {
         AudioRecord = audioRecord;
         DeviceRecord = deviceRecord;
-        _decibelsReaderProvider = decibelsReaderProvider;
     }
     public AudioRecordViewModel AudioRecord { get; }
     public DeviceRecordViewModel DeviceRecord { get; }
@@ -28,13 +25,5 @@ public class AnalysisDeviceViewModel
     {
         get => DeviceRecord.Analysis;
         set => DeviceRecord.Analysis = value;
-    }
-
-    public IEnumerable<Decibel> GetInputLevels()
-    {
-        var reader = _decibelsReaderProvider.Provide(
-            AudioRecord.AudioRecord,
-            DeviceRecord.DeviceRecord);
-        return reader.Read();
     }
 }

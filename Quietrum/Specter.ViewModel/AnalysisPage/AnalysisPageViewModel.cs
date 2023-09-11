@@ -10,17 +10,14 @@ namespace Specter.ViewModel.AnalysisPage;
 
 public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer
 {
-    private readonly IDecibelsReaderProvider _decibelsReaderProvider;
     private readonly IAudioRecordInterface _audioRecordInterface;
     private readonly ReactiveCollection<AudioRecordViewModel> _audioRecords = new();
 
     [ObservableProperty] private AudioRecordViewModel _selectedAudioRecord;
 
     public AnalysisPageViewModel(
-        IDecibelsReaderProvider decibelsReaderProvider, 
         IAudioRecordInterface audioRecordInterface)
     {
-        _decibelsReaderProvider = decibelsReaderProvider;
         _audioRecordInterface = audioRecordInterface;
         AudioRecords = _audioRecords.ToReadOnlyReactiveCollection();
     }
@@ -72,15 +69,20 @@ public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer
         {
             var audioRecord =
                 AudioRecords.Single(x => x.Devices.Contains(deviceRecord));
-            AnalysisDevices.Add(
-                new AnalysisDeviceViewModel(
-                    audioRecord, 
-                    deviceRecord,
-                    _decibelsReaderProvider));
+            AnalysisDevices.Add(new AnalysisDeviceViewModel(audioRecord, deviceRecord));
         }
         else
         {
             AnalysisDevices.Remove(x => x.DeviceRecord == deviceRecord);
         }
+    }
+
+    public IEnumerable<Decibel> ReadInputLevels(
+        AudioRecordViewModel audioRecord,
+        DeviceRecordViewModel deviceRecord)
+    {
+        return _audioRecordInterface.ReadInputLevels(
+            audioRecord.AudioRecord, 
+            deviceRecord.DeviceRecord);
     }
 }
