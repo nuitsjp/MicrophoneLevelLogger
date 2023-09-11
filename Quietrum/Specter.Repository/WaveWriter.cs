@@ -2,7 +2,7 @@
 
 namespace Specter.Repository;
 
-public class WaveWriter : IDisposable
+public class WaveWriter : IWaveWriter
 {
     private readonly WaveFileWriter _waveFileWriter;
 
