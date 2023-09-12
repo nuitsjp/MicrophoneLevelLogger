@@ -17,4 +17,6 @@ public interface IAudioRecordInterface
     IEnumerable<Decibel> ReadInputLevels(
         AudioRecord audioRecord,
         DeviceRecord deviceRecord);
+
+    void DeleteAudioRecord(AudioRecord audioRecord);
 }

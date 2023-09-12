@@ -10,16 +10,21 @@ using Reactive.Bindings.Extensions;
 namespace Specter.ViewModel.AnalysisPage;
 
 [Navigate]
-public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer
+public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer, INavigatedAware
 {
+    private readonly IPresentationService _presentationService;
     private readonly IAudioRecordInterface _audioRecordInterface;
     private readonly ReactiveCollection<AudioRecordViewModel> _audioRecords = new();
 
-    [ObservableProperty] private AudioRecordViewModel _selectedAudioRecord;
+    [ObservableProperty] 
+    [NotifyCanExecuteChangedFor(nameof(DeleteRecordCommand))]
+    private AudioRecordViewModel _selectedAudioRecord;
 
     public AnalysisPageViewModel(
+        [Inject] IPresentationService presentationService,
         [Inject] IAudioRecordInterface audioRecordInterface)
     {
+        _presentationService = presentationService;
         _audioRecordInterface = audioRecordInterface;
         AudioRecords = _audioRecords.ToReadOnlyReactiveCollection();
     }
@@ -27,8 +32,7 @@ public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer
     public ObservableCollection<AnalysisDeviceViewModel> AnalysisDevices { get; } = new(); 
     public ReadOnlyReactiveCollection<AudioRecordViewModel> AudioRecords { get; }
 
-    [RelayCommand]
-    private async Task ActivateAsync()
+    public void OnNavigated(PostForwardEventArgs args)
     {
         foreach (var audioRecord in _audioRecordInterface.AudioRecords)
         {
@@ -62,6 +66,21 @@ public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer
                 }
             });
     }
+
+    [RelayCommand(CanExecute = nameof(CanDeleteRecord))]
+    private void DeleteRecord(AudioRecordViewModel? audioRecord)
+    {
+        var result = _presentationService.ShowMessage(
+            "記録を削除します。よろしいですか？",
+            button: MessageBoxButton.YesNo);
+        if (result == MessageBoxResult.Yes)
+        {
+            _audioRecordInterface.DeleteAudioRecord(audioRecord.AudioRecord);
+        }
+    }
+
+    private bool CanDeleteRecord(AudioRecordViewModel? audioRecord)
+        => audioRecord is not null;
 
     public void UpdateTarget(DeviceRecordViewModel deviceRecord)
     {

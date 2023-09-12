@@ -104,6 +104,12 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         }
     }
 
+    public void DeleteAudioRecord(AudioRecord audioRecord)
+    {
+        Directory.Delete(GetAudioRecordPath(audioRecord), true);
+        _audioRecords.Remove(audioRecord);
+    }
+
     private static string GetAudioRecordPath(AudioRecord audioRecord)
     {
         var targetDevice = audioRecord.DeviceRecords.Single(x => x.Id == audioRecord.TargetDeviceId);

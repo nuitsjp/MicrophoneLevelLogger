@@ -80,6 +80,11 @@
     </Style>
     <Style TargetType="Button" 
            BasedOn="{StaticResource ButtonBase}" />
+    <Style x:Key="AccentButton"
+           TargetType="Button" 
+           BasedOn="{StaticResource MaterialDesignFloatingActionMiniAccentButton}">
+        <Setter Property="Margin" Value="5" />
+    </Style>
 
     <!-- ToggleButton -->
     <Style x:Key="DefaultToggleButton" 
