@@ -16,7 +16,6 @@
              TextOptions.TextRenderingMode="Auto"        
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             GotFocus="AnalysisPage_OnGotFocus"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type analysisPage:AnalysisPageViewModel}, IsDesignTimeCreatable=True}"
              d:DesignHeight="1024" d:DesignWidth="1280">

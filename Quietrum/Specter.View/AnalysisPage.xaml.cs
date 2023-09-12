@@ -47,13 +47,6 @@ public partial class AnalysisPage : UserControl
                     
             WpfPlot1.Plot.AxisAutoX(margin: 0);
 
-            // RecordingConfig config = ViewModel.RecordingConfig;
-            // // データの全長から、デフォルトの表示幅分を引いた値をデフォルトのx軸の最小値とする
-            // var xMin =
-            //     // データの全長
-            //     config.RecordingLength
-            //     // 表示時間を表示間隔で割ることで、表示幅を計算する
-            //     - (int)(DisplayWidth / ViewModel.RecordingConfig.RefreshRate.Interval);
             WpfPlot1.Plot.SetAxisLimits(
                 xMin: 0, xMax: maximumLength,
                 yMin: -90, yMax: 0);
@@ -64,9 +57,5 @@ public partial class AnalysisPage : UserControl
             WpfPlot1.Plot.Legend(location:Alignment.UpperLeft);
             WpfPlot1.Refresh();
         });
-    }
-
-    private void AnalysisPage_OnGotFocus(object sender, RoutedEventArgs e)
-    {
     }
 }
