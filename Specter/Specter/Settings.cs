@@ -8,6 +8,8 @@ public record Settings(
     TimeSpan RecordingSpan,
     DeviceId? RecordDeviceId,
     DeviceId? PlaybackDeviceId, 
+    bool EnableAWeighting,
+    bool EnableFastTimeWeighting,
     IReadOnlyList<DeviceConfig> DeviceConfigs)
 {
     public bool TryGetMicrophoneConfig(DeviceId id, out DeviceConfig deviceConfig)

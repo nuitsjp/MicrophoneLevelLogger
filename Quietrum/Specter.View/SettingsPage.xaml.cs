@@ -2,7 +2,7 @@
 
 namespace Specter.View;
 
-public partial class SettingsPage : UserControl
+public partial class SettingsPage
 {
     public SettingsPage()
     {

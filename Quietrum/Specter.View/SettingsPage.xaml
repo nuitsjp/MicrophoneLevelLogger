@@ -3,10 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Specter.View"
+             xmlns:viewModel="clr-namespace:Specter.ViewModel;assembly=Specter.ViewModel"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Text="Hello, Settings."/>
+             d:DataContext="{d:DesignInstance {x:Type viewModel:SettingsPageViewModel}, IsDesignTimeCreatable=True}"
+             d:DesignHeight="1024" d:DesignWidth="1280">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Enable A Weighting"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" Text=":"/>
+        <CheckBox Grid.Row="0" Grid.Column="2" IsChecked="{Binding EnableAWeighting, Mode=TwoWay}"/>
+        
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Enable Fast Time Weighting"/>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text=":"/>
+        <CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding EnableFastTimeWeighting, Mode=TwoWay}"/>
     </Grid>
 </UserControl>

@@ -1,4 +1,7 @@
-﻿using FftSharp.Windows;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Runtime.CompilerServices;
+using FftSharp.Windows;
 using NAudio.Wave;
 
 namespace Specter;
@@ -22,27 +25,71 @@ namespace Specter;
 /// したがって、あなたのケースでは、FFT長として512または1024を推奨します。
 /// ただし、これらの値は初期の推定値であり、実際のパフォーマンスと要件に基づいて調整することができます。
 /// </summary>
-public class FastFourierTransform
+public class FastFourierTransform : IDisposable
 {
     private static readonly Hanning Hanning = new();
 
+    private readonly CompositeDisposable _compositeDisposable = new();
     private readonly double _sampleRate;
+    private readonly IFastTimeWeighting _fastTimeWeighting;
+    private readonly IAWeighting _aWeighting;
+    private IFastTimeWeighting _applyFastTimeWeighting;
+    private IAWeighting _applyAWeighting;
 
     public FastFourierTransform(WaveFormat waveFormat)
     {
         _sampleRate = waveFormat.SampleRate;
+        _fastTimeWeighting = new FastTimeWeighting(waveFormat);
+        _applyFastTimeWeighting =_fastTimeWeighting;
+        _aWeighting = new AWeighting();
+        _applyAWeighting = _aWeighting;
+
+        FastFourierTransformSettings
+            .EnableFastTimeWeighting
+            .Subscribe(enable =>
+                _applyFastTimeWeighting = enable
+                        ? _fastTimeWeighting
+                        : NullFastTimeWeighting.Instance);
+        FastFourierTransformSettings
+            .EnableAWeighting
+            .Subscribe(enable =>
+                _applyAWeighting = enable
+                    ? _aWeighting
+                    : NullAWeighting.Instance);
     }
 
     public double[] Transform(double[] signal)
     {
+        signal = _applyFastTimeWeighting.Filter(signal);
+        
         // Shape the signal using a Hanning window
         Hanning.ApplyInPlace(signal);
 
         // Calculate the FFT as an array of complex numbers
         System.Numerics.Complex[] spectrum = FftSharp.FFT.Forward(signal);
         var power  = FftSharp.FFT.Power(spectrum);
-        double[] freq = FftSharp.FFT.FrequencyScale(power.Length, _sampleRate);
+        var freq = FftSharp.FFT.FrequencyScale(power.Length, _sampleRate);
 
-        return AWeighting.Filter(power, freq);
+        return _applyAWeighting.Filter(power, freq);
+    }
+
+    private class NullFastTimeWeighting : IFastTimeWeighting
+    {
+        public static readonly IFastTimeWeighting Instance = new NullFastTimeWeighting(); 
+        public double[] Filter(double[] input) => input;
+    }
+
+    private class NullAWeighting : IAWeighting
+    {
+        public static readonly IAWeighting Instance = new NullAWeighting(); 
+        public double[] Filter(double[] dbArray, double[] freqArray)
+        {
+            return dbArray;
+        }
+    }
+
+    public void Dispose()
+    {
+        _compositeDisposable.Dispose();
     }
 }

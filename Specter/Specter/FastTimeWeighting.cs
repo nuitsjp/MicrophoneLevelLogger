@@ -2,7 +2,7 @@
 
 namespace Specter;
 
-public class FastTimeWeighting
+public class FastTimeWeighting : IFastTimeWeighting
 {
     /// <summary>
     /// time constant for Fast Time Weighting

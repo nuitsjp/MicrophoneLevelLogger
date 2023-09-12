@@ -16,12 +16,10 @@ public class WaveInToInputLevelObservable : IObservable<Decibel>
             waveFormat, 
             refreshRate);
         var normalize = new Normalize(waveFormat);
-        var fastTimeWeighting = new FastTimeWeighting(waveFormat);
         var fft = new FastFourierTransform(waveFormat);
         var converter = new DecibelConverter();
         _observable = bufferedObservable
             .Select(normalize.Filter)
-            .Select(fastTimeWeighting.Filter)
             .Select(fft.Transform)
             .Select(converter.Convert)
             .Select(x => new Decibel(x));

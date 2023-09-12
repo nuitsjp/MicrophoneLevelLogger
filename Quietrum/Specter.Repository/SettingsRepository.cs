@@ -20,6 +20,8 @@ public class SettingsRepository : RepositoryBase<Settings>, ISettingsRepository
                     TimeSpan.FromSeconds(30),
                     null,
                     null,
+                    true,
+                    true,
                     new List<DeviceConfig>()));
 
     /// <summary>
