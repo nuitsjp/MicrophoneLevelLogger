@@ -8,6 +8,8 @@ namespace Specter.Repository;
 
 public class AudioRecordInterface : IAudioRecordInterface, IDisposable
 {
+    private bool _activated;
+
     private static readonly string RootDirectory = "Record";
     private static readonly string AudioRecordFile = "AudioRecord.json";
 
@@ -22,11 +24,12 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         AudioRecords = _audioRecords.ToReadOnlyReactiveCollection();
     }
 
-    public bool Activated { get; private set; }
-
     public async Task ActivateAsync()
     {
-        if (Activated) return;
+        if (_activated)
+        {
+            throw new InvalidOperationException("Already Activated.");
+        }
 
         var records = await LoadAsync();
         foreach (var record in records)
@@ -34,7 +37,7 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
             _audioRecords.Add(record);
         }
 
-        Activated = true;
+        _activated = true;
     }
 
     public IAudioRecording BeginRecording(

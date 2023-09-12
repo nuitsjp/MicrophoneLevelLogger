@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:Specter.View"
+        xmlns:kamishibai="clr-namespace:Kamishibai;assembly=Kamishibai.View"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:DesignMainWindowViewModel}, IsDesignTimeCreatable=True}"
         Title="Specter" Height="1024" Width="1280">
@@ -13,13 +14,13 @@
     <TabControl HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
                 Style="{StaticResource MaterialDesignFilledTabControl}">
         <TabItem Header="Monitoring">
-            <local:MonitoringPage DataContext="{Binding Path=MonitoringPage}"/>
+            <kamishibai:NavigationFrame FrameName="{Binding MonitoringFrameName}"/>
         </TabItem>
         <TabItem Header="Analysis">
-            <local:AnalysisPage DataContext="{Binding Path=AnalysisPage}"/>
+            <kamishibai:NavigationFrame FrameName="{Binding AnalysisFrameName}"/>
         </TabItem>
         <TabItem Header="Settings">
-            <local:SettingsPage/>
+            <kamishibai:NavigationFrame FrameName="{Binding SettingsFrameName}"/>
         </TabItem>
     </TabControl>
 </Window>

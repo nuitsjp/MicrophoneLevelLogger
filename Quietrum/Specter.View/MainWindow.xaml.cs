@@ -31,7 +31,7 @@ public partial class MainWindow : Window
 public class DesignMainWindowViewModel : MainWindowViewModel
 {
     public DesignMainWindowViewModel(IPresentationService presentationService) 
-        : base(default!, default!, default!)
+        : base(presentationService, default!)
     {
     }
 }

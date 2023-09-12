@@ -5,6 +5,7 @@ using Specter;
 using Specter.Repository;
 using Specter.View;
 using Specter.ViewModel;
+using Specter.ViewModel.AnalysisPage;
 using Specter.ViewModel.MonitoringPage;
 
 var builder = KamishibaiApplication<App, MainWindow>.CreateBuilder();
@@ -15,6 +16,7 @@ builder.Services.AddTransient<ISettingsRepository, SettingsRepository>();
 
 builder.Services.AddPresentation<MainWindow, MainWindowViewModel>();
 builder.Services.AddPresentation<MonitoringPage, MonitoringPageViewModel>();
+builder.Services.AddPresentation<AnalysisPage, AnalysisPageViewModel>();
 builder.Services.AddPresentation<SettingsPage, SettingsPageViewModel>();
 
 await builder

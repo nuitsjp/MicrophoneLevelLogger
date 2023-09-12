@@ -11,22 +11,21 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
 {
     private readonly CompositeDisposable _compositeDisposable = new();
 
+    private readonly IPresentationService _presentationService;
+    private readonly IAudioRecordInterface _audioRecordInterface;
+    
+
     public MainWindowViewModel(
-        [Inject] IAudioInterfaceProvider audioInterfaceProvider,
-        [Inject] ISettingsRepository settingsRepository,
+        [Inject] IPresentationService presentationService, 
         [Inject] IAudioRecordInterface audioRecordInterface)
     {
-        MonitoringPage =
-            new (
-                audioInterfaceProvider,
-                audioRecordInterface,
-                settingsRepository);
-        AnalysisPage = new(audioRecordInterface);
+        _presentationService = presentationService;
+        _audioRecordInterface = audioRecordInterface;
     }
-    
-    public MonitoringPageViewModel MonitoringPage { get; }
-    public AnalysisPageViewModel AnalysisPage { get; }
 
+    public string MonitoringFrameName => "MonitoringFrame";
+    public string AnalysisFrameName => "AnalysisFrame";
+    public string SettingsFrameName => "SettingsFrame";
 
     public void Dispose()
     {
@@ -35,6 +34,10 @@ public partial class MainWindowViewModel : ObservableObject, INavigatedAsyncAwar
 
     public async Task OnNavigatedAsync(PostForwardEventArgs args)
     {
-        await MonitoringPage.OnNavigatedAsync(args);
+        await _audioRecordInterface.ActivateAsync();
+        
+        await _presentationService.NavigateToMonitoringPageAsync(frameName:MonitoringFrameName);
+        await _presentationService.NavigateToAnalysisPageAsync(frameName:AnalysisFrameName);
+        await _presentationService.NavigateToSettingsPageAsync(frameName:SettingsFrameName);
     }
 }

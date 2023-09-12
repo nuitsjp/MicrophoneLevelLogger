@@ -3,11 +3,13 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Kamishibai;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
 namespace Specter.ViewModel.AnalysisPage;
 
+[Navigate]
 public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer
 {
     private readonly IAudioRecordInterface _audioRecordInterface;
@@ -16,7 +18,7 @@ public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer
     [ObservableProperty] private AudioRecordViewModel _selectedAudioRecord;
 
     public AnalysisPageViewModel(
-        IAudioRecordInterface audioRecordInterface)
+        [Inject] IAudioRecordInterface audioRecordInterface)
     {
         _audioRecordInterface = audioRecordInterface;
         AudioRecords = _audioRecords.ToReadOnlyReactiveCollection();
@@ -28,14 +30,12 @@ public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer
     [RelayCommand]
     private async Task ActivateAsync()
     {
-        if (_audioRecordInterface.Activated) return;
-
-        await _audioRecordInterface.ActivateAsync();
         foreach (var audioRecord in _audioRecordInterface.AudioRecords)
         {
             _audioRecords.Add(
                 new AudioRecordViewModel(audioRecord, this));
         }
+
         _audioRecordInterface
             .AudioRecords
             .CollectionChangedAsObservable()
