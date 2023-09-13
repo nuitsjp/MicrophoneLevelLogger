@@ -10,9 +10,29 @@ public partial class SettingsPageViewModel : ObservableObject, INavigatedAsyncAw
 {
     private readonly CompositeDisposable _compositeDisposable = new();
     private readonly ISettingsRepository _settingsRepository;
-    [ObservableProperty] private bool _enableAWeighting = true;
-    [ObservableProperty] private bool _enableFastTimeWeighting = true;
 
+    public bool EnableAWeighting
+    {
+        get => FastFourierTransformSettings.EnableAWeighting.Value;
+        set
+        {
+            FastFourierTransformSettings.EnableAWeighting.Value = value;
+            UpdateSettings();
+            OnPropertyChanged();
+        }
+    }
+
+    public bool EnableFastTimeWeighting
+    {
+        get => FastFourierTransformSettings.EnableFastTimeWeighting.Value;
+        set
+        {
+            FastFourierTransformSettings.EnableFastTimeWeighting.Value = value;
+            UpdateSettings();
+            OnPropertyChanged();
+        }
+    }
+    
     public SettingsPageViewModel(
         [Inject] ISettingsRepository settingsRepository)
     {
@@ -22,36 +42,17 @@ public partial class SettingsPageViewModel : ObservableObject, INavigatedAsyncAw
     public async Task OnNavigatedAsync(PostForwardEventArgs args)
     {
         var settings = await _settingsRepository.LoadAsync();
+        
         EnableAWeighting = settings.EnableAWeighting;
         EnableFastTimeWeighting = settings.EnableFastTimeWeighting;
-        
-        FastFourierTransformSettings.EnableAWeighting.Value = EnableAWeighting;
-        FastFourierTransformSettings.EnableFastTimeWeighting.Value = EnableFastTimeWeighting;
-
-        this.ObserveProperty(x => x.EnableAWeighting)
-            .Subscribe(OnNextEnableAWeighting)
-            .AddTo(_compositeDisposable);
-
-        this.ObserveProperty(x => x.EnableFastTimeWeighting)
-            .Subscribe(OnNextEnableFastTimeWeighting)
-            .AddTo(_compositeDisposable);
     }
 
-    private async void OnNextEnableAWeighting(bool value)
+    private async void UpdateSettings()
     {
         var settings = await _settingsRepository.LoadAsync();
         await _settingsRepository.SaveAsync(settings with
         {
-            EnableAWeighting = EnableAWeighting
-        });
-        FastFourierTransformSettings.EnableAWeighting.Value = EnableAWeighting;
-    }
-
-    private async void OnNextEnableFastTimeWeighting(bool value)
-    {
-        var settings = await _settingsRepository.LoadAsync();
-        await _settingsRepository.SaveAsync(settings with
-        {
+            EnableAWeighting = EnableAWeighting,
             EnableFastTimeWeighting = EnableFastTimeWeighting
         });
         FastFourierTransformSettings.EnableFastTimeWeighting.Value = EnableFastTimeWeighting;
