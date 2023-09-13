@@ -10,14 +10,16 @@ public partial class RemoteDeviceInterface : ObservableObject, IDeviceInterface,
 {
     public static readonly Port ServerPort = new(9876);
 
+    private readonly IFastFourierTransformSettings _settings;
     private readonly TcpListener _tcpListener = new(IPAddress.Any, ServerPort.AsPrimitive());
     
     private Task? _task;
 
     private readonly ReactiveCollection<IDevice> _devices = new();
 
-    public RemoteDeviceInterface()
+    public RemoteDeviceInterface(IFastFourierTransformSettings settings)
     {
+        _settings = settings;
         Devices = _devices
             .ToReadOnlyReactiveCollection(scheduler: CurrentThreadScheduler.Instance);
     }
@@ -40,7 +42,7 @@ public partial class RemoteDeviceInterface : ObservableObject, IDeviceInterface,
             while (true)
             {
                 var tcpClient = _tcpListener.AcceptTcpClient();
-                var remoteDevice = new RemoteDevice(tcpClient); 
+                var remoteDevice = new RemoteDevice(tcpClient, _settings); 
                 remoteDevice.Disconnected += OnDisconnected;
                 _devices.Add(remoteDevice);
             }

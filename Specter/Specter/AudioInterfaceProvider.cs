@@ -10,6 +10,8 @@ public class AudioInterfaceProvider : IAudioInterfaceProvider
     /// </summary>
     private readonly ISettingsRepository _settingsRepository;
 
+    private readonly IFastFourierTransformSettings _fastFourierTransformSettings;
+
     private IAudioInterface? _audioInterface;
 
     /// <summary>
@@ -17,9 +19,11 @@ public class AudioInterfaceProvider : IAudioInterfaceProvider
     /// </summary>
     /// <param name="settingsRepository"></param>
     public AudioInterfaceProvider(
-        ISettingsRepository settingsRepository)
+        ISettingsRepository settingsRepository, 
+        IFastFourierTransformSettings fastFourierTransformSettings)
     {
         _settingsRepository = settingsRepository;
+        _fastFourierTransformSettings = fastFourierTransformSettings;
     }
 
     /// <summary>
@@ -30,7 +34,7 @@ public class AudioInterfaceProvider : IAudioInterfaceProvider
     {
         return _audioInterface ??= 
             new AudioInterface(
-                new LocalDeviceInterface(_settingsRepository),
-                new RemoteDeviceInterface());
+                new LocalDeviceInterface(_settingsRepository, _fastFourierTransformSettings),
+                new RemoteDeviceInterface(_fastFourierTransformSettings));
     }
 }

@@ -10,13 +10,14 @@ public partial class SettingsPageViewModel : ObservableObject, INavigatedAsyncAw
 {
     private readonly CompositeDisposable _compositeDisposable = new();
     private readonly ISettingsRepository _settingsRepository;
+    private readonly IFastFourierTransformSettings _fastFourierTransformSettings;
 
     public bool EnableAWeighting
     {
-        get => FastFourierTransformSettings.EnableAWeighting.Value;
+        get => _fastFourierTransformSettings.EnableAWeighting.Value;
         set
         {
-            FastFourierTransformSettings.EnableAWeighting.Value = value;
+            _fastFourierTransformSettings.EnableAWeighting.Value = value;
             UpdateSettings();
             OnPropertyChanged();
         }
@@ -24,19 +25,21 @@ public partial class SettingsPageViewModel : ObservableObject, INavigatedAsyncAw
 
     public bool EnableFastTimeWeighting
     {
-        get => FastFourierTransformSettings.EnableFastTimeWeighting.Value;
+        get => _fastFourierTransformSettings.EnableFastTimeWeighting.Value;
         set
         {
-            FastFourierTransformSettings.EnableFastTimeWeighting.Value = value;
+            _fastFourierTransformSettings.EnableFastTimeWeighting.Value = value;
             UpdateSettings();
             OnPropertyChanged();
         }
     }
     
     public SettingsPageViewModel(
-        [Inject] ISettingsRepository settingsRepository)
+        [Inject] ISettingsRepository settingsRepository, 
+        [Inject] IFastFourierTransformSettings fastFourierTransformSettings)
     {
         _settingsRepository = settingsRepository;
+        _fastFourierTransformSettings = fastFourierTransformSettings;
     }
 
     public async Task OnNavigatedAsync(PostForwardEventArgs args)
@@ -55,7 +58,6 @@ public partial class SettingsPageViewModel : ObservableObject, INavigatedAsyncAw
             EnableAWeighting = EnableAWeighting,
             EnableFastTimeWeighting = EnableFastTimeWeighting
         });
-        FastFourierTransformSettings.EnableFastTimeWeighting.Value = EnableFastTimeWeighting;
     }
 
     public void Dispose()

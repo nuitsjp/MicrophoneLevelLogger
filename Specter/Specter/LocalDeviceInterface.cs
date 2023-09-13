@@ -18,10 +18,14 @@ public class LocalDeviceInterface : IDeviceInterface
     private readonly ISettingsRepository _settingsRepository;
     private readonly ReactiveCollection<IDevice> _devices = new();
     private Settings _settings = default!;
+    private readonly IFastFourierTransformSettings _fastFourierTransformSettings; 
 
-    public LocalDeviceInterface(ISettingsRepository settingsRepository)
+    public LocalDeviceInterface(
+        ISettingsRepository settingsRepository, 
+        IFastFourierTransformSettings fastFourierTransformSettings)
     {
         _settingsRepository = settingsRepository;
+        _fastFourierTransformSettings = fastFourierTransformSettings;
         Devices = _devices
             .ToReadOnlyReactiveCollection(scheduler: CurrentThreadScheduler.Instance);
     }
@@ -114,13 +118,15 @@ public class LocalDeviceInterface : IDeviceInterface
                     deviceConfig.Name,
                     mmDevice.FriendlyName,
                     deviceConfig.Measure,
-                    mmDevice)
+                    mmDevice,
+                    _fastFourierTransformSettings)
                 : new RenderDevice(
                     microphoneId,
                     deviceConfig.Name,
                     mmDevice.FriendlyName,
                     deviceConfig.Measure,
-                    mmDevice);
+                    mmDevice,
+                    _fastFourierTransformSettings);
         device.PropertyChanged += MicrophoneOnPropertyChanged;
         return device;
     }

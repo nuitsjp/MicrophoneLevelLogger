@@ -15,15 +15,19 @@ public class RemoteDevice : ObservableObject, IRenderDevice
     public event EventHandler<EventArgs>? Disconnected;
     
     private readonly TcpClient _tcpClient;
+    private readonly IFastFourierTransformSettings _fastFourierTransformSettings;
     private readonly NetworkStream _networkStream;
     private readonly Subject<WaveInEventArgs> _subject = new();
     private readonly Task _backgroundTask;
     private bool _recording;
     private IDisposable? _waveInUnsubscribe;
 
-    public RemoteDevice(TcpClient tcpClient)
+    public RemoteDevice(
+        TcpClient tcpClient, 
+        IFastFourierTransformSettings fastFourierTransformSettings)
     {
         _tcpClient = tcpClient;
+        _fastFourierTransformSettings = fastFourierTransformSettings;
         _networkStream = tcpClient.GetStream();
         
         _backgroundTask = ReadAsync();
@@ -53,7 +57,7 @@ public class RemoteDevice : ObservableObject, IRenderDevice
     public void StartMonitoring(WaveFormat waveFormat, RefreshRate refreshRate)
     {
         _recording = true;
-        _waveInUnsubscribe = new WaveInToInputLevelObservable(this, waveFormat, refreshRate)
+        _waveInUnsubscribe = new WaveInToInputLevelObservable(this, waveFormat, refreshRate, _fastFourierTransformSettings)
             .Subscribe(x => _inputLevel.OnNext(x));
     }
 

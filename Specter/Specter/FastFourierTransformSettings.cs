@@ -4,8 +4,8 @@ using Reactive.Bindings;
 
 namespace Specter;
 
-public static class FastFourierTransformSettings
+public class FastFourierTransformSettings : IFastFourierTransformSettings
 {
-    public static ReactivePropertySlim<bool> EnableAWeighting { get; } = new(true);
-    public static ReactivePropertySlim<bool> EnableFastTimeWeighting { get; } = new(true);
+    public ReactivePropertySlim<bool> EnableAWeighting { get; } = new(true);
+    public ReactivePropertySlim<bool> EnableFastTimeWeighting { get; } = new(true);
 }

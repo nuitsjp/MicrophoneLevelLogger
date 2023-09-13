@@ -10,7 +10,15 @@ public class RenderDevice : Device, IRenderDevice
         string name, 
         string systemName, 
         bool measure, 
-        MMDevice mmDevice) : base(id, name, systemName, measure, mmDevice)
+        MMDevice mmDevice,
+        IFastFourierTransformSettings settings) 
+        : base(
+            id, 
+            name, 
+            systemName, 
+            measure, 
+            mmDevice,
+            settings)
     {
     }
 

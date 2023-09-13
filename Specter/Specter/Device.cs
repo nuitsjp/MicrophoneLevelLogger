@@ -12,6 +12,15 @@ namespace Specter;
 public abstract partial class Device : ObservableObject, IDevice
 {
     private readonly MMDevice _mmDevice;
+    private readonly IFastFourierTransformSettings _settings;
+
+    private IWaveIn? _waveIn;
+    private IDisposable? _waveInUnsubscribe;
+    private readonly Subject<WaveInEventArgs> _waveInput = new();
+    public IObservable<WaveInEventArgs> WaveInput => _waveInput.AsObservable();
+    private readonly Subject<Decibel> _inputLevel = new();
+    public IObservable<Decibel> InputLevel => _inputLevel.AsObservable();
+
 
     /// <summary>
     /// インスタンスを生成する。
@@ -26,13 +35,15 @@ public abstract partial class Device : ObservableObject, IDevice
         string name,
         string systemName,
         bool measure,
-        MMDevice mmDevice)
+        MMDevice mmDevice, 
+        IFastFourierTransformSettings settings)
     {
         Id = id;
         Name = name;
         SystemName = systemName;
         _measure = measure;
         _mmDevice = mmDevice;
+        _settings = settings;
         _mmDevice.AudioEndpointVolume.OnVolumeNotification += data =>
         {
             OnPropertyChanged(nameof(VolumeLevel));
@@ -74,13 +85,6 @@ public abstract partial class Device : ObservableObject, IDevice
         }
     }
 
-    private IWaveIn? _waveIn;
-    private IDisposable? _waveInUnsubscribe;
-    private readonly Subject<WaveInEventArgs> _waveInput = new();
-    public IObservable<WaveInEventArgs> WaveInput => _waveInput.AsObservable();
-    private readonly Subject<Decibel> _inputLevel = new();
-    public IObservable<Decibel> InputLevel => _inputLevel.AsObservable();
-
     public void StartMonitoring(WaveFormat waveFormat, RefreshRate refreshRate)
     {
         _waveIn =
@@ -118,7 +122,7 @@ public abstract partial class Device : ObservableObject, IDevice
         }
 
         _waveInUnsubscribe =
-            new WaveInToInputLevelObservable(this, waveFormat, refreshRate)
+            new WaveInToInputLevelObservable(this, waveFormat, refreshRate, _settings)
                 .Subscribe(x => _inputLevel.OnNext(x));
     }
 

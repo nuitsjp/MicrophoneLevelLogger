@@ -9,14 +9,15 @@ public class WaveInToInputLevelObservable : IObservable<Decibel>
     public WaveInToInputLevelObservable(
         IDevice device,
         WaveFormat waveFormat,
-        RefreshRate refreshRate)
+        RefreshRate refreshRate,
+        IFastFourierTransformSettings settings)
     {
         var bufferedObservable = new BufferedObservable(
             device.WaveInput, 
             waveFormat, 
             refreshRate);
         var normalize = new Normalize(waveFormat);
-        var fft = new FastFourierTransform(waveFormat);
+        var fft = new FastFourierTransform(settings, waveFormat);
         var converter = new DecibelConverter();
         _observable = bufferedObservable
             .Select(normalize.Filter)
