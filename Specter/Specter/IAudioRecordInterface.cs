@@ -10,7 +10,7 @@ public interface IAudioRecordInterface
     
     IAudioRecording BeginRecording(
         IDevice targetDevice, 
-        Direction direction, 
+        RecordingMethod recordingMethod, 
         IEnumerable<IDevice> monitoringDevices,
         WaveFormat waveFormat);
 

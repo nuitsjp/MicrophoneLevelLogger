@@ -32,7 +32,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     [ObservableProperty] private IList<DeviceViewModel> _captureDevices = new List<DeviceViewModel>();
     [ObservableProperty] private DeviceViewModel? _playbackDevice;
     [ObservableProperty] private DeviceViewModel? _recordDevice;
-    [ObservableProperty] private Direction _selectedDirection = Direction.Front;
+    [ObservableProperty] private RecordingMethod _selectedDirection = RecordingMethod.RecordingMethods.First();
     [ObservableProperty] private int _recordingSpan;
     
     private readonly DispatcherTimer _recordTimer = new DispatcherTimer();
@@ -82,7 +82,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             settings with { RecordingSpan = TimeSpan.FromSeconds(recordingSpan)});
     }
 
-    public Direction[] Directions { get; } = new[] { Direction.Front, Direction.Rear, Direction.Left, Direction.Right };
+    public IReadOnlyList<RecordingMethod> RecordingMethods { get; } = RecordingMethod.RecordingMethods;
 
     private async void OnChangedRecorderHost(string obj)
     {

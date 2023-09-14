@@ -33,9 +33,9 @@
                       SelectedItem="{Binding RecordDevice, Mode=TwoWay}"
                       DisplayMemberPath="Name"
                       Width="200"/>
-            <ComboBox ItemsSource="{Binding Directions}"
+            <ComboBox ItemsSource="{Binding RecordingMethods}"
                       SelectedItem="{Binding SelectedDirection, Mode=TwoWay}"
-                      Width="100"/>
+                      Width="200"/>
 
             <ToggleButton
                 Content="{materialDesign:PackIcon Kind=Record}"
@@ -45,11 +45,7 @@
 
             <Rectangle Width="20" />
             
-            <TextBlock Text="With Playback"/>
-            <CheckBox IsChecked="{Binding WithPlayback, Mode=TwoWay}" 
-                      VerticalAlignment="Center" 
-                      Margin="5"/>
-
+            <TextBlock Text="Playback Device"/>
             <ComboBox ItemsSource="{Binding RenderDevices}"
                       SelectedItem="{Binding PlaybackDevice, Mode=TwoWay}"
                       DisplayMemberPath="Name"

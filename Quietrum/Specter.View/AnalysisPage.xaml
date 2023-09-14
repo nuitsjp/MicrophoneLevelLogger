@@ -52,7 +52,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Time" Binding="{Binding StartTime, StringFormat=yyyy/MM/dd HH:mm}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Device" Binding="{Binding Device}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Direction" Binding="{Binding Direction}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Direction" Binding="{Binding RecordingMethod}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
             
@@ -104,7 +104,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Time" Binding="{Binding StartTime, StringFormat=yyyy/MM/dd HH:mm}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Device" Binding="{Binding Device}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Direction" Binding="{Binding Direction}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Direction" Binding="{Binding RecordingMethod}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Min" Binding="{Binding Min, Converter={StaticResource DecibelConverter}, ConverterParameter='{}{0:0.00}'}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Avg" Binding="{Binding Avg, Converter={StaticResource DecibelConverter}, ConverterParameter='{}{0:0.00}'}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Max" Binding="{Binding Max, Converter={StaticResource DecibelConverter}, ConverterParameter='{}{0:0.00}'}" IsReadOnly="True"/>

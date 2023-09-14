@@ -42,13 +42,13 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
 
     public IAudioRecording BeginRecording(
         IDevice targetDevice,
-        Direction direction,
+        RecordingMethod recordingMethod,
         IEnumerable<IDevice> monitoringDevices,
         WaveFormat waveFormat)
     {
         var startDateTime = DateTime.Now;
         var directoryInfo = new DirectoryInfo(Path.Combine(RootDirectory,
-            $"{startDateTime:yyyy.MM.dd-HH.mm.ss}_{targetDevice.Name}_{direction}"));
+            $"{startDateTime:yyyy.MM.dd-HH.mm.ss}_{targetDevice.Name}_{recordingMethod}"));
         directoryInfo.Create();
 
         var deviceRecorders = monitoringDevices
@@ -78,7 +78,7 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
 
             var audioRecord = new AudioRecord(
                 targetDevice.Id,
-                direction,
+                recordingMethod,
                 startDateTime,
                 DateTime.Now,
                 deviceRecords.ToArray());
@@ -115,7 +115,7 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         var targetDevice = audioRecord.DeviceRecords.Single(x => x.Id == audioRecord.TargetDeviceId);
         return Path.Combine(
             RootDirectory,
-            $"{audioRecord.StartTime:yyyy.MM.dd-HH.mm.ss}_{targetDevice.Name}_{audioRecord.Direction}");
+            $"{audioRecord.StartTime:yyyy.MM.dd-HH.mm.ss}_{targetDevice.Name}_{audioRecord.RecordingMethod}");
     }
 
     public async Task SaveAsync(AudioRecord audioRecord)
