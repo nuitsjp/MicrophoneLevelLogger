@@ -28,10 +28,7 @@ public class FastFourierTransform : IDisposable
     private static readonly Hanning Hanning = new();
 
     private readonly CompositeDisposable _compositeDisposable = new();
-    private readonly IFastFourierTransformSettings _settings;
     private readonly double _sampleRate;
-    private readonly IFastTimeWeighting _fastTimeWeighting;
-    private readonly IAWeighting _aWeighting;
     private IFastTimeWeighting _applyFastTimeWeighting;
     private IAWeighting _applyAWeighting;
 
@@ -39,24 +36,24 @@ public class FastFourierTransform : IDisposable
         IFastFourierTransformSettings settings,
         WaveFormat waveFormat)
     {
-        _settings = settings;
+        var settings1 = settings;
         _sampleRate = waveFormat.SampleRate;
-        _fastTimeWeighting = new FastTimeWeighting(waveFormat);
-        _applyFastTimeWeighting =_fastTimeWeighting;
-        _aWeighting = new AWeighting();
-        _applyAWeighting = _aWeighting;
+        IFastTimeWeighting fastTimeWeighting = new FastTimeWeighting(waveFormat);
+        _applyFastTimeWeighting =fastTimeWeighting;
+        IAWeighting aWeighting = new AWeighting();
+        _applyAWeighting = aWeighting;
 
-        _settings
+        settings1
             .EnableFastTimeWeighting
             .Subscribe(enable =>
                 _applyFastTimeWeighting = enable
-                        ? _fastTimeWeighting
+                        ? fastTimeWeighting
                         : NullFastTimeWeighting.Instance);
-        _settings
+        settings1
             .EnableAWeighting
             .Subscribe(enable =>
                 _applyAWeighting = enable
-                    ? _aWeighting
+                    ? aWeighting
                     : NullAWeighting.Instance);
     }
 
