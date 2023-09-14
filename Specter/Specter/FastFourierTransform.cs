@@ -1,6 +1,4 @@
 ﻿using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using System.Runtime.CompilerServices;
 using FftSharp.Windows;
 using NAudio.Wave;
 

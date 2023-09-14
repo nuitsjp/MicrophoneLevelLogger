@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace Specter.View;
+﻿namespace Specter.View;
 
 public partial class SettingsPage
 {
