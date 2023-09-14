@@ -13,7 +13,7 @@ public class AnalysisDeviceViewModel
     public DeviceRecordViewModel DeviceRecord { get; }
     public DateTime StartTime => AudioRecord.StartTime;
     public string Device => DeviceRecord.Name;
-    public Direction Direction => AudioRecord.Direction;
+    public RecordingMethod RecordingMethod => AudioRecord.RecordingMethod;
     public Decibel Min => DeviceRecord.Min;
     public Decibel Avg => DeviceRecord.Avg;
     public Decibel Max => DeviceRecord.Max;
