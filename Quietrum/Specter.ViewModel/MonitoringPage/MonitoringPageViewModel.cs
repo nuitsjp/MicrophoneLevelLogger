@@ -5,7 +5,6 @@ using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Kamishibai;
-using MaterialDesignThemes.Wpf;
 using NAudio.CoreAudioApi;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
@@ -23,7 +22,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     private readonly IAudioRecordInterface _audioRecordInterface;
     private readonly ISettingsRepository _settingsRepository;
     
-    [ObservableProperty] private bool _record;
+    // [ObservableProperty] private bool _record;
     [ObservableProperty] private bool _withPlayback;
     [ObservableProperty] private bool _playback;
     [ObservableProperty] private string _recorderHost = string.Empty;
@@ -37,8 +36,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     [ObservableProperty] private RecordingMethod _selectedDirection = RecordingMethod.RecordingMethods.First();
     [ObservableProperty] private int _recordingSpan;
     
-    private readonly DispatcherTimer _recordTimer = new DispatcherTimer();
-    
     public MonitoringPageViewModel(
         [Inject] IAudioInterfaceProvider audioInterfaceProvider, 
         [Inject] IAudioRecordInterface audioRecordInterface, 
@@ -47,10 +44,10 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         _audioInterfaceProvider = audioInterfaceProvider;
         _audioRecordInterface = audioRecordInterface;
         _settingsRepository = settingsRepository;
-        this.ObserveProperty(x => x.Record)
-            .Skip(1)
-            .Subscribe(OnRecord)
-            .AddTo(_compositeDisposable);
+        // this.ObserveProperty(x => x.Record)
+        //     .Skip(1)
+        //     .Subscribe(OnRecord)
+        //     .AddTo(_compositeDisposable);
         this.ObserveProperty(x => x.Playback)
             .Skip(1)
             .Subscribe(OnPlayBack)
@@ -71,11 +68,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .Skip(1)
             .Subscribe(OnRecordingSpan)
             .AddTo(_compositeDisposable);
-        _recordTimer.Tick += (sender, args) =>
-        {
-            Record = false;
-            StopRecording();
-        };
     }
 
     private async void OnRecordingSpan(int recordingSpan)
@@ -198,18 +190,74 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         }
     }
 
+    /// <summary>
+    /// 実行中の録音
+    /// </summary>
     private IAudioRecording? _audioRecording;
-    [ObservableProperty] private bool _recording;
+    
+    /// <summary>
+    /// 実行中の録音を取得・設定する
+    /// </summary>
+    private IAudioRecording? AudioRecording
+    {
+        get => _audioRecording;
+        set
+        {
+            // 録音が更新された場合、Recordingの変更を通知する
+            _audioRecording = value;
+            OnPropertyChanged(nameof(Recording));
+        }
+    }
+
+    /// <summary>
+    /// 録音状態を取得する
+    /// </summary>
+    public bool Recording => _audioRecording is not null;
+
+    /// <summary>
+    /// 録音の進捗を取得する
+    /// </summary>
+    public int RecordingProgress => (int)((DateTime.Now - _startRecordingTime).TotalSeconds * 100 / RecordingSpan);
+
+    /// <summary>
+    /// 録音開始時刻
+    /// </summary>
     private DateTime _startRecordingTime;
 
-    private DispatcherTimer _updateProgressTimer = default!;
-    [ObservableProperty] private int _recordingProgress;
-    [ObservableProperty] private PackIconKind _recordingIcon = PackIconKind.Record;
-    
+    /// <summary>
+    /// 録音停止タイマー
+    /// </summary>
+    private DispatcherTimer _recordTimer = new();
+    /// <summary>
+    /// 進捗更新タイマー
+    /// </summary>
+    private DispatcherTimer _updateProgressTimer = new();
+
+    /// <summary>
+    /// 録音の開始・停止を行うコマンド
+    /// </summary>
     [RelayCommand]
+    private void Record()
+    {
+        if (Recording is false)
+        {
+            // 録音が未実施の状態でコマンドが実行された場合、録音を開始する
+            StartRecording();
+        }
+        else
+        {
+            // 録音中の場合、録音を停止する
+            StopRecording();
+        }
+    }
+
+    /// <summary>
+    /// 録音を開始する
+    /// </summary>
     private void StartRecording()
     {
-        _audioRecording = _audioRecordInterface
+        // 録音を開始する
+        AudioRecording = _audioRecordInterface
             .BeginRecording(
                 RecordDevice!.Device,
                 SelectedDirection,
@@ -217,34 +265,31 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                     .Where(x => x.Measure)
                     .Select(x => x.Device),
                 RecordingConfig.WaveFormat);
-        
-        _recordTimer.Interval = TimeSpan.FromSeconds(RecordingSpan);
-        _recordTimer.Start();
 
-        RecordingProgress = 0;
+        // 録音開始時刻を記録する
+        _startRecordingTime = DateTime.Now;
+
+        // 進捗更新タイマーを起動する
         _updateProgressTimer = new() { Interval = TimeSpan.FromMilliseconds(100) };
-        _updateProgressTimer.Tick += (_, _) =>
-        {
-            RecordingProgress = (int)((DateTime.Now - _startRecordingTime).TotalSeconds * 100 / RecordingSpan);
-        };
+        _updateProgressTimer.Tick += (_, _) => OnPropertyChanged(nameof(RecordingProgress));
         _updateProgressTimer.Start();
 
-        _startRecordingTime = DateTime.Now;
-        Recording = true;
-        RecordingIcon = PackIconKind.Stop;
+        // 録音タイマーを起動する
+        _recordTimer = new() { Interval = TimeSpan.FromSeconds(RecordingSpan) };
+        _recordTimer.Tick += (_, _) => StopRecording();
+        _recordTimer.Start();
     }
 
+    // 録音を停止する
     private async void StopRecording()
     {
-        if(_audioRecording is null) return;
-
+        // 各種タイマーを停止する
         if (_recordTimer.IsEnabled) _recordTimer.Stop();
         if (_updateProgressTimer.IsEnabled) _updateProgressTimer.Stop();
         
-        await _audioRecording.EndRecordingAsync();
-        _audioRecording = null;
-        Recording = false;
-        RecordingIcon = PackIconKind.Record;
+        // 録音を停止する
+        await AudioRecording.EndRecordingAsync();
+        AudioRecording = null;
     }
 
     public async Task OnNavigatedAsync(PostForwardEventArgs args)

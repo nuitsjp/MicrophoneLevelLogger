@@ -43,12 +43,22 @@
             <Button
                 materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding Recording}"
                 materialDesign:ButtonProgressAssist.Value="{Binding RecordingProgress}"
-                Command="{Binding StartRecordingCommand}"
-                IsEnabled="{Binding EnableRecording}"
+                Command="{Binding RecordCommand}"
                 ToolTip="録音">
                 <Button.Content>
-                    <materialDesign:PackIcon Kind="{Binding RecordingIcon}" />
-                </Button.Content>
+                    <materialDesign:PackIcon>
+                        <materialDesign:PackIcon.Style>
+                            <Style TargetType="{x:Type materialDesign:PackIcon}">
+                                <Setter Property="Kind" Value="Record"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Recording}" Value="True">
+                                        <Setter Property="Kind" Value="Stop"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </materialDesign:PackIcon.Style>
+                    </materialDesign:PackIcon>
+                </Button.Content>            
             </Button>
 
             <Rectangle Width="20" />
