@@ -40,11 +40,16 @@
                       materialDesign:HintAssist.Hint="Recording Method"
                       Width="200"/>
 
-            <ToggleButton
-                Content="{materialDesign:PackIcon Kind=Record}"
-                IsChecked="{Binding Record}"
-                Style="{StaticResource DefaultToggleButton}"
-                ToolTip="録音"/>
+            <Button
+                materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding Recording}"
+                materialDesign:ButtonProgressAssist.Value="{Binding RecordingProgress}"
+                Command="{Binding StartRecordingCommand}"
+                IsEnabled="{Binding EnableRecording}"
+                ToolTip="録音">
+                <Button.Content>
+                    <materialDesign:PackIcon Kind="{Binding RecordingIcon}" />
+                </Button.Content>
+            </Button>
 
             <Rectangle Width="20" />
             

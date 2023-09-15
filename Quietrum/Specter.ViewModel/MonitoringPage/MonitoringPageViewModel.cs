@@ -3,7 +3,9 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Kamishibai;
+using MaterialDesignThemes.Wpf;
 using NAudio.CoreAudioApi;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
@@ -72,6 +74,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         _recordTimer.Tick += (sender, args) =>
         {
             Record = false;
+            StopRecording();
         };
     }
 
@@ -196,6 +199,14 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     }
 
     private IAudioRecording? _audioRecording;
+    [ObservableProperty] private bool _recording;
+    private DateTime _startRecordingTime;
+
+    private DispatcherTimer _updateProgressTimer = default!;
+    [ObservableProperty] private int _recordingProgress;
+    [ObservableProperty] private PackIconKind _recordingIcon = PackIconKind.Record;
+    
+    [RelayCommand]
     private void StartRecording()
     {
         _audioRecording = _audioRecordInterface
@@ -209,17 +220,31 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         
         _recordTimer.Interval = TimeSpan.FromSeconds(RecordingSpan);
         _recordTimer.Start();
+
+        RecordingProgress = 0;
+        _updateProgressTimer = new() { Interval = TimeSpan.FromMilliseconds(100) };
+        _updateProgressTimer.Tick += (_, _) =>
+        {
+            RecordingProgress = (int)((DateTime.Now - _startRecordingTime).TotalSeconds * 100 / RecordingSpan);
+        };
+        _updateProgressTimer.Start();
+
+        _startRecordingTime = DateTime.Now;
+        Recording = true;
+        RecordingIcon = PackIconKind.Stop;
     }
 
     private async void StopRecording()
     {
         if(_audioRecording is null) return;
 
-        if (_recordTimer.IsEnabled)
-            _recordTimer.Stop();
+        if (_recordTimer.IsEnabled) _recordTimer.Stop();
+        if (_updateProgressTimer.IsEnabled) _updateProgressTimer.Stop();
         
         await _audioRecording.EndRecordingAsync();
         _audioRecording = null;
+        Recording = false;
+        RecordingIcon = PackIconKind.Record;
     }
 
     public async Task OnNavigatedAsync(PostForwardEventArgs args)
