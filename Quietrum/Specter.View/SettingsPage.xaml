@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModel="clr-namespace:Specter.ViewModel;assembly=Specter.ViewModel"
              mc:Ignorable="d"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
              d:DataContext="{d:DesignInstance {x:Type viewModel:SettingsPageViewModel}, IsDesignTimeCreatable=True}"
              d:DesignHeight="1024" d:DesignWidth="1280">
     <Grid Margin="10">

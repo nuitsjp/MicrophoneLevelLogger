@@ -16,25 +16,28 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type monitoringPage:MonitoringPageViewModel}, IsDesignTimeCreatable=True}"
-        d:DesignHeight="1024" d:DesignWidth="1280">
+        d:DesignHeight="1024" d:DesignWidth="1600">
     <UserControl.Resources>
         <ResourceDictionary Source="Style/Generic.xaml"/>
-    </UserControl.Resources>    
-    <Grid>
+    </UserControl.Resources>
+    <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10, 10, 10, 0">
-            <TextBlock Text="Record Device" />
+        <StackPanel Grid.Row="0" Orientation="Horizontal" 
+                    Margin="5"
+                    HorizontalAlignment="Stretch">
             <ComboBox ItemsSource="{Binding CaptureDevices}"
                       SelectedItem="{Binding RecordDevice, Mode=TwoWay}"
                       DisplayMemberPath="Name"
-                      Width="200"/>
+                      materialDesign:HintAssist.Hint="Record Device"
+                      Width="300"/>
             <ComboBox ItemsSource="{Binding RecordingMethods}"
                       SelectedItem="{Binding SelectedDirection, Mode=TwoWay}"
+                      DisplayMemberPath="Name"
+                      materialDesign:HintAssist.Hint="Recording Method"
                       Width="200"/>
 
             <ToggleButton
@@ -45,11 +48,11 @@
 
             <Rectangle Width="20" />
             
-            <TextBlock Text="Playback Device"/>
             <ComboBox ItemsSource="{Binding RenderDevices}"
                       SelectedItem="{Binding PlaybackDevice, Mode=TwoWay}"
                       DisplayMemberPath="Name"
-                      Width="200"/>
+                      materialDesign:HintAssist.Hint="Playback Device"
+                      Width="300"/>
             <ToggleButton Content="{materialDesign:PackIcon Kind=Play}"
                           IsChecked="{Binding Playback}"
                           Style="{StaticResource DefaultToggleButton}"
@@ -57,15 +60,15 @@
             
             <Rectangle Width="20" />
             
-            <TextBlock Text="Recording Span"/>
-            <TextBox Text="{Binding RecordingSpan, Mode=TwoWay}" Width="50"/>
-        </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10, 0, 10, 0">
-            <TextBlock Text="Connect Host Address"/>
+            <TextBox Text="{Binding RecordingSpan, Mode=TwoWay}" 
+                     materialDesign:HintAssist.Hint="Recording Span"
+                     Width="100"/>
             <TextBox Text="{Binding RecorderHost}"
-                     Width="150"/>
+                     materialDesign:HintAssist.Hint="Connect Host Address"
+                     Width="150"
+                     Margin="50, 5, 5, 5"/>
         </StackPanel>
-        <DataGrid Grid.Row="2" 
+        <DataGrid Grid.Row="1" 
                   ItemsSource="{Binding Devices}" 
                   AutoGenerateColumns="False"
                   Height="300"
@@ -96,7 +99,7 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <scottPlot:WpfPlot Grid.Row="3" x:Name="WpfPlot1" >
+        <scottPlot:WpfPlot Grid.Row="2" x:Name="WpfPlot1" >
 
         </scottPlot:WpfPlot>
     </Grid>

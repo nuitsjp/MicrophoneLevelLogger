@@ -27,7 +27,7 @@
     <!-- TextBlock -->
     <Style x:Key="TextBlockBase" 
            TargetType="TextBlock" 
-           BasedOn="{StaticResource MaterialDesignBody1TextBlock}">
+           BasedOn="{StaticResource MaterialDesignBody2TextBlock}">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="5" />
     </Style>
@@ -37,10 +37,8 @@
     <!-- TextBox -->
     <Style x:Key="TextBoxBase" 
            TargetType="TextBox" 
-           BasedOn="{StaticResource MaterialDesignTextBox}">
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Height" Value="30" />
+           BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="Margin" Value="5" />
     </Style>
     <Style TargetType="TextBox" 
@@ -59,13 +57,13 @@
     <!-- ComboBox -->
     <Style x:Key="ComboBoxBase"
            TargetType="ComboBox"
-           BasedOn="{StaticResource MaterialDesignComboBox}">
-        <Setter Property="Height" Value="30" />
+           BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
         <Setter Property="Margin" Value="5" />
     </Style>
 
-    <Style TargetType="ComboBox" 
-           BasedOn="{StaticResource ComboBoxBase}" />
+    <Style TargetType="ComboBox"
+           BasedOn="{StaticResource ComboBoxBase}">
+    </Style>
 
     <!-- StackPanel -->
     <Style TargetType="StackPanel">
@@ -74,8 +72,7 @@
     <!-- Button -->
     <Style x:Key="ButtonBase" 
            TargetType="Button" 
-           BasedOn="{StaticResource MaterialDesignRaisedDarkButton}">
-        <Setter Property="Width" Value="90" />
+           BasedOn="{StaticResource MaterialDesignFloatingActionMiniButton}">
         <Setter Property="Margin" Value="5" />
     </Style>
     <Style TargetType="Button" 
@@ -89,7 +86,7 @@
     <!-- ToggleButton -->
     <Style x:Key="DefaultToggleButton" 
            TargetType="ToggleButton"
-           BasedOn="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
+           BasedOn="{StaticResource MaterialDesignActionToggleButton}">
         <Setter Property="Margin" Value="5, 0" />
     </Style>
 </ResourceDictionary>

@@ -141,6 +141,8 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         LiveData[^1] = decibel.AsPrimitive();
     }
 
+    public override string ToString() => Device.Name;
+
     public void Dispose()
     {
         Device.StopMonitoring();
