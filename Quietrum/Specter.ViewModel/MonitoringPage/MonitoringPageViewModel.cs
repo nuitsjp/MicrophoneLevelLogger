@@ -29,7 +29,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
     [ObservableProperty] private IList<DeviceViewModel> _devices = new List<DeviceViewModel>();
     [ObservableProperty] private IList<DeviceViewModel> _renderDevices = new List<DeviceViewModel>();
-    [ObservableProperty] private IList<DeviceViewModel> _captureDevices = new List<DeviceViewModel>();
+    [ObservableProperty] private IList<DeviceViewModel> _measureDevices = new List<DeviceViewModel>();
     [ObservableProperty] private DeviceViewModel? _playbackDevice;
     [ObservableProperty] private DeviceViewModel? _recordDevice;
     [ObservableProperty] private RecordingMethod _selectedDirection = RecordingMethod.RecordingMethods.First();
@@ -105,7 +105,9 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         RenderDevices = Devices.Where(x => x.DataFlow == DataFlow.Render).ToList();
         PlaybackDevice = await GetPlaybackDevice(PlaybackDevice);
 
-        CaptureDevices = Devices.Where(x => x.DataFlow == DataFlow.Capture).ToList();
+        MeasureDevices = Devices
+            .Where(x => x is { DataFlow: DataFlow.Capture, Measure: true })
+            .ToList();
         RecordDevice = await GetRecordDevice(RecordDevice);
     }
 
@@ -144,19 +146,19 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         if (recordDevice is not null)
         {
             // 録音デバイスがすでに選択済みの場合
-            var device = CaptureDevices.SingleOrDefault(x => x.Id == recordDevice.Id);
+            var device = MeasureDevices.SingleOrDefault(x => x.Id == recordDevice.Id);
 
             // 変更された録音デバイスの中に、選択済みの録音デバイスが存在した場合は変更しない。
             if (device is not null) return recordDevice;
 
             // 変更された録音デバイス内に存在しない＝取り外されたため、先頭の録音デバイスを選択状態とする。
-            return CaptureDevices.FirstOrDefault();
+            return MeasureDevices.FirstOrDefault();
         }
 
         // 過去に選択されていた録音デバイスのIDを取得する。
         var settings = await _settingsRepository.LoadAsync();
-        return CaptureDevices.SingleOrDefault(x => x.Id == settings.PlaybackDeviceId)
-               ?? CaptureDevices.FirstOrDefault();
+        return MeasureDevices.SingleOrDefault(x => x.Id == settings.PlaybackDeviceId)
+               ?? MeasureDevices.FirstOrDefault();
     }
 
     private CancellationTokenSource _playBackCancellationTokenSource = new();

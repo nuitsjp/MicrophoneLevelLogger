@@ -86,7 +86,7 @@
     <!-- ToggleButton -->
     <Style x:Key="DefaultToggleButton" 
            TargetType="ToggleButton"
-           BasedOn="{StaticResource MaterialDesignActionToggleButton}">
+           BasedOn="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
         <Setter Property="Margin" Value="5, 0" />
     </Style>
 </ResourceDictionary>

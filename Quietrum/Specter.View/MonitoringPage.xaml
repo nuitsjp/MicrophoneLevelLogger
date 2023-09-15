@@ -29,7 +29,7 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal" 
                     Margin="5"
                     HorizontalAlignment="Stretch">
-            <ComboBox ItemsSource="{Binding CaptureDevices}"
+            <ComboBox ItemsSource="{Binding MeasureDevices}"
                       SelectedItem="{Binding RecordDevice, Mode=TwoWay}"
                       DisplayMemberPath="Name"
                       materialDesign:HintAssist.Hint="Record Device"
