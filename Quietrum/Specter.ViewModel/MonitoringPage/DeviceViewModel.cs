@@ -104,9 +104,9 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         Device.StartMonitoring(_recordingConfig.WaveFormat, _recordingConfig.RefreshRate);
     }
 
-    public Task PlayLoopingAsync(CancellationToken token)
+    public void PlayLooping(CancellationToken token)
     {
-        return ((IRenderDevice)Device).PlayLoopingAsync(token);
+        ((IRenderDevice)Device).PlayLooping(token);
     }
 
     private RemoteDeviceConnector? _connector;

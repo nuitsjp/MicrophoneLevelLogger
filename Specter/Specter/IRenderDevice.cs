@@ -2,5 +2,5 @@
 
 public interface IRenderDevice : IDevice
 {
-    Task PlayLoopingAsync(CancellationToken token);
+    void PlayLooping(CancellationToken token);
 }

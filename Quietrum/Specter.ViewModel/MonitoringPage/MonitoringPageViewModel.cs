@@ -158,7 +158,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
 
     private CancellationTokenSource _playBackCancellationTokenSource = new();
     
-    private async void OnPlayBack(bool playBack)
+    private void OnPlayBack(bool playBack)
     {
         if (playBack)
         {
@@ -169,7 +169,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             }
 
             _playBackCancellationTokenSource = new();
-            await PlaybackDevice.PlayLoopingAsync(_playBackCancellationTokenSource.Token);
+            PlaybackDevice.PlayLooping(_playBackCancellationTokenSource.Token);
         }
         else
         {
@@ -264,6 +264,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                 Devices
                     .Where(x => x.Measure)
                     .Select(x => x.Device),
+                PlaybackDevice?.Device as IRenderDevice,
                 RecordingConfig.WaveFormat);
 
         // 録音開始時刻を記録する

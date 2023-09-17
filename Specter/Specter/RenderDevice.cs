@@ -29,7 +29,7 @@ public class RenderDevice : Device, IRenderDevice
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task PlayLoopingAsync(CancellationToken token)
+    public void PlayLooping(CancellationToken token)
     {
         // スピーカーからNAudioで再生するためのプレイヤーを生成する。
         using var enumerator = new MMDeviceEnumerator();
@@ -52,8 +52,6 @@ public class RenderDevice : Device, IRenderDevice
         // 出力に入力を接続して再生を開始する。
         wavePlayer.Init(waveStream);
         wavePlayer.Play();
-
-        return Task.CompletedTask;
     }
 
 }

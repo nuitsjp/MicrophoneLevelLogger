@@ -95,7 +95,7 @@ public class RemoteDevice : ObservableObject, IRenderDevice
         _recording = false;
     }
 
-    public Task PlayLoopingAsync(CancellationToken token)
+    public void PlayLooping(CancellationToken token)
     {
 
         // 終了処理を登録する。
@@ -105,8 +105,6 @@ public class RemoteDevice : ObservableObject, IRenderDevice
         });
 
         _networkStream.WriteByte(StartCommand);
-        
-        return Task.CompletedTask;
     }
 
     private void Close()

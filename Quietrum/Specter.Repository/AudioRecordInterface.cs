@@ -44,12 +44,19 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         IDevice targetDevice,
         RecordingMethod recordingMethod,
         IEnumerable<IDevice> monitoringDevices,
+        IRenderDevice? playbackDevice,
         WaveFormat waveFormat)
     {
         var startDateTime = DateTime.Now;
         var directoryInfo = new DirectoryInfo(Path.Combine(RootDirectory,
             $"{startDateTime:yyyy.MM.dd-HH.mm.ss}_{targetDevice.Name}_{recordingMethod}"));
         directoryInfo.Create();
+
+        var playBackCancellationTokenSource = new CancellationTokenSource();
+        if (recordingMethod.WithPlayback)
+        {
+            playbackDevice?.PlayLooping(playBackCancellationTokenSource.Token);
+        }
 
         var deviceRecorders = monitoringDevices
             .Select(device =>
@@ -84,6 +91,7 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
                 deviceRecords.ToArray());
 
             await SaveAsync(audioRecord);
+            playBackCancellationTokenSource.Cancel();
         });
         
         return audioRecorder;

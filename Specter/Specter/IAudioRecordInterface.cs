@@ -12,6 +12,7 @@ public interface IAudioRecordInterface
         IDevice targetDevice, 
         RecordingMethod recordingMethod, 
         IEnumerable<IDevice> monitoringDevices,
+        IRenderDevice? playbackDevice,
         WaveFormat waveFormat);
 
     IEnumerable<Decibel> ReadInputLevels(

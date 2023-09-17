@@ -50,7 +50,7 @@ public class RemoteDeviceConnector : IDisposable
                 {
                     case RemoteDevice.StartCommand:
                         _cancellationTokenSource = new();
-                        _device.PlayLoopingAsync(_cancellationTokenSource.Token);
+                        _device.PlayLooping(_cancellationTokenSource.Token);
                         break;
                     case RemoteDevice.StopCommand:
                         _cancellationTokenSource?.Cancel();
