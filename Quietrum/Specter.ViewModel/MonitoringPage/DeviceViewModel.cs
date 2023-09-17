@@ -4,7 +4,7 @@ using NAudio.CoreAudioApi;
 using Reactive.Bindings.Disposables;
 using Reactive.Bindings.Extensions;
 
-namespace Specter.ViewModel;
+namespace Specter.ViewModel.MonitoringPage;
 
 public partial class DeviceViewModel : ObservableObject, IDisposable
 {
@@ -19,7 +19,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         Device = device;
         Device.ObserveProperty(x => x.VolumeLevel)
             .Subscribe(_ => OnPropertyChanged(nameof(VolumeLevel)));
-        this.ObserveProperty(x => x.Connected)
+        this.ObserveProperty<DeviceViewModel, bool>(x => x.Connected)
             .Skip(1)
             .Subscribe(OnConnected)
             .AddTo(_compositeDisposable);
@@ -102,11 +102,6 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
     public void StartMonitoring()
     {
         Device.StartMonitoring(_recordingConfig.WaveFormat, _recordingConfig.RefreshRate);
-    }
-
-    public void PlayLooping(CancellationToken token)
-    {
-        ((IRenderDevice)Device).PlayLooping(token);
     }
 
     private RemoteDeviceConnector? _connector;

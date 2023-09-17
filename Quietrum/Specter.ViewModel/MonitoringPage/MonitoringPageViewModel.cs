@@ -29,9 +29,9 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     [ObservableProperty] private string _recordName = string.Empty;
     [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
     [ObservableProperty] private IList<DeviceViewModel> _devices = new List<DeviceViewModel>();
-    [ObservableProperty] private IList<DeviceViewModel> _renderDevices = new List<DeviceViewModel>();
+    [ObservableProperty] private IList<RenderDeviceViewModel> _renderDevices = new List<RenderDeviceViewModel>();
     [ObservableProperty] private IList<DeviceViewModel> _measureDevices = new List<DeviceViewModel>();
-    [ObservableProperty] private DeviceViewModel? _playbackDevice;
+    [ObservableProperty] private RenderDeviceViewModel? _playbackDevice;
     [ObservableProperty] private DeviceViewModel? _recordDevice;
     [ObservableProperty] private RecordingMethod _selectedDirection = RecordingMethod.RecordingMethods.First();
     [ObservableProperty] private int _recordingSpan;
@@ -44,10 +44,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         _audioInterfaceProvider = audioInterfaceProvider;
         _audioRecordInterface = audioRecordInterface;
         _settingsRepository = settingsRepository;
-        // this.ObserveProperty(x => x.Record)
-        //     .Skip(1)
-        //     .Subscribe(OnRecord)
-        //     .AddTo(_compositeDisposable);
         this.ObserveProperty(x => x.Playback)
             .Skip(1)
             .Subscribe(OnPlayBack)
@@ -58,7 +54,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .AddTo(_compositeDisposable);
         this.ObserveProperty(x => x.PlaybackDevice)
             .Skip(1)
-            .Subscribe(OnSelectedSpeaker)
+            .Subscribe(OnSelectedRenderDevice)
             .AddTo(_compositeDisposable);
         this.ObserveProperty(x => x.RecorderHost)
             .Skip(1)
@@ -86,9 +82,9 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             settings with { RecorderHost = RecorderHost });
     }
 
-    private async void OnSelectedSpeaker(DeviceViewModel? speaker)
+    private async void OnSelectedRenderDevice(RenderDeviceViewModel? renderDevice)
     {
-        if(speaker is null) return;
+        if(renderDevice is null) return;
         
         var settings = await _settingsRepository.LoadAsync();
         await _settingsRepository.SaveAsync(
@@ -97,7 +93,10 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
 
     private async void OnDeviceChanged(IList<DeviceViewModel> obj)
     {
-        RenderDevices = Devices.Where(x => x.DataFlow == DataFlow.Render).ToList();
+        RenderDevices = Devices
+            .Where(x => x.DataFlow == DataFlow.Render)
+            .Select(x => new RenderDeviceViewModel((IRenderDevice)x.Device))
+            .ToList();
         PlaybackDevice = await GetPlaybackDevice(PlaybackDevice);
 
         MeasureDevices = Devices
@@ -111,7 +110,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     /// </summary>
     /// <param name="playbackDevice"></param>
     /// <returns></returns>
-    private async Task<DeviceViewModel?> GetPlaybackDevice(DeviceViewModel? playbackDevice)
+    private async Task<RenderDeviceViewModel?> GetPlaybackDevice(RenderDeviceViewModel? playbackDevice)
     {
         if (playbackDevice is not null)
         {
