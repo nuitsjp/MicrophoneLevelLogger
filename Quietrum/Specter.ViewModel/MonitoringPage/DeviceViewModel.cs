@@ -19,7 +19,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         Device = device;
         Device.ObserveProperty(x => x.VolumeLevel)
             .Subscribe(_ => OnPropertyChanged(nameof(VolumeLevel)));
-        this.ObserveProperty<DeviceViewModel, bool>(x => x.Connected)
+        this.ObserveProperty(x => x.Connected)
             .Skip(1)
             .Subscribe(OnConnected)
             .AddTo(_compositeDisposable);
@@ -123,7 +123,7 @@ public partial class DeviceViewModel : ObservableObject, IDisposable
         _connector = null;
     }
 
-    public void StopMonitoring()
+    private void StopMonitoring()
     {
         Device.StopMonitoring();
         Array.Fill(LiveData, Decibel.Minimum.AsPrimitive());

@@ -18,7 +18,7 @@ public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer, INavig
 
     [ObservableProperty] 
     [NotifyCanExecuteChangedFor(nameof(DeleteRecordCommand))]
-    private AudioRecordViewModel _selectedAudioRecord;
+    private AudioRecordViewModel? _selectedAudioRecord;
 
     public AnalysisPageViewModel(
         [Inject] IPresentationService presentationService,
@@ -70,6 +70,8 @@ public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer, INavig
     [RelayCommand(CanExecute = nameof(CanDeleteRecord))]
     private void DeleteRecord(AudioRecordViewModel? audioRecord)
     {
+        if(audioRecord is null) return;
+
         var result = _presentationService.ShowMessage(
             "記録を削除します。よろしいですか？",
             button: MessageBoxButton.YesNo);

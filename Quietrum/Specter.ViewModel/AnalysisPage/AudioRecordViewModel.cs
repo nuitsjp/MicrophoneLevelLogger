@@ -6,7 +6,7 @@ public partial class AudioRecordViewModel : ObservableObject
 {
     private readonly AudioRecord _audioRecord;
 
-    [ObservableProperty] private DeviceRecordViewModel _selectedDevice;
+    [ObservableProperty] private DeviceRecordViewModel? _selectedDevice;
 
     public AudioRecordViewModel(AudioRecord audioRecord, IAnalyzer analyzer)
     {

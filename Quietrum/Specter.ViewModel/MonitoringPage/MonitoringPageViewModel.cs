@@ -177,18 +177,6 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         
     }
 
-    private void OnRecord(bool record)
-    {
-        if (record)
-        {
-            StartRecording();
-        }
-        else
-        {
-            StopRecording();
-        }
-    }
-
     /// <summary>
     /// 実行中の録音
     /// </summary>
@@ -288,6 +276,8 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         if (_updateProgressTimer.IsEnabled) _updateProgressTimer.Stop();
         
         // 録音を停止する
+        if(AudioRecording is null) return;
+        
         await AudioRecording.EndRecordingAsync();
         AudioRecording = null;
     }
