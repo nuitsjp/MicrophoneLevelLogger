@@ -13,6 +13,7 @@ public class RecordingMethod
 
     public static IReadOnlyList<RecordingMethod> RecordingMethods => Methods;
     
+    // ReSharper disable once MemberCanBePrivate.Global
     public RecordingMethod(string name, bool withPlayback)
     {
         Name = name;

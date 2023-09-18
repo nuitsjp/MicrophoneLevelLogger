@@ -7,6 +7,7 @@
         xmlns:viewModel1="clr-namespace:Specter.ViewModel;assembly=Specter.ViewModel"
         xmlns:scottPlot="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
         xmlns:monitoringPage="clr-namespace:Specter.ViewModel.MonitoringPage;assembly=Specter.ViewModel"
+        xmlns:converter="clr-namespace:Specter.View.Converter"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -18,8 +19,14 @@
         d:DataContext="{d:DesignInstance {x:Type monitoringPage:MonitoringPageViewModel}, IsDesignTimeCreatable=True}"
         d:DesignHeight="1024" d:DesignWidth="1600">
     <UserControl.Resources>
-        <ResourceDictionary Source="Style/Generic.xaml"/>
-    </UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Style/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <converter:BuzzStateConverter x:Key="BuzzStateConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>    
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -36,10 +43,11 @@
                       Width="300"/>
             <ComboBox ItemsSource="{Binding RecordingMethods}"
                       SelectedItem="{Binding SelectedDirection, Mode=TwoWay}"
-                      DisplayMemberPath="Name"
                       materialDesign:HintAssist.Hint="Recording Method"
                       Width="200"/>
 
+            <CheckBox Content="With Playback" IsChecked="{Binding BuzzState, Converter={StaticResource BuzzStateConverter}}"/>
+            
             <Button
                 materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding Recording}"
                 materialDesign:ButtonProgressAssist.Value="{Binding RecordingProgress}"
@@ -69,7 +77,7 @@
                       materialDesign:HintAssist.Hint="Playback Device"
                       Width="300"/>
             <ToggleButton Content="{materialDesign:PackIcon Kind=Play}"
-                          IsChecked="{Binding Playback}"
+                          IsChecked="{Binding BuzzState}"
                           Style="{StaticResource DefaultToggleButton}"
                           ToolTip="再生"/>
             

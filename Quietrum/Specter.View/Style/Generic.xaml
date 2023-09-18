@@ -48,8 +48,8 @@
     <Style x:Key="CheckBoxBase" 
            TargetType="CheckBox" 
            BasedOn="{StaticResource MaterialDesignCheckBox}">
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
     <Style TargetType="CheckBox" 
            BasedOn="{StaticResource CheckBoxBase}" />

@@ -24,6 +24,7 @@ public partial class AudioRecordViewModel : ObservableObject
     public AudioRecord AudioRecord => _audioRecord;
     public DateTime StartTime => _audioRecord.StartTime;
     public string Device { get; }
-    public RecordingMethod RecordingMethod => _audioRecord.RecordingMethod;
+    public Direction Direction => _audioRecord.Direction;
+    public BuzzState BuzzState => _audioRecord.BuzzState;
     public IReadOnlyList<DeviceRecordViewModel> Devices { get; }
 }

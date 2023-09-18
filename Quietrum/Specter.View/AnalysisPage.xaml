@@ -37,7 +37,7 @@
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="480"/>
+                <ColumnDefinition Width="550"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
@@ -52,7 +52,24 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Time" Binding="{Binding StartTime, StringFormat=yyyy/MM/dd HH:mm}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Device" Binding="{Binding Device}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Direction" Binding="{Binding RecordingMethod}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Direction" Binding="{Binding Direction}" IsReadOnly="True"/>
+                    <DataGridTemplateColumn IsReadOnly="True" Header="Buzz" Width="Auto">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <materialDesign:PackIcon x:Name="CheckIcon" Kind="CheckBold" Visibility="Collapsed"/>
+                                </Grid>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding BuzzState}" Value="With">
+                                        <Setter TargetName="CheckIcon" Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding BuzzState}" Value="Without">
+                                        <Setter TargetName="CheckIcon" Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
             
@@ -104,7 +121,24 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Time" Binding="{Binding StartTime, StringFormat=yyyy/MM/dd HH:mm}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Device" Binding="{Binding Device}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Direction" Binding="{Binding RecordingMethod}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Direction" Binding="{Binding Direction}" IsReadOnly="True"/>
+                    <DataGridTemplateColumn IsReadOnly="True" Header="Buzz" Width="Auto">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <materialDesign:PackIcon x:Name="CheckIcon" Kind="CheckBold" Visibility="Collapsed"/>
+                                </Grid>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding BuzzState}" Value="With">
+                                        <Setter TargetName="CheckIcon" Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding BuzzState}" Value="Without">
+                                        <Setter TargetName="CheckIcon" Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Min" Binding="{Binding Min, Converter={StaticResource DecibelConverter}, ConverterParameter='{}{0:0.00}'}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Avg" Binding="{Binding Avg, Converter={StaticResource DecibelConverter}, ConverterParameter='{}{0:0.00}'}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Max" Binding="{Binding Max, Converter={StaticResource DecibelConverter}, ConverterParameter='{}{0:0.00}'}" IsReadOnly="True"/>

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Windows.Documents;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -23,8 +24,8 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     private readonly ISettingsRepository _settingsRepository;
     
     // [ObservableProperty] private bool _record;
-    [ObservableProperty] private bool _withPlayback;
-    [ObservableProperty] private bool _playback;
+    [ObservableProperty] private BuzzState _buzzState = BuzzState.Without;
+    [ObservableProperty] private bool _playing;
     [ObservableProperty] private string _recorderHost = string.Empty;
     [ObservableProperty] private string _recordName = string.Empty;
     [ObservableProperty] private TimeSpan _elapsed = TimeSpan.Zero;
@@ -33,7 +34,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     [ObservableProperty] private IList<DeviceViewModel> _measureDevices = new List<DeviceViewModel>();
     [ObservableProperty] private RenderDeviceViewModel? _playbackDevice;
     [ObservableProperty] private DeviceViewModel? _recordDevice;
-    [ObservableProperty] private RecordingMethod _selectedDirection = RecordingMethod.RecordingMethods.First();
+    [ObservableProperty] private Direction _selectedDirection;
     [ObservableProperty] private int _recordingSpan;
     
     public MonitoringPageViewModel(
@@ -44,9 +45,10 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         _audioInterfaceProvider = audioInterfaceProvider;
         _audioRecordInterface = audioRecordInterface;
         _settingsRepository = settingsRepository;
-        this.ObserveProperty(x => x.Playback)
+        _selectedDirection = RecordingMethods.First();
+        this.ObserveProperty(x => x.Playing)
             .Skip(1)
-            .Subscribe(OnPlayBack)
+            .Subscribe(OnPlaying)
             .AddTo(_compositeDisposable);
         this.ObserveProperty(x => x.Devices)
             .Skip(1)
@@ -73,7 +75,13 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             settings with { RecordingSpan = TimeSpan.FromSeconds(recordingSpan)});
     }
 
-    public IReadOnlyList<RecordingMethod> RecordingMethods { get; } = RecordingMethod.RecordingMethods;
+    public IReadOnlyList<Direction> RecordingMethods { get; } = new List<Direction>
+    {
+        Direction.Front,
+        Direction.Rear,
+        Direction.Right,
+        Direction.Left
+    };
 
     private async void OnChangedRecorderHost(string obj)
     {
@@ -157,13 +165,13 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
 
     private CancellationTokenSource _playBackCancellationTokenSource = new();
     
-    private void OnPlayBack(bool playBack)
+    private void OnPlaying(bool playBack)
     {
         if (playBack)
         {
             if (PlaybackDevice is null)
             {
-                Playback = false;
+                Playing = false;
                 return;
             }
 
@@ -248,10 +256,11 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             .BeginRecording(
                 RecordDevice!.Device,
                 SelectedDirection,
+                BuzzState,
                 Devices
                     .Where(x => x.Measure)
                     .Select(x => x.Device),
-                PlaybackDevice?.Device as IRenderDevice,
+                PlaybackDevice?.Device,
                 RecordingConfig.WaveFormat);
 
         // 録音開始時刻を記録する

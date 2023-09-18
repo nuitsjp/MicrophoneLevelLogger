@@ -2,7 +2,8 @@
 
 public record AudioRecord(
     DeviceId TargetDeviceId,
-    RecordingMethod RecordingMethod,
+    Direction Direction,
+    BuzzState BuzzState,
     DateTime StartTime,
     DateTime StopTime,
     IReadOnlyList<DeviceRecord> DeviceRecords);

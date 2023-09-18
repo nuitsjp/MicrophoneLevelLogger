@@ -42,18 +42,18 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
 
     public IAudioRecording BeginRecording(
         IDevice targetDevice,
-        RecordingMethod recordingMethod,
+        Direction direction,
+        BuzzState buzzState,
         IEnumerable<IDevice> monitoringDevices,
         IRenderDevice? playbackDevice,
         WaveFormat waveFormat)
     {
         var startDateTime = DateTime.Now;
-        var directoryInfo = new DirectoryInfo(Path.Combine(RootDirectory,
-            $"{startDateTime:yyyy.MM.dd-HH.mm.ss}_{targetDevice.Name}_{recordingMethod}"));
+        var directoryInfo = new DirectoryInfo(GetAudioRecordPath(startDateTime, targetDevice.Name, direction, buzzState));
         directoryInfo.Create();
 
         var playBackCancellationTokenSource = new CancellationTokenSource();
-        if (recordingMethod.WithPlayback)
+        if (buzzState == BuzzState.With)
         {
             playbackDevice?.PlayLooping(playBackCancellationTokenSource.Token);
         }
@@ -85,7 +85,8 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
 
             var audioRecord = new AudioRecord(
                 targetDevice.Id,
-                recordingMethod,
+                direction,
+                buzzState,
                 startDateTime,
                 DateTime.Now,
                 deviceRecords.ToArray());
@@ -121,9 +122,14 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
     private static string GetAudioRecordPath(AudioRecord audioRecord)
     {
         var targetDevice = audioRecord.DeviceRecords.Single(x => x.Id == audioRecord.TargetDeviceId);
+        return GetAudioRecordPath(audioRecord.StartTime, targetDevice.Name, audioRecord.Direction, audioRecord.BuzzState);
+    }
+
+    private static string GetAudioRecordPath(DateTime startTime, string deviceName, Direction direction, BuzzState buzzState)
+    {
         return Path.Combine(
             RootDirectory,
-            $"{audioRecord.StartTime:yyyy.MM.dd-HH.mm.ss}_{targetDevice.Name}_{audioRecord.RecordingMethod}");
+            $"{startTime:yyyy.MM.dd-HH.mm.ss}_{deviceName}_{direction}{(buzzState == BuzzState.With ? "_with_Playback" : string.Empty)}");
     }
 
     public async Task SaveAsync(AudioRecord audioRecord)
