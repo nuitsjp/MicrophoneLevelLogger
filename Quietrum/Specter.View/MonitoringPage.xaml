@@ -41,12 +41,12 @@
                       DisplayMemberPath="Name"
                       materialDesign:HintAssist.Hint="Record Device"
                       Width="300"/>
-            <ComboBox ItemsSource="{Binding RecordingMethods}"
+            <ComboBox ItemsSource="{Binding Directions}"
                       SelectedItem="{Binding SelectedDirection, Mode=TwoWay}"
-                      materialDesign:HintAssist.Hint="Recording Method"
+                      materialDesign:HintAssist.Hint="Direction"
                       Width="200"/>
 
-            <CheckBox Content="With Playback" IsChecked="{Binding BuzzState, Converter={StaticResource BuzzStateConverter}}"/>
+            <CheckBox Content="With Buzz" IsChecked="{Binding BuzzState, Converter={StaticResource BuzzStateConverter}}"/>
             
             <Button
                 materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding Recording}"

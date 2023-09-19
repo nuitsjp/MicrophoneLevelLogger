@@ -1,6 +1,6 @@
 ﻿namespace Specter;
 
-public enum BuzzState
+public enum VoiceState
 {
     With,
     Without

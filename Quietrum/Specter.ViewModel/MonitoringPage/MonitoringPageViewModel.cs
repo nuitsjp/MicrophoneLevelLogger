@@ -45,7 +45,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
         _audioInterfaceProvider = audioInterfaceProvider;
         _audioRecordInterface = audioRecordInterface;
         _settingsRepository = settingsRepository;
-        _selectedDirection = RecordingMethods.First();
+        _selectedDirection = Directions.First();
         this.ObserveProperty(x => x.Playing)
             .Skip(1)
             .Subscribe(OnPlaying)
@@ -75,7 +75,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
             settings with { RecordingSpan = TimeSpan.FromSeconds(recordingSpan)});
     }
 
-    public IReadOnlyList<Direction> RecordingMethods { get; } = new List<Direction>
+    public IReadOnlyList<Direction> Directions { get; } = new List<Direction>
     {
         Direction.Front,
         Direction.Rear,
