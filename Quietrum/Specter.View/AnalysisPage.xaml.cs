@@ -47,6 +47,12 @@ public partial class AnalysisPage : UserControl
                     
             WpfPlot1.Plot.AxisAutoX(margin: 0);
 
+            // 0になてしまうとWpfPlot1がエラーとなるためその場合、仮に100を設定しておく
+            maximumLength =
+                maximumLength == 0
+                    ? 100
+                    : maximumLength;
+            
             WpfPlot1.Plot.SetAxisLimits(
                 xMin: 0, xMax: maximumLength,
                 yMin: -90, yMax: 0);
