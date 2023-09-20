@@ -25,6 +25,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
     
     // [ObservableProperty] private bool _record;
     [ObservableProperty] private BuzzState _buzzState = BuzzState.Without;
+    [ObservableProperty] private VoiceState _voiceState = VoiceState.With;
     [ObservableProperty] private bool _playing;
     [ObservableProperty] private string _recorderHost = string.Empty;
     [ObservableProperty] private string _recordName = string.Empty;
@@ -257,6 +258,7 @@ public partial class MonitoringPageViewModel : ObservableObject, INavigatedAsync
                 RecordDevice!.Device,
                 SelectedDirection,
                 BuzzState,
+                VoiceState,
                 Devices
                     .Where(x => x.Measure)
                     .Select(x => x.Device),

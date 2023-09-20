@@ -37,7 +37,7 @@
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="550"/>
+                <ColumnDefinition Width="650"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
@@ -53,6 +53,23 @@
                     <DataGridTextColumn Header="Time" Binding="{Binding StartTime, StringFormat=yyyy/MM/dd HH:mm}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Device" Binding="{Binding Device}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Direction" Binding="{Binding Direction}" IsReadOnly="True"/>
+                    <DataGridTemplateColumn IsReadOnly="True" Header="Voice" Width="Auto">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <materialDesign:PackIcon x:Name="CheckIcon" Kind="CheckBold" Visibility="Collapsed"/>
+                                </Grid>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding VoiceState}" Value="With">
+                                        <Setter TargetName="CheckIcon" Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding VoiceState}" Value="Without">
+                                        <Setter TargetName="CheckIcon" Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTemplateColumn IsReadOnly="True" Header="Buzz" Width="Auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -133,6 +150,23 @@
                                         <Setter TargetName="CheckIcon" Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding BuzzState}" Value="Without">
+                                        <Setter TargetName="CheckIcon" Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn IsReadOnly="True" Header="Voice" Width="Auto">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <materialDesign:PackIcon x:Name="CheckIcon" Kind="CheckBold" Visibility="Collapsed"/>
+                                </Grid>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding VoiceState}" Value="With">
+                                        <Setter TargetName="CheckIcon" Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding VoiceState}" Value="Without">
                                         <Setter TargetName="CheckIcon" Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </DataTemplate.Triggers>

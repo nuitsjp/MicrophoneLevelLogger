@@ -12,6 +12,7 @@ public interface IAudioRecordInterface
         IDevice targetDevice, 
         Direction direction, 
         BuzzState buzzState,
+        VoiceState voiceState,
         IEnumerable<IDevice> monitoringDevices,
         IRenderDevice? playbackDevice,
         WaveFormat waveFormat);

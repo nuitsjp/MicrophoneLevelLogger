@@ -15,6 +15,7 @@ public class AnalysisDeviceViewModel
     public string Device => DeviceRecord.Name;
     public Direction Direction => AudioRecord.Direction;
     public BuzzState BuzzState => AudioRecord.BuzzState;
+    public VoiceState VoiceState => AudioRecord.VoiceState;
     public Decibel Min => DeviceRecord.Min;
     public Decibel Avg => DeviceRecord.Avg;
     public Decibel Max => DeviceRecord.Max;

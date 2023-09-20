@@ -25,6 +25,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converter:BuzzStateConverter x:Key="BuzzStateConverter"/>
+            <converter:VoiceStateConverter x:Key="VoiceStateConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>    
     <Grid Margin="5">
@@ -46,8 +47,12 @@
                       materialDesign:HintAssist.Hint="Direction"
                       Width="200"/>
 
-            <CheckBox Content="With Buzz" IsChecked="{Binding BuzzState, Converter={StaticResource BuzzStateConverter}}"/>
-            
+            <CheckBox Content="With Voice" IsChecked="{Binding VoiceState, Converter={StaticResource VoiceStateConverter}}"
+                      Margin="5"/>
+
+            <CheckBox Content="With Buzz" IsChecked="{Binding BuzzState, Converter={StaticResource BuzzStateConverter}}"
+                      Margin="5"/>
+
             <Button
                 materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding Recording}"
                 materialDesign:ButtonProgressAssist.Value="{Binding RecordingProgress}"

@@ -44,12 +44,13 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
         IDevice targetDevice,
         Direction direction,
         BuzzState buzzState,
+        VoiceState voiceState,
         IEnumerable<IDevice> monitoringDevices,
         IRenderDevice? playbackDevice,
         WaveFormat waveFormat)
     {
         var startDateTime = DateTime.Now;
-        var directoryInfo = new DirectoryInfo(GetAudioRecordPath(startDateTime, targetDevice.Name, direction, buzzState));
+        var directoryInfo = new DirectoryInfo(GetAudioRecordPath(startDateTime, targetDevice.Name, direction, buzzState, voiceState));
         directoryInfo.Create();
 
         var playBackCancellationTokenSource = new CancellationTokenSource();
@@ -87,6 +88,7 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
                 targetDevice.Id,
                 direction,
                 buzzState,
+                voiceState,
                 startDateTime,
                 DateTime.Now,
                 deviceRecords.ToArray());
@@ -122,14 +124,31 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
     private static string GetAudioRecordPath(AudioRecord audioRecord)
     {
         var targetDevice = audioRecord.DeviceRecords.Single(x => x.Id == audioRecord.TargetDeviceId);
-        return GetAudioRecordPath(audioRecord.StartTime, targetDevice.Name, audioRecord.Direction, audioRecord.BuzzState);
+        return GetAudioRecordPath(audioRecord.StartTime, targetDevice.Name, audioRecord.Direction, audioRecord.BuzzState, audioRecord.VoiceState);
     }
 
-    private static string GetAudioRecordPath(DateTime startTime, string deviceName, Direction direction, BuzzState buzzState)
+    private static string GetAudioRecordPath(DateTime startTime, string deviceName, Direction direction, BuzzState buzzState, VoiceState voiceState)
     {
+        string stateMessage;
+        if (buzzState == BuzzState.Without && voiceState == VoiceState.Without)
+        {
+            stateMessage = string.Empty;
+        }
+        else if (buzzState == BuzzState.With && voiceState == VoiceState.Without)
+        {
+            stateMessage = "_with_Buzz";
+        }
+        else if (buzzState == BuzzState.Without && voiceState == VoiceState.With)
+        {
+            stateMessage = "_with_Voice";
+        }
+        else
+        {
+            stateMessage = "_with_Voice_and_Buzz";
+        }
         return Path.Combine(
             RootDirectory,
-            $"{startTime:yyyy.MM.dd-HH.mm.ss}_{deviceName}_{direction}{(buzzState == BuzzState.With ? "_with_Playback" : string.Empty)}");
+            $"{startTime:yyyy.MM.dd-HH.mm.ss}_{deviceName}_{direction}{stateMessage}");
     }
 
     public async Task SaveAsync(AudioRecord audioRecord)
