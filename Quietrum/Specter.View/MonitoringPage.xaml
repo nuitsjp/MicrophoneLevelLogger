@@ -6,8 +6,8 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:viewModel1="clr-namespace:Specter.ViewModel;assembly=Specter.ViewModel"
         xmlns:scottPlot="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
-        xmlns:monitoringPage="clr-namespace:Specter.ViewModel.MonitoringPage;assembly=Specter.ViewModel"
         xmlns:converter="clr-namespace:Specter.View.Converter"
+        xmlns:view="clr-namespace:Specter.View"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -16,7 +16,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance {x:Type monitoringPage:MonitoringPageViewModel}, IsDesignTimeCreatable=True}"
+        d:DataContext="{d:DesignInstance {x:Type view:DesignMonitoringPageViewModel}, IsDesignTimeCreatable=True}"
         d:DesignHeight="1024" d:DesignWidth="1600">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -82,7 +82,7 @@
                       materialDesign:HintAssist.Hint="Playback Device"
                       Width="300"/>
             <ToggleButton Content="{materialDesign:PackIcon Kind=Play}"
-                          IsChecked="{Binding BuzzState}"
+                          IsChecked="{Binding Playing}"
                           Style="{StaticResource DefaultToggleButton}"
                           ToolTip="再生"/>
             
