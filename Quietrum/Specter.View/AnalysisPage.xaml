@@ -192,8 +192,7 @@
             </DataGrid>
             
             <Button Grid.Column="1" Content="{materialDesign:PackIcon Kind=ContentSave}"
-                    Command="{Binding DeleteRecordCommand}"
-                    CommandParameter="{Binding SelectedAudioRecord}"
+                    Command="{Binding SaveRecordCommand}"
                     VerticalAlignment="Top"/>
         </Grid>
         <WpfPlot Grid.Row="2" x:Name="WpfPlot1" >

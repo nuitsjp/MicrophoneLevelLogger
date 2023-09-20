@@ -27,6 +27,7 @@ public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer, INavig
         _presentationService = presentationService;
         _audioRecordInterface = audioRecordInterface;
         AudioRecords = _audioRecords.ToReadOnlyReactiveCollection();
+        AnalysisDevices.CollectionChanged += (_, _) => SaveRecordCommand.NotifyCanExecuteChanged();
     }
 
     public ObservableCollection<AnalysisDeviceViewModel> AnalysisDevices { get; } = new(); 
@@ -83,6 +84,13 @@ public partial class AnalysisPageViewModel : ObservableObject, IAnalyzer, INavig
 
     private bool CanDeleteRecord(AudioRecordViewModel? audioRecord)
         => audioRecord is not null;
+
+    [RelayCommand(CanExecute = nameof(CanSaveRecord))]
+    private void SaveRecord()
+    {
+    }
+
+    private bool CanSaveRecord() => AnalysisDevices.Any();
 
     public void UpdateTarget(DeviceRecordViewModel deviceRecord)
     {
