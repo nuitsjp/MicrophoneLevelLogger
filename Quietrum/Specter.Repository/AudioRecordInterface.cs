@@ -94,7 +94,7 @@ public class AudioRecordInterface : IAudioRecordInterface, IDisposable
                 deviceRecords.ToArray());
 
             await SaveAsync(audioRecord);
-            playBackCancellationTokenSource.Cancel();
+            await playBackCancellationTokenSource.CancelAsync();
         });
         
         return audioRecorder;
