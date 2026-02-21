@@ -37,7 +37,8 @@ MicrophoneLevelLoggerは、マイクの録音レベルを定量的に計測す�
 |ヘッドセット|有線|エレコム|HS-HP101UNCBK|8,669|
 |ヘッドセット|有線|エレコム|HS-HP102UNCBK|8,745|
 |イヤホン|無線|Jabra|Elite 85t|26,800|
-|イヤホン|無線|SOUNDPEATS|Air3 Deluxe HS|8,980|
+|イヤホン|無線|Technics|EAH-AZ100|26,800|
+|イヤホン|無線|SOUNDPEATS|Air3 Deluxe HS|39,600|
 |イヤホン|無線|SOUNDPEATS|Capsule3 Pro|8,480|
 |イヤホン|無線|SOUNDPEATS|CC|7,580|
 |イヤホン|無線|SOUNDPEATS|UU|6,180|
@@ -48,7 +49,7 @@ MicrophoneLevelLoggerは、マイクの録音レベルを定量的に計測す�
 |イヤホン|無線|Anker|Soundcore Liberty Air 2 Pro|12,980|
 |DAC|有線|Creative|Sound Blaster Play! 4|3,380|
 |DAC|有線|XROUND|XRD-XTA-02|4,981|
-|総額||||367,820|
+|総額||||425,240|
 
 # メモ
 
